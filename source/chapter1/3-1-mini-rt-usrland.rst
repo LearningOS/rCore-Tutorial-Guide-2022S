@@ -28,7 +28,7 @@
   }
 
 
-对上述代码重新编译，再用分析工具分析，可以看到：
+对上述代码重新编译，再用分析工具分析：
 
 
 .. code-block:: console
@@ -36,24 +36,6 @@
    $ cargo build
       Compiling os v0.1.0 (/home/shinbokuow/workspace/v3/rCore-Tutorial-v3/os)
        Finished dev [unoptimized + debuginfo] target(s) in 0.06s
-
-   [文件格式]
-   $ file target/riscv64gc-unknown-none-elf/debug/os
-   target/riscv64gc-unknown-none-elf/debug/os: ELF 64-bit LSB executable, UCB RISC-V, ......
-
-   [文件头信息]
-   $ rust-readobj -h target/riscv64gc-unknown-none-elf/debug/os
-      File: target/riscv64gc-unknown-none-elf/debug/os
-      Format: elf64-littleriscv
-      Arch: riscv64
-      AddressSize: 64bit
-      ......
-      Type: Executable (0x2)
-      Machine: EM_RISCV (0xF3)
-      Version: 1
-      Entry: 0x11120      
-      ......
-      }
    
    [反汇编导出汇编程序]
    $ rust-objdump -S target/riscv64gc-unknown-none-elf/debug/os
@@ -91,14 +73,14 @@
     ; }
       11120: 82 80        	ret
 
-看起来是合法的执行程序。但如果我们执行它，就发现有问题了：
+看起来是合法的执行程序。但如果我们执行它，会引发问题：
 
 .. code-block:: console
 
   $ qemu-riscv64 target/riscv64gc-unknown-none-elf/debug/os
     段错误 (核心已转储)
 
-这个非常简单的应用程序导致了 ``qemu-riscv64`` 崩溃了！为什么会这样？
+这个非常简单的应用程序导致 ``qemu-riscv64`` 崩溃了！为什么会这样？
 
 .. note::
 
@@ -116,12 +98,7 @@
   能够模拟一个完整的基于不同CPU的硬件系统，包括处理器、内存及其他外部设备，支持运行完整的操作系统。
 
 
-回顾一下最开始的输出 ``Hello, world!`` 的简单应用程序，其入口函数名字是 ``main`` ，编译时用的是标准库 std 。
-它可以正常执行。
-再仔细想想，当一个应用程序出错的时候，最上层为操作系统的执行环境会把它给杀死。
-但如果一个应用的入口函数正常返回，执行环境应该优雅地让它退出才对。没错！目前的执行环境还缺了一个退出机制。
-
-我们需要操作系统提供的 ``exit`` 系统调用来退出程序。这里先给出代码：
+目前的执行环境还缺了一个退出机制，我们需要操作系统提供的 ``exit`` 系统调用来退出程序。这里先给出代码：
 
 .. code-block:: rust
   
@@ -154,9 +131,9 @@
   }
 
 ``main.rs`` 增加的内容不多，但还是有点与一般的应用程序有所不同，因为它引入了汇编和系统调用。
-第二章的第二节 :doc:`/chapter2/2application` 会有详细介绍上述功能的实现细节。
-这里只需知道 ``_start`` 函数调用了一个 ``sys_exit`` 函数，
-来向操作系统发出一个退出服务的系统调用请求，并传递给OS的退出码为 ``9`` 。
+第二章的第二节 :doc:`/chapter2/2application` 会详细介绍上述功能的实现细节。
+这里读者只需要知道 ``_start`` 函数调用了一个 ``sys_exit`` 函数，
+向操作系统发出了退出的系统调用请求，退出码为 ``9`` 。
 
 我们编译执行以下修改后的程序：
 
@@ -166,7 +143,7 @@
       Compiling os v0.1.0 (/media/chyyuu/ca8c7ba6-51b7-41fc-8430-e29e31e5328f/thecode/rust/os_kernel_lab/os)
         Finished dev [unoptimized + debuginfo] target(s) in 0.26s
     
-    [$?表示执行程序的退出码，它会被告知 OS]    
+    [打印程序的返回值]    
     $ qemu-riscv64 target/riscv64gc-unknown-none-elf/debug/os; echo $?
     9
 

@@ -53,18 +53,18 @@ cargo 为我们准备好了 ``Hello world!`` 源代码：
 理解应用程序执行环境
 -------------------------------
 
-在现代通用操作系统（如 Linux）上运行应用程序，需要多层次的执行环境栈的支持：
+在现代通用操作系统（如 Linux）上运行应用程序，需要多层次的执行环境栈支持：
 
 
 .. figure:: app-software-stack.png
    :align: center
 
-   应用程序执行环境栈：图中的白色块自上而下表示各级执行环境，黑色块则表示相邻两层执行环境之间的接口，下层作为上层的执行环境支持上层代码的运行。
+   应用程序执行环境栈：图中的白色块自上而下表示各级执行环境，黑色块则表示相邻两层执行环境之间的接口。
+   下层作为上层的执行环境，支持上层代码运行。
 
 我们的应用程序通过调用标准库或第三方库提供的接口，仅需少量源代码就能完成复杂的功能；
 ``Hello, world!`` 程序调用的 ``println!`` 宏就是由 Rust 标准库 std 和 GNU Libc 等提供的。
 这些库属于应用程序的 **执行环境** (Execution Environment)，而它们的实现又依赖于操作系统提供的系统调用。
-标准库在程序执行之前，会进行一系列初始化工作。
 
 平台与目标三元组
 ---------------------------------------
@@ -91,21 +91,8 @@ CPU 架构是 x86_64，CPU 厂商是 unknown，操作系统是 linux，运行时
 接下来，我们希望把 ``Hello, world!`` 移植到 RICV 目标平台 ``riscv64gc-unknown-none-elf`` 上运行。
 
 .. note::
-
-  可以看一下目前 Rust 编译器支持哪些基于 RISC-V 的平台：
-
-  .. code-block:: console
-
-     $ rustc --print target-list | grep riscv
-     riscv32gc-unknown-linux-gnu
-     riscv32i-unknown-none-elf
-     riscv32imac-unknown-none-elf
-     riscv32imc-unknown-none-elf
-     riscv64gc-unknown-linux-gnu
-     riscv64gc-unknown-none-elf
-     riscv64imac-unknown-none-elf
-
-  我们选择的是 ``riscv64gc-unknown-none-elf``，CPU 架构是 riscv64gc，厂商是 unknown，操作系统是 none，
+   
+  ``riscv64gc-unknown-none-elf`` 的 CPU 架构是 riscv64gc，厂商是 unknown，操作系统是 none，
   elf 表示没有标准的运行时库。没有任何系统调用的封装支持，但可以生成ELF格式的执行程序。
   我们不选择有 linux-gnu 支持的 ``riscv64gc-unknown-linux-gnu``，是因为我们的目标是开发操作系统内核。
 
