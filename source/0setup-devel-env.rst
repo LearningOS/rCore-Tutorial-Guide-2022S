@@ -204,7 +204,7 @@ Qemu 模拟器安装
 
 .. code-block:: bash
 
-   git clone https://github.com/zhanghx0905/rCore-Tutorial-2021-Autumn -b ch7
+   git clone https://github.com/zhanghx0905/rCore-Tutorial-2021Autumn -b ch7
 
 只需在 ``os`` 目录下 ``make run`` 即可。在内核加载完毕之后，可以看到目前可用的应用程序。 ``usertests`` 打包了其中的很大一部分，我们可以运行它，只需输入在终端中输入它的名字即可。
 
@@ -215,6 +215,11 @@ Qemu 模拟器安装
 GDB 调试支持*
 ------------------------------
 
+.. attention::
+
+   使用 GDB debug 并不是必须的，你可以暂时跳过本小节。
+
+
 在 ``os`` 目录下 ``make debug`` 可以调试我们的内核，这需要安装终端复用工具 ``tmux`` ，还需要基于 riscv64 平台的 gdb 调试器 ``riscv64-unknown-elf-gdb`` 。该调试器包含在 riscv64 gcc 工具链中，工具链的预编译版本可以在如下链接处下载：
 
 - `Ubuntu 平台 <https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz>`_
@@ -223,7 +228,3 @@ GDB 调试支持*
 - `CentOS 平台 <https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-centos6.tar.gz>`_
 
 解压后在 ``bin`` 目录下即可找到 ``riscv64-unknown-elf-gdb`` 以及另外一些常用工具 ``objcopy/objdump/readelf`` 等。
-
-.. attention::
-
-   使用 GDB debug 并不是必须的。
