@@ -1,25 +1,27 @@
-实验环境配置
+第零章：实验环境配置
 ============
 
 .. toctree::
    :hidden:
    :maxdepth: 4
    
-本节我们将完成环境配置并成功运行 rCore-Tutorial-v3 。整个流程分为下面几个部分：
+本节我们将完成环境配置并成功运行 rCore-Tutorial 。整个流程分为下面几个部分：
 
-- 系统环境配置
+- OS 环境配置
 - Rust 开发环境配置
 - Qemu 模拟器安装
 - 其他工具安装
-- 运行 rCore-Tutorial-v3
+- 试运行 rCore-Tutorial
 
-系统环境配置
+如果你在环境配置中遇到了无法解决的问题，请在本节讨论区留言，我们会尽力提供帮助。
+
+OS 环境配置
 -------------------------------
 
-目前实验仅支持 Ubuntu18.04 / 20.04 + 操作系统。对于 Windows10 和 macOS 上的用户，可以使用 VMware 或 
-VirtualBox 安装一台 Ubuntu18.04 / 20.04 虚拟机并在上面进行实验。
+目前，实验只支持 Ubuntu18.04/20.04 操作系统。使用 Windows10 和 macOS 的读者，可以安装一台 Ubuntu18.04 虚拟机或 Docker
+进行实验。
 
-特别的，Windows10 的用户可以通过系统内置的 WSL2 虚拟机（请不要使用 WSL1）来安装 Ubuntu 18.04 / 20.04 。
+Windows10 用户可以通过系统内置的 **WSL2** 虚拟机（请不要使用 WSL1）来安装 Ubuntu 18.04 / 20.04 。
 步骤如下：
 
 - 升级 Windows 10 到最新版（Windows 10 版本 18917 或以后的内部版本）。注意，如果
@@ -44,14 +46,7 @@ VirtualBox 安装一台 Ubuntu18.04 / 20.04 虚拟机并在上面进行实验。
      >> wsl --set-default-version 2
 
 -  `下载 Linux 内核安装包 <https://docs.microsoft.com/zh-cn/windows/wsl/install-win10#step-4---download-the-linux-kernel-update-package>`_
--  在微软商店（Microsoft Store）中搜索并安装 Ubuntu18.04 / 20.04。
-
-如果你打算使用 VMware 安装虚拟机的话，我们已经配置好了一个能直接运行 rCore-Tutorial-v3 的 
-Ubuntu18.04 镜像，它是一个 ``vmdk`` 格式的虚拟磁盘文件，只需要在 VMware 中新建一台虚拟机，
-在设置虚拟磁盘的时候选择它即可。`百度网盘链接 <https://pan.baidu.com/s/1JzKjWivy9GZKK8rc3WMJ0g>`_ （提取码 x5mf ）
-或者 `清华云盘链接 <https://cloud.tsinghua.edu.cn/d/a9b7b0a1b4724c3f9c66/>`_ 。
-已经创建好用户 oslab ，密码为一个空格。它已经安装了中文输入法和 Markdown 编辑器 Typora 还有作为 Rust 集成开发环境的 
-Visual Studio Code，能够更容易完成实验并撰写实验报告。
+-  在微软商店（Microsoft Store）中安装 Ubuntu18.04 / 20.04。
 
 .. _link-docker-env:
 
@@ -68,24 +63,18 @@ Visual Studio Code，能够更容易完成实验并撰写实验报告。
    3. 进入 Docker 之后，会发现当前处于根目录 ``/`` ，我们通过 ``cd mnt`` 将当前工作路径切换到 ``/mnt`` 目录；
    4. 通过 ``ls`` 可以发现 ``/mnt`` 目录下的内容和 ``rCore-Tutorial-v3`` 目录下的内容完全相同，接下来就可以在这个环境下运行 tutorial 了。例如 ``cd os && make run`` 。    
 
-
-你也可以在 Windows10 或 macOS 原生系统或者其他 Linux 发行版上进行实验，基本上不会出现太大的问题。不过由于
-时间问题我们主要在 Ubuntu18.04 上进行了测试，后面的配置也都是基于它的。如果遇到了问题的话，请在本节的讨论区
-中留言，我们会尽量帮助解决。
-
 Rust 开发环境配置
 -------------------------------------------
 
-首先安装 Rust 版本管理器 rustup 和 Rust 包管理器 cargo，这里我们用官方的安装脚本来安装：
+首先安装 Rust 版本管理器 rustup 和 Rust 包管理器 cargo，可以使用官方安装脚本：
 
 .. code-block:: bash
 
    curl https://sh.rustup.rs -sSf | sh
 
-如果通过官方的脚本下载失败了，可以在浏览器的地址栏中输入 `<https://sh.rustup.rs>`_ 来下载脚本，在本地运行即可。
+如果因网络问题通过命令行下载脚本失败了，可以在浏览器地址栏中输入 `<https://sh.rustup.rs>`_ 将脚本下载到本地运行。
 
-如果官方的脚本在运行时出现了网络速度较慢的问题，可选地可以通过修改 rustup 的镜像地址
-（修改为中国科学技术大学的镜像服务器）来加速：
+建议将 rustup 的镜像地址修改为中科大的镜像服务器，以加速安装：
 
 .. code-block:: bash
    
@@ -101,7 +90,7 @@ Rust 开发环境配置
    export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.edu.cn/rustup/rustup
    curl https://sh.rustup.rs -sSf | sh
 
-或者也可以通过在运行前设置命令行中的科学上网代理来实现：
+也可以设置科学上网代理：
 
 .. code-block:: bash 
 
@@ -110,39 +99,23 @@ Rust 开发环境配置
    export http_proxy=http://127.0.0.1:1080
    export ftp_proxy=http://127.0.0.1:1080
 
-安装完成后，我们可以重新打开一个终端来让之前设置的环境变量生效。我们也可以手动将环境变量设置应用到当前终端，
-只需要输入以下命令：
+安装中全程选择默认选项即可。
+
+安装完成后，我们可以重新打开一个终端来让新设置的环境变量生效，可以手动将环境变量设置应用到当前终端，
+只需输入以下命令：
 
 .. code-block:: bash
 
    source $HOME/.cargo/env
 
-接下来，我们可以确认一下我们正确安装了 Rust 工具链：
+确认一下我们正确安装了 Rust 工具链：
 
 .. code-block:: bash
    
    rustc --version
 
-可以看到当前安装的工具链的版本。
-
-.. code-block:: bash
-
-   rustc 1.46.0-nightly (7750c3d46 2020-06-26)
-
-.. warning::
-   目前用于操作系统实验开发的rustc编译器的版本不局限在1.46.0这样的数字上，你可以选择更新的rustc编译器。但注意只能用rustc的nightly版本。
-
-
-可通过如下命令安装rustc的nightly版本，并把该版本设置为rustc的缺省版本。
-
-.. code-block:: bash
-   
-   rustup install nightly
-   rustup default nightly
-
-
-我们最好把软件包管理器 cargo 所用的软件包镜像地址 crates.io 也换成中国科学技术大学的镜像服务器来加速三方库的下载。
-我们打开（如果没有就新建） ``~/.cargo/config`` 文件，并把内容修改为：
+最好把 Rust 包管理器 cargo 镜像地址 crates.io 也替换成中国科学技术大学的镜像服务器，来加速三方库的下载。
+打开或新建 ``~/.cargo/config`` 文件，并把内容修改为：
 
 .. code-block:: toml
 
@@ -162,25 +135,13 @@ Rust 开发环境配置
    [source.tuna]
    registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
 
-接下来安装一些Rust相关的软件包
 
-.. code-block:: bash
-
-   rustup target add riscv64gc-unknown-none-elf
-   cargo install cargo-binutils --vers ~0.2
-   rustup component add llvm-tools-preview
-   rustup component add rust-src
-
-.. warning::
-   如果你换了另外一个rustc编译器（必须是nightly版的），需要重新安装上述rustc所需软件包。
-   rCore-Tutorial 仓库中的 ``Makefile`` 包含了这些工具的安装，如果你使用 ``make run`` 也可以不手动安装。
-
-至于 Rust 开发环境，推荐 JetBrains Clion + Rust插件 或者 Visual Studio Code 搭配 rust-analyzer 和 RISC-V Support 插件。
+推荐 JetBrains Clion + Rust插件 或者 Visual Studio Code 搭配 rust-analyzer 和 RISC-V Support 插件 进行代码阅读和开发。
 
 .. note::
 
    * JetBrains Clion是付费商业软件，但对于学生和教师，只要在 JetBrains 网站注册账号，可以享受一定期限（半年左右）的免费使用的福利。
-   * Visual Studio Code 是开源软件，不用付费就可使用。
+   * Visual Studio Code 是开源软件。
    * 当然，采用 VIM，Emacs 等传统的编辑器也是没有问题的。
 
 Qemu 模拟器安装
@@ -188,8 +149,6 @@ Qemu 模拟器安装
 
 我们需要使用 Qemu 5.0.0 版本进行实验，而很多 Linux 发行版的软件包管理器默认软件源中的 Qemu 版本过低，因此
 我们需要从源码手动编译安装 Qemu 模拟器。
-
-首先我们安装依赖包，获取 Qemu 源代码并手动编译：
 
 .. code-block:: bash
 
@@ -233,24 +192,27 @@ Qemu 模拟器安装
 
 随后即可在当前终端 ``source ~/.bashrc`` 更新系统路径，或者直接重启一个新的终端。
 
-此时我们可以确认 Qemu 的版本：
+确认 Qemu 的版本：
 
 .. code-block:: bash
 
    qemu-system-riscv64 --version
    qemu-riscv64 --version
 
-K210 真机串口通信
-------------------------------
-
-为了能在 K210 真机上运行 Tutorial，我们还需要安装基于 Python 的串口通信库和简易的串口终端。
+试运行 rCore-Tutorial-v3
+------------------------------------------------------------
 
 .. code-block:: bash
 
-   pip3 install pyserial
-   sudo apt install python-serial
+   git clone https://github.com/zhanghx0905/rCore-Tutorial-2021-Autumn -b ch7
 
-GDB 调试支持
+只需在 ``os`` 目录下 ``make run`` 即可。在内核加载完毕之后，可以看到目前可用的应用程序。 ``usertests`` 打包了其中的很大一部分，我们可以运行它，只需输入在终端中输入它的名字即可。
+
+之后，可以先按下 ``Ctrl+A`` ，再按下 ``X`` 来退出 Qemu。
+
+恭喜你完成了实验环境的配置，可以开始阅读教程的正文部分了！
+
+GDB 调试支持*
 ------------------------------
 
 在 ``os`` 目录下 ``make debug`` 可以调试我们的内核，这需要安装终端复用工具 ``tmux`` ，还需要基于 riscv64 平台的 gdb 调试器 ``riscv64-unknown-elf-gdb`` 。该调试器包含在 riscv64 gcc 工具链中，工具链的预编译版本可以在如下链接处下载：
@@ -262,38 +224,6 @@ GDB 调试支持
 
 解压后在 ``bin`` 目录下即可找到 ``riscv64-unknown-elf-gdb`` 以及另外一些常用工具 ``objcopy/objdump/readelf`` 等。
 
-运行 rCore-Tutorial-v3
-------------------------------------------------------------
+.. attention::
 
-在 Qemu 平台上运行
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-如果是在 Qemu 平台上运行，只需在 ``os`` 目录下 ``make run`` 即可。在内核加载完毕之后，可以看到目前可以用的
-应用程序。 ``usertests`` 打包了其中的很大一部分，所以我们可以运行它，只需输入在终端中输入它的名字即可。
-
-.. image:: qemu-final.gif
-
-之后，可以先按下 ``Ctrl+A`` ，再按下 ``X`` 来退出 Qemu。
-
-在 K210 平台上运行
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-如果是在 K210 平台上运行则略显复杂。
-
-首先，我们需要将 MicroSD 插入 PC 来将文件系统镜像拷贝上去。
-
-.. image:: prepare-sd.gif
-
-.. warning::
-
-   在 ``os/Makefile`` 中我们默认设置 MicroSD 在当前操作系统中可以用设备 ``SDCARD=/dev/sdb`` 访问。你可以使用 ``df -hT`` 命令来确认在你的环境中 MicroSD 是哪个设备，
-   并在 ``make sdcard`` 之前对 ``os/Makefile`` 的 ``SDCARD`` 配置做出适当的修改。不然，这有可能导致 **设备 /dev/sdb 上数据丢失**！
-   
-随后，我们将 MicroSD 插入 K210 开发板，将 K210 开发板连接到 PC ，然后进入 ``os`` 目录 ``make run BOARD=k210`` 
-在 K210 开发板上跑 rCore Tutorial 。 
-
-.. image:: k210-final.gif
-
-之后，可以按下 ``Ctrl+]`` 来退出串口终端。
-
-到这里，恭喜你完成了实验环境的配置，可以开始阅读教程的正文部分了！
+   使用 GDB debug 并不是必须的。
