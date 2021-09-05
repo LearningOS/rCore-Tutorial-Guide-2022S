@@ -58,9 +58,14 @@ rCore-Tutorial-Book 2021 秋季学期
 - 阅读和修改简单的 Makefile 文件；
 - 阅读简单的 RISC-V 汇编代码；
 - git 的基本功能，解决 git merge 冲突的办法；
-- Rust 基本语法和一些进阶语法，包括函数式编程，Unsafe Rust 和错误处理的手段。
+- Rust 基本语法和一些进阶语法，包括 **Trait、函数式编程、Unsafe Rust 和错误处理** 的手段。
 
 你可以在实操中一点点熟悉它们。
+
+.. note::
+
+   这是一个注解，以这种方式出现的卡片提供了非必要的背景知识，你可以选择忽略。
+
 
 .. attention::
 

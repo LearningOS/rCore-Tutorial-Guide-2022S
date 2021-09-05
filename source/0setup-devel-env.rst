@@ -199,7 +199,7 @@ Qemu 模拟器安装
    qemu-system-riscv64 --version
    qemu-riscv64 --version
 
-试运行 rCore-Tutorial-v3
+试运行 rCore-Tutorial
 ------------------------------------------------------------
 
 .. code-block:: bash
@@ -209,6 +209,10 @@ Qemu 模拟器安装
 只需在 ``os`` 目录下 ``make run`` 即可。在内核加载完毕之后，可以看到目前可用的应用程序。 ``usertests`` 打包了其中的很大一部分，我们可以运行它，只需输入在终端中输入它的名字即可。
 
 之后，可以先按下 ``Ctrl+A`` ，再按下 ``X`` 来退出 Qemu。
+
+.. attention::
+
+   请务必执行 ``make run``，这将为你安装一些上文没有提及的 Rust 包依赖。
 
 恭喜你完成了实验环境的配置，可以开始阅读教程的正文部分了！
 

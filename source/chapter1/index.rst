@@ -11,7 +11,3 @@
    2remove-std
    3-1-mini-rt-usrland
    3-2-mini-rt-baremetal
-   4understand-prog
-   5exercise
-
-
