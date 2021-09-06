@@ -1,6 +1,11 @@
 实现 SV39 多级页表机制（上）
 ========================================================
 
+.. note::
+
+    扩展阅读： `Rust 中的动态内存分配 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter4/1rust-dynamic-allocation.html>`_
+
+    扩展阅读： `地址空间 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter4/2address-space.html>`_
 
 本节导读
 --------------------------

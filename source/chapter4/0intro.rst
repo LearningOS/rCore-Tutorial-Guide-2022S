@@ -72,62 +72,7 @@
    $ cd os
    $ make run
 
-将 Maix 系列开发板连接到 PC，并在上面运行本章代码：
-
-.. code-block:: console
-
-   $ cd os
-   $ make run BOARD=k210
-
-如果顺利的话，我们将看到和上一章相同的运行结果（以 K210 平台为例）：
-
-.. code-block::
-
-   [rustsbi] RustSBI version 0.1.1
-   .______       __    __      _______.___________.  _______..______   __
-   |   _  \     |  |  |  |    /       |           | /       ||   _  \ |  |
-   |  |_)  |    |  |  |  |   |   (----`---|  |----`|   (----`|  |_)  ||  |
-   |      /     |  |  |  |    \   \       |  |      \   \    |   _  < |  |
-   |  |\  \----.|  `--'  |.----)   |      |  |  .----)   |   |  |_)  ||  |
-   | _| `._____| \______/ |_______/       |__|  |_______/    |______/ |__|
-
-   [rustsbi] Platform: K210 (Version 0.1.0)
-   [rustsbi] misa: RV64ACDFIMSU
-   [rustsbi] mideleg: 0x22
-   [rustsbi] medeleg: 0x1ab
-   [rustsbi] Kernel entry: 0x80020000
-   [kernel] Hello, world!
-   .text [0x80020000, 0x8002b000)
-   .rodata [0x8002b000, 0x8002e000)
-   .data [0x8002e000, 0x8004c000)
-   .bss [0x8004c000, 0x8035d000)
-   mapping .text section
-   mapping .rodata section
-   mapping .data section
-   mapping .bss section
-   mapping physical memory
-   [kernel] back to world!
-   remap_test passed!
-   init TASK_MANAGER
-   num_app = 4
-   power_3 [10000/300000power_5 [10000/210000]
-   power_5 [20000/210000]
-   power_5 [30000/210000]
-   
-   ...
-   
-   (mod 998244353)
-   Test power_7 OK!
-   [kernel] Application exited with code 0
-   power_3 [290000/300000]
-   power_3 [300000/300000]
-   3^300000 = 612461288(mod 998244353)
-   Test power_3 OK!
-   [kernel] Application exited with code 0
-   Test sleep OK!
-   [kernel] Application exited with code 0
-   [kernel] Panicked at src/task/mod.rs:112 All applications completed!
-   [rustsbi] reset triggered! todo: shutdown all harts on k210; program halt. Type: 0, reason: 0
+如果顺利的话，我们将看到和上一章相同的运行结果。
 
 本章代码树
 -----------------------------------------------------
