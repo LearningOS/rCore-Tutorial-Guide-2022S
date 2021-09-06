@@ -327,4 +327,4 @@ RustSBI 约定的 ``0x80200000`` 。我们需要修改程序的内存布局并�
 
 .. note::
 
-    扩展阅读：`理解应用程序和执行环境 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter1/4understand-prog.html>`_
+    背景知识：`理解应用程序和执行环境 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter1/4understand-prog.html>`_

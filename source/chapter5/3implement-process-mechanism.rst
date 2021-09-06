@@ -4,37 +4,35 @@
 本节导读
 --------------------------------------------
 
-本节将从如下四个方面介绍如何基于上一节设计的内核数据结构来实现进程管理：
+本节将介绍如何基于上一节设计的内核数据结构来实现进程管理：
 
 - 初始进程 ``initproc`` 的创建；
-- 进程调度机制：当进程主动调用 ``sys_yield`` 交出 CPU 使用权或者内核本轮分配的时间片用尽之后如何切换到下一个进程；
+- 进程调度机制：当进程主动调用 ``sys_yield`` 交出 CPU 使用权，或者内核本轮分配的时间片用尽之后如何切换到下一个进程；
 - 进程生成机制：介绍进程相关的两个重要系统调用 ``sys_fork/sys_exec`` 的实现；
-- 字符输入机制：为了支对shell程序-user_shell获得字符输入，介绍 ``sys_read`` 系统调用的实现；
-- 进程资源回收机制：当进程调用 ``sys_exit`` 正常退出或者出错被内核终止之后如何保存其退出码，其父进程又是如何通过 ``sys_waitpid`` 系统调用收集该进程的信息并回收其资源。
+- 字符输入机制：介绍 ``sys_read`` 系统调用的实现；
+- 进程资源回收机制：当进程调用 ``sys_exit`` 正常退出或者出错被内核终止后，如何保存其退出码，其父进程又是如何通过 ``sys_waitpid`` 收集该进程的信息并回收其资源。
 
 初始进程的创建
 --------------------------------------------
 
-内核初始化完毕之后即会调用 ``task`` 子模块提供的 ``add_initproc`` 函数来将初始进程 ``initproc`` 加入任务管理器，但在这之前我们需要初始化初始进程的进程控制块 ``INITPROC`` ，这个过程基于 ``lazy_static`` 在运行时完成。
+内核初始化完毕之后，即会调用 ``task`` 子模块提供的 ``add_initproc`` 函数来将初始进程 ``initproc`` 加入任务管理器，但在这之前，我们需要初始化初始进程的进程控制块 ``INITPROC`` ，这个过程基于 ``lazy_static`` 在运行时完成。
 
 .. code-block:: rust
 
     // os/src/task/mod.rs
 
-    use crate::loader::get_app_data_by_name;
-    use manager::add_task;
-
     lazy_static! {
-        pub static ref INITPROC: Arc<TaskControlBlock> = Arc::new(
-            TaskControlBlock::new(get_app_data_by_name("initproc").unwrap())
-        );
+        pub static ref INITPROC: Arc<TaskControlBlock> = Arc::new(TaskControlBlock::new(
+            get_app_data_by_name("initproc").unwrap()
+        ));
     }
 
     pub fn add_initproc() {
         add_task(INITPROC.clone());
     }
 
-我们调用 ``TaskControlBlock::new`` 来创建一个进程控制块，它需要传入 ELF 可执行文件的数据切片作为参数，这可以通过加载器 ``loader`` 子模块提供的 ``get_app_data_by_name`` 接口查找 ``initproc`` 的 ELF 数据来获得。在初始化 ``INITPROC`` 之后，则在 ``add_initproc`` 中可以调用 ``task`` 的任务管理器 ``manager`` 子模块提供的 ``add_task`` 接口将其加入到任务管理器。
+我们调用 ``TaskControlBlock::new`` 来创建一个进程控制块，它需要传入 ELF 可执行文件的数据切片作为参数，
+这可以通过加载器 ``loader`` 子模块提供的 ``get_app_data_by_name`` 接口查找 ``initproc`` 的 ELF 数据来获得。在初始化 ``INITPROC`` 之后，则在 ``add_initproc`` 中可以调用 ``task`` 的任务管理器 ``manager`` 子模块提供的 ``add_task`` 接口将其加入到任务管理器。
 
 接下来介绍 ``TaskControlBlock::new`` 是如何实现的：
 
@@ -65,36 +63,36 @@
         let task_control_block = Self {
             pid: pid_handle,
             kernel_stack,
-            inner: Mutex::new(TaskControlBlockInner {
-                trap_cx_ppn,
-                base_size: user_sp,
-                task_cx_ptr: task_cx_ptr as usize,
-                task_status: TaskStatus::Ready,
-                memory_set,
-                parent: None,
-                children: Vec::new(),
-                exit_code: 0,
-            }),
+            inner: unsafe { UPSafeCell::new(TaskControlBlockInner {
+                    trap_cx_ppn,
+                    base_size: user_sp,
+                    task_cx: TaskContext::goto_trap_return(kernel_stack_top),
+                    task_status: TaskStatus::Ready,
+                    memory_set,
+                    parent: None,
+                    children: Vec::new(),
+                    exit_code: 0,
+                })
+            },
         };
         // prepare TrapContext in user space
-        let trap_cx = task_control_block.acquire_inner_lock().get_trap_cx();
+        let trap_cx = task_control_block.inner_exclusive_access().get_trap_cx();
         *trap_cx = TrapContext::app_init_context(
             entry_point,
             user_sp,
-            KERNEL_SPACE.lock().token(),
+            KERNEL_SPACE.exclusive_access().token(),
             kernel_stack_top,
             trap_handler as usize,
         );
         task_control_block
     }
 
-- 第 10 行我们解析 ELF 得到应用地址空间 ``memory_set`` ，用户栈在应用地址空间中的位置 ``user_sp`` 以及应用的入口点 ``entry_point`` 。
-- 第 11 行我们手动查页表找到应用地址空间中的 Trap 上下文被实际放在哪个物理页帧上，用来做后续的初始化。
-- 第 16~18 行我们为该进程分配 PID 以及内核栈，并记录下内核栈在内核地址空间的位置 ``kernel_stack_top`` 。
-- 第 20 行我们在该进程的内核栈上压入初始化的任务上下文，使得第一次任务切换到它的时候可以跳转到 ``trap_return`` 并进入用户态开始执行。
-- 第 21 行我们整合之前的部分信息创建进程控制块 ``task_control_block`` 。
-- 第 39 行我们初始化位于该进程应用地址空间中的 Trap 上下文，使得第一次进入用户态的时候时候能正确跳转到应用入口点并设置好用户栈，同时也保证在 Trap 的时候用户态能正确进入内核态。
-- 第 46 行将 ``task_control_block`` 返回。
+- 第 10 行，解析 ELF 得到应用地址空间 ``memory_set`` ，用户栈在应用地址空间中的位置 ``user_sp`` 以及应用的入口点 ``entry_point`` 。
+- 第 11 行，手动查页表找到应用地址空间中的 Trap 上下文实际所在的物理页帧。
+- 第 16~18 行，为新进程分配 PID 以及内核栈，并记录下内核栈在内核地址空间的位置 ``kernel_stack_top`` 。
+- 第 20 行，在该进程的内核栈上压入初始化的任务上下文，使得第一次任务切换到它的时候可以跳转到 ``trap_return`` 并进入用户态开始执行。
+- 第 21 行，整合之前的部分信息创建进程控制块 ``task_control_block`` 。
+- 第 39 行，初始化位于该进程应用地址空间中的 Trap 上下文，使得第一次进入用户态时，能正确跳转到应用入口点并设置好用户栈，同时也保证在 Trap 的时候用户态能正确进入内核态。
 
 进程调度机制
 --------------------------------------------

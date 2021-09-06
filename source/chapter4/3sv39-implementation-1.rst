@@ -3,16 +3,12 @@
 
 .. note::
 
-    扩展阅读： `Rust 中的动态内存分配 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter4/1rust-dynamic-allocation.html>`_
+    背景知识： `Rust 中的动态内存分配 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter4/1rust-dynamic-allocation.html>`_
 
-    扩展阅读： `地址空间 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter4/2address-space.html>`_
-
-本节导读
---------------------------
+    背景知识： `地址空间 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter4/2address-space.html>`_
 
 
-在上一小节中我们已经简单介绍了分页的内存管理策略，现在我们尝试在 RV64 架构提供的 SV39 分页机制的基础上完成内核中的软件对应实现。由于内容过多，我们将分成两个小节进行讲解。本节主要讲解在RV64架构下的虚拟地址与物理地址的访问属性（可读，可写，可执行等），组成结构（页号，帧号，偏移量等），访问的空间范围等；以及如何用Rust语言来设计有类型的页表项。
-
+我们将在内核实现 RV64 架构 SV39 分页机制。由于内容过多，分成两个小节。
 
 虚拟地址和物理地址
 ------------------------------------------------------
