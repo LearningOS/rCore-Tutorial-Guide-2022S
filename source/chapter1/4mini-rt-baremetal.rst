@@ -322,3 +322,8 @@ RustSBI 约定的 ``0x80200000`` 。我们需要修改程序的内存布局并�
    :align: center
 
 产生 panic 的地点与源码中的实际位置一致！至此，我们完成了第一章的实验内容，
+
+
+.. note::
+
+    扩展阅读：`理解应用程序和执行环境 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter1/4understand-prog.html>`_

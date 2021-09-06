@@ -153,16 +153,7 @@
 
 从下一节开始，我们将着手实现本节移除的，由用户态执行环境提供的功能。
 
-.. note::
-
-   **在 x86_64 平台上移除标准库依赖**
-
-   有兴趣的同学可以将目标平台换回之前默认的 ``x86_64-unknown-linux-gnu`` 并重复本小节所做的事情，比较两个平台从 ISA 到操作系统
-   的差异。可以参考 `BlogOS 的相关内容 <https://os.phil-opp.com/freestanding-rust-binary/>`_ 。
-
 .. note:: 
 
    本节内容部分参考自 `BlogOS 的相关章节 <https://os.phil-opp.com/freestanding-rust-binary/>`_ 。
 
-
-.. [#exokernel] D. R. Engler, M. F. Kaashoek, and J. O'Toole. 1995. Exokernel: an operating system architecture for application-level resource management. In Proceedings of the fifteenth ACM symposium on Operating systems principles (SOSP '95). Association for Computing Machinery, New York, NY, USA, 251–266. 

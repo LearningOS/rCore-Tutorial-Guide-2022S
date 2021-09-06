@@ -7,7 +7,6 @@
    :maxdepth: 4
 
    0intro
-   1rv-privilege
    2application
    3batch-system
    4trap-handling
