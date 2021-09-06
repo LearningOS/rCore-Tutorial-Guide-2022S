@@ -30,7 +30,7 @@
 并通过编译。
 
 接下来要让脱离了标准库的程序能输出（即支持 ``println!``)，这对程序的开发和调试至关重要。
-我们先在用户态下实现该功能，在 `此处 <https://github.com/zhanghx0905/rust-no-std-examples>`_ 获取相关代码：
+我们先在用户态下实现该功能，在 `此处 <https://github.com/zhanghx0905/rust-no-std-examples>`_ 获取相关代码。
 
 最后把程序移植到内核态，构建在裸机上支持输出的最小运行时环境。
 

@@ -20,8 +20,7 @@
 
     global_asm!(include_str!("link_app.S"));
 
-这里我们引入了一段汇编代码 ``link_app.S`` ，它是在 ``make run`` 构建操作系统时自动生成的。
-``link_app.S`` 里面的内容大致如下：
+这里我们引入了一段汇编代码 ``link_app.S`` ，它是在 ``make run`` 构建操作系统时自动生成的，里面的内容大致如下：
 
 .. code-block:: asm
     :linenos:
@@ -59,14 +58,14 @@
         .incbin "../user/target/riscv64gc-unknown-none-elf/release/power.bin"
     app_2_end:
 
-可以看到第 13 行开始的三个数据段分别插入了三个应用程序的二进制镜像，
+第 13 行开始的三个数据段分别插入了三个应用程序的二进制镜像，
 并且各自有一对全局符号 ``app_*_start, app_*_end`` 指示它们的开始和结束位置。
 而第 3 行开始的另一个数据段相当于一个 64 位整数数组。
 数组中的第一个元素表示应用程序的数量，后面则按照顺序放置每个应用程序的起始地址，
 最后一个元素放置最后一个应用程序的结束位置。这样数组中相邻两个元素记录了每个应用程序的始末位置，
 这个数组所在的位置由全局符号 ``_num_app`` 所指示。
 
-这个文件是在 ``cargo build`` 的时候，由脚本 ``os/build.rs`` 控制生成的。有兴趣的读者可以参考其代码。
+这个文件是在 ``cargo build`` 时，由脚本 ``os/build.rs`` 控制生成的。
 
 找到并加载应用程序二进制码
 -----------------------------------------------
@@ -76,12 +75,12 @@
 .. code-block:: rust
 
     struct AppManager {
-      num_app: usize,
-      current_app: usize,
-      app_start: [usize; MAX_APP_NUM + 1],
+        num_app: usize,
+        current_app: usize,
+        app_start: [usize; MAX_APP_NUM + 1],
     }
 
-我们可以这样来初始化 ``AppManager`` 的全局实例：
+初始化 ``AppManager`` 的全局实例：
 
 .. code-block:: rust
 
@@ -114,16 +113,9 @@
     ``UPSafeCell`` 实现在 ``sync`` 模块中，调用 ``exclusive_access`` 方法能获取其内部对象的可变引用，
     如果程序运行中同时存在多个这样的引用，会触发 ``already borrowed: BorrowMutError``
 
-这里我们使用了外部库 ``lazy_static`` 提供的 ``lazy_static!`` 宏。要引入这个外部库，需要加入依赖：
+这里使用了外部库 ``lazy_static`` 提供的 ``lazy_static!`` 宏。
 
-.. code-block:: toml
-
-    # os/Cargo.toml
-
-    [dependencies]
-    lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
-
-``lazy_static!`` 宏提供了全局变量的运行时初始化功能。一般情况下，全局变量必须在编译期设置一个初始值，
+``lazy_static!`` 宏提供了全局变量的运行时初始化功能。一般情况下，全局变量必须在编译期设置初始值，
 但是有些全局变量的初始化依赖于运行期间才能得到的数据。
 如这里我们借助 ``lazy_static!`` 声明了一个 ``AppManager`` 结构的名为 ``APP_MANAGER`` 的全局实例，
 只有在它第一次被使用到的时候才会进行实际的初始化工作。
@@ -169,6 +161,6 @@
 
 ``batch`` 子模块对外暴露出如下接口：
 
-- ``init`` ：调用 ``print_app_info`` 的时候第一次用到了全局变量 ``APP_MANAGER`` ，它也是在这个时候完成初始化；
-- ``run_next_app`` ：批处理操作系统的核心操作，即加载并运行下一个应用程序。当批处理操作系统完成初始化或者一个应用程序运行结束或出错之后会调用
-  该函数。我们下节再介绍其具体实现。
+- ``init`` ：调用 ``print_app_info`` 的时第一次用到了全局变量 ``APP_MANAGER`` ，它在这时完成初始化；
+- ``run_next_app`` ：批处理操作系统的核心操作，即加载并运行下一个应用程序。
+  批处理操作系统完成初始化，或者应用程序运行结束/出错后会调用该函数。下节再介绍其具体实现。
