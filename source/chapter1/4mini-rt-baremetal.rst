@@ -91,7 +91,7 @@ RustSBI位于机器特权级（Machine Mode）。
 
 编译执行，结果如下：
 
-.. code-block:: console
+.. code-block:: bash
 
   # 编译生成ELF格式的执行文件
   $ cargo build --release
