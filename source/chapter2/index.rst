@@ -10,5 +10,4 @@
    2application
    3batch-system
    4trap-handling
-   5exercise
 
