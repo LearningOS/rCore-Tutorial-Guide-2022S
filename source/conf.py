@@ -17,14 +17,14 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'rCore-Tutorial-Book-Autumn2021'
+project = 'rCore-Tutorial-Autumn2021'
 copyright = 'OS2021Autumn'
 author = 'Yifan Wu'
 language = 'zh_CN'
 html_search_language = 'zh'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+# release = '0.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -39,7 +39,7 @@ extensions = [
 
 comments_config = {
    "utterances": {
-       "repo": "rcore-os/rCore-Tutorial-Book-v3",
+       "repo": "duskmoon314/rCore-Tutorial-Book-v3",
        "issue-term": "pathname",
        "label": "comments",
        "theme": "github-light",
@@ -61,7 +61,7 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
