@@ -7,10 +7,6 @@
 
 本层的代码在 ``efs.rs`` 中。
 
-上面介绍了 easy-fs 的磁盘布局设计以及数据的组织方式——即各类磁盘数据结构。但是它们都是以比较零散的形式分开介绍的，也并没有体现出磁盘布局上各个区域是如何划分的。实现 easy-fs 的整体磁盘布局，将各段区域及上面的磁盘数据结构结构整合起来就是简易文件系统 ``EasyFileSystem`` 的职责。它知道每个布局区域所在的位置，磁盘块的分配和回收也需要经过它才能完成，因此某种意义上讲它还可以看成一个磁盘块管理器。
-
-注意从这一层开始，所有的数据结构就都放在内存上了。
-
 .. code-block:: rust
 
     // easy-fs/src/efs.rs
@@ -192,7 +188,7 @@ inode 和数据块的分配/回收也由它负责：
 注意：
 
 - ``alloc_data`` 和 ``dealloc_data`` 分配/回收数据块传入/返回的参数都表示数据块在块设备上的编号，而不是在数据块位图中分配的bit编号；
-- ``dealloc_inode`` 未实现，因为现在还不支持文件删除。
+- ``dealloc_inode`` 未实现，不支持文件删除。
 
 索引节点
 ---------------------------------------
@@ -286,7 +282,7 @@ inode 和数据块的分配/回收也由它负责：
 文件索引
 +++++++++++++++++++++++++++++++++++++++
 
-:ref:`前面 <fs-simplification>` 提到过，为了尽可能简化我们的实现，我们所实现的是一个扁平化的文件系统，即在目录树上仅有一个目录——那就是作为根节点的根目录。所有的文件都在根目录下面。于是，我们不必实现目录索引。文件索引的查找比较简单，仅需在根目录的目录项中根据文件名找到文件的 inode 编号即可。由于没有子目录的存在，这个过程只会进行一次。
+为了尽可能简化我们的实现，所有的文件都在根目录下面。于是，我们不必实现目录索引。文件索引的查找比较简单，仅需在根目录的目录项中根据文件名找到文件的 inode 编号即可。由于没有子目录的存在，这个过程只会进行一次。
 
 .. code-block:: rust
 
@@ -370,12 +366,6 @@ inode 和数据块的分配/回收也由它负责：
             })
         }
     }
-
-.. note::
-
-    **Rust 语法卡片： _ 在匹配中的使用方法**
-
-    可以看到在 ``ls`` 操作中，我们虽然获取了 efs 锁，但是这里并不会直接访问 ``EasyFileSystem`` 实例，其目的仅仅是锁住该实例避免其他核在同时间的访问造成并发冲突。因此，我们将其绑定到以 ``_`` 开头的变量 ``_fs`` 中，这样即使我们在其作用域中并没有使用它，编译器也不会报警告。然而，我们不能将其绑定到变量 ``_`` 上。因为从匹配规则可以知道这意味着该操作会被编译器丢弃，从而无法达到获取锁的效果。
 
 文件创建
 +++++++++++++++++++++++++++++++++++++++
@@ -518,118 +508,6 @@ inode 和数据块的分配/回收也由它负责：
     }
 
 这里会从 ``EasyFileSystem`` 中分配一些用于扩容的数据块并传给 ``DiskInode::increase_size`` 。
-
-在用户态测试 easy-fs 的功能
-----------------------------------------------
-
-``easy-fs`` 架构设计的一个优点在于它可以在Rust应用开发环境（Windows/macOS/Ubuntu）中，按照应用程序库的开发方式来进行测试，不必过早的放到内核中测试运行。众所周知，内核运行在裸机环境上，在上面是很难调试的。而在我们的开发环境上对于调试的支持更为完善，从基于命令行的 GDB 到 IDE 提供的图形化调试界面都能给我们带来很大帮助。另外一点是，由于需要放到在裸机上运行的内核中， ``easy-fs`` 只能使用 ``no_std`` 模式，因此无法使用 ``println!`` 等宏来打印调试信息。但是在我们的开发环境上作为一个应用运行的时候，我们可以暂时让使用它的应用程序调用标准库 ``std`` ，这也会带来一些方便。
-
-``easy-fs`` 的测试放在另一个名为 ``easy-fs-fuse`` 的应用程序中，不同于 ``easy-fs`` ，它是一个支持 ``std`` 的应用程序 ，能够在Rust应用开发环境上运行并很容易调试。
-
-在Rust应用开发环境中模拟块设备
-+++++++++++++++++++++++++++++++++++++++++++
-
-从文件系统的使用者角度来看，它仅需要提供一个实现了 ``BlockDevice`` Trait 的块设备用来装载文件系统，之后就可以使用 ``Inode`` 来方便的进行文件系统操作了。但是在开发环境上，我们如何来提供这样一个块设备呢？答案是用 Host OS 上的一个文件进行模拟。
-
-.. code-block:: rust
-
-    // easy-fs-fuse/src/main.rs
-
-    use std::fs::File;
-    use easy-fs::BlockDevice;
-
-    const BLOCK_SZ: usize = 512;
-
-    struct BlockFile(Mutex<File>);
-
-    impl BlockDevice for BlockFile {
-        fn read_block(&self, block_id: usize, buf: &mut [u8]) {
-            let mut file = self.0.lock().unwrap();
-            file.seek(SeekFrom::Start((block_id * BLOCK_SZ) as u64))
-                .expect("Error when seeking!");
-            assert_eq!(file.read(buf).unwrap(), BLOCK_SZ, "Not a complete block!");
-        }
-
-        fn write_block(&self, block_id: usize, buf: &[u8]) {
-            let mut file = self.0.lock().unwrap();
-            file.seek(SeekFrom::Start((block_id * BLOCK_SZ) as u64))
-                .expect("Error when seeking!");
-            assert_eq!(file.write(buf).unwrap(), BLOCK_SZ, "Not a complete block!");
-        }
-    }
-
-``std::file::File`` 由 Rust 标准库 std 提供，可以访问 Host OS 上的一个文件。我们将它包装成 ``BlockFile`` 类型来模拟一块磁盘，为它实现 ``BlockDevice`` 接口。注意 ``File`` 本身仅通过 ``read/write`` 接口是不能实现随机读写的，在访问一个特定的块的时候，我们必须先 ``seek`` 到这个块的开头位置。
-
-测试主函数为 ``easy-fs-fuse/src/main.rs`` 中的 ``efs_test`` 函数中，我们只需在 ``easy-fs-fuse`` 目录下 ``cargo test`` 即可执行该测试：
-
-.. code-block::
-
-    running 1 test
-    test efs_test ... ok
-
-    test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.27s
-
-看到上面的内容就说明测试通过了。
-
-``efs_test`` 展示了 ``easy-fs`` 库的使用方法，大致分成以下几个步骤：
-
-打开块设备
-+++++++++++++++++++++++++++++++++++++++
-
-.. code-block:: rust
-
-    let block_file = Arc::new(BlockFile(Mutex::new({
-        let f = OpenOptions::new()
-            .read(true)
-            .write(true)
-            .create(true)
-            .open("target/fs.img")?;
-        f.set_len(8192 * 512).unwrap();
-        f
-    })));
-    EasyFileSystem::create(
-        block_file.clone(),
-        4096,
-        1,
-    );
-
-第一步我们需要打开块设备。这里我们在 HostOS 创建文件 ``easy-fs-fuse/target/fs.img`` 来新建一个块设备，并将它的容量设置为 8192 个块即 4MiB 。在创建的时候需要将它的访问权限设置为可读可写。
-
-由于我们在进行测试，需要初始化测试环境，因此我们在块设备 ``block_file`` 上初始化 easy-fs 文件系统，这会将 ``block_file`` 用于放置 easy-fs 镜像的前 4096 个块上的数据覆盖，然后变成仅有一个根目录的初始文件系统。如果块设备上已经放置了一个合法的 easy-fs 镜像，则我们不必这样做。
-
-从块设备上打开文件系统
-+++++++++++++++++++++++++++++++++++++++
-
-.. code-block:: rust
-
-    let efs = EasyFileSystem::open(block_file.clone());
-
-这是通常进行的第二个步骤。
-
-获取根目录的 Inode
-+++++++++++++++++++++++++++++++++++++++
-
-.. code-block:: rust
-
-    let root_inode = EasyFileSystem::root_inode(&efs);
-
-这是通常进行的第三个步骤。
-
-进行各种文件操作
-+++++++++++++++++++++++++++++++++++++++
-
-拿到根目录 ``root_inode`` 之后，可以通过它进行各种文件操作，目前支持以下几种：
-
-- 通过 ``create`` 创建文件。
-- 通过 ``ls`` 列举根目录下的文件。
-- 通过 ``find`` 根据文件名索引文件。
-
-当通过索引获取根目录下的一个文件的 inode 之后则可以进行如下操作：
-
-- 通过 ``clear`` 将文件内容清空。
-- 通过 ``read/write_at`` 读写文件，注意我们需要将读写在文件中开始的位置 ``offset`` 作为一个参数传递进去。
-
-测试方法在这里不详细介绍，大概是每次清空文件 ``filea`` 的内容，向其中写入一个不同长度的随机数字字符串，然后再全部读取出来，验证和写入的内容一致。其中有一个细节是：用来生成随机字符串的 ``rand`` crate 并不支持 ``no_std`` ，因此只有在用户态我们才能更容易进行测试。
 
 将应用打包为 easy-fs 镜像
 ---------------------------------------
