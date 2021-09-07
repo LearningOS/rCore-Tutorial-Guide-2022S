@@ -68,7 +68,7 @@ waitpid 系统调用
 用户初始程序-initproc
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-在内核初始化完毕后创建的第一个进程，是 **用户初始进程** (Initial Process) ，它将通过 ``fork+exec`` 创建 ``user_shell`` 子进程。初始进程存在的意义是回收僵尸进程。
+在内核初始化完毕后创建的第一个进程，是 **用户初始进程** (Initial Process) ，它将通过 ``fork+exec`` 创建 ``user_shell`` 子进程，并将被用于回收僵尸进程。
 
 .. code-block:: rust
     :linenos:
