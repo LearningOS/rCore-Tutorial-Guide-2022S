@@ -24,21 +24,15 @@
    $ cd os
    $ make run
 
-进入shell程序后，可以运行管道机制的简单测例 ``pipetest`` 和比较复杂的测例 ``pipe_large_test`` 。 ``pipetest`` 需要保证父进程通过管道传输给子进程的字符串不会发生变化；而 ``pipe_large_test`` 中，父进程将一个长随机字符串传给子进程，随后父子进程同时计算该字符串的某种 Hash 值（逐字节求和），子进程会将计算后的 Hash 值传回父进程，而父进程接受到之后，需要验证两个 Hash 值相同，才算通过测试。
+进入shell程序后，可以运行管道机制的简单测例 ``pipetest``， ``pipetest`` 需要保证父进程通过管道传输给子进程的字符串不会发生变化。
 
-运行两个测例的输出大致如下：
+测例输出大致如下：
 
 .. code-block::
 
    >> pipetest
    Read OK, child process exited!
    pipetest passed!
-   Shell: Process 2 exited with code 0
-   >> pipe_large_test
-   sum = 0(parent)
-   sum = 0(child)
-   Child process exited!
-   pipe_large_test passed!
    Shell: Process 2 exited with code 0
    >> 
 
