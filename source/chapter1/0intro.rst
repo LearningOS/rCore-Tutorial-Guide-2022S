@@ -13,7 +13,7 @@
    print("Hello world!")
    System.out.println("Hello world!");
    echo "Hello world!"
-   println!("Hello world!")
+   println!("Hello world!");
 
 然而，要用几行代码向世界问好，并不像表面上那么简单。 
 ``Hello, world!`` 程序能够编译运行，靠的是以 **编译器** 为主的开发环境和以 **操作系统** 为主的执行环境。

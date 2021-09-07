@@ -190,49 +190,6 @@ VirtIO 设备需要占用部分内存作为一个公共区域从而更好的和 
 - 在 ``virtio_dma_alloc`` 中通过 ``frame_alloc`` 得到的那些物理页帧 ``FrameTracker`` 都会被保存在全局的向量 ``QUEUE_FRAMES`` 以延长它们的生命周期，避免提前被回收。
 
 
-K210 真实硬件平台
-+++++++++++++++++++++++++++++++++++++++++++++++
-
-在 K210 开发板上，我们可以插入 microSD 卡并将其作为块设备。相比 VirtIO 块设备来说，想要将 microSD 驱动起来是一件比较困难的事情。microSD 自身的通信规范比较复杂，且还需考虑在 K210 中microSD挂在 **串行外设接口** (SPI, Serial Peripheral Interface) 总线上的情况。此外还需要正确设置 GPIO 的管脚映射并调整各锁相环的频率。实际上，在一块小小的芯片中除了 K210 CPU 之外，还集成了很多不同种类的外设和控制模块，它们内在的关联比较紧密，不能像 VirtIO 设备那样容易地从系统中独立出来。
-
-好在目前 Rust 嵌入式的生态正高速发展，针对 K210 平台也有比较成熟的封装了各类外设接口的库可以用来开发上层应用。但是其功能往往分散为多个 crate ，在使用的时候需要开发者根据需求自行进行组装。这属于 Rust 的特点之一，和 C 语言提供一个一站式的板级开发包风格有很大的不同。在开发的时候，笔者就从社区中选择了一些 crate 并进行了微量修改最终变成 ``k210-hal/k210-pac/k210-soc`` 三个能够运行在 S 特权级（它们的原身仅支持运行在 M 特权级）的 crate ，它们可以更加便捷的实现 microSD 的驱动。关于 microSD 的驱动 ``SDCardWrapper`` 的实现，有兴趣的读者可以参考 ``os/src/drivers/block/sdcard.rs`` 。
-
-.. note::
-
-    **感谢相关 crate 的原身**
-
-    - `k210-hal <https://github.com/riscv-rust/k210-hal>`_
-    - `k210-pac <https://github.com/riscv-rust/k210-pac>`_
-    - `k210-sdk-stuff <https://github.com/laanwj/k210-sdk-stuff>`_
-
-要在 K210 上启用 microSD ，执行的时候无需任何改动，只需在 ``make run`` 之前将 microSD 插入 PC 再通过 ``make sdcard`` 将 easy-fs 镜像烧写进去即可。而后，将 microSD 插入 K210 开发板，连接到 PC 再 ``make run`` 。
-
-在对 microSD 进行操作的时候，会涉及到 K210 内置的各种外设，正所谓”牵一发而动全身“。因此 K210 平台上的 MMIO 包含很多区间：
-
-.. code-block:: rust
-
-    // os/src/config.rs
-
-    #[cfg(feature = "board_k210")]
-    pub const MMIO: &[(usize, usize)] = &[
-        // we don't need clint in S priv when running
-        // we only need claim/complete for target0 after initializing
-        (0x0C00_0000, 0x3000),      /* PLIC      */
-        (0x0C20_0000, 0x1000),      /* PLIC      */
-        (0x3800_0000, 0x1000),      /* UARTHS    */
-        (0x3800_1000, 0x1000),      /* GPIOHS    */
-        (0x5020_0000, 0x1000),      /* GPIO      */
-        (0x5024_0000, 0x1000),      /* SPI_SLAVE */
-        (0x502B_0000, 0x1000),      /* FPIOA     */
-        (0x502D_0000, 0x1000),      /* TIMER0    */
-        (0x502E_0000, 0x1000),      /* TIMER1    */
-        (0x502F_0000, 0x1000),      /* TIMER2    */
-        (0x5044_0000, 0x1000),      /* SYSCTL    */
-        (0x5200_0000, 0x1000),      /* SPI0      */
-        (0x5300_0000, 0x1000),      /* SPI1      */
-        (0x5400_0000, 0x1000),      /* SPI2      */
-    ];
-
 内核索引节点层
 -----------------------------------------------
 
