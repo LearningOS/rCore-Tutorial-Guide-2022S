@@ -8,8 +8,11 @@ chapter6练习
 实验要求
 +++++++++++++++++++++++++++++++++++++++++++++
 
-.. - 实现分支：ch6。
-.. - 完成实验指导书中的内容，实现进程控制，可以基于 pipe 进行进程通信。
+- 实现分支：ch6。
+- 通过所有测例。
+
+进入 Shell 后，输入 ``test_usertest`` 进行测试。
+
 .. - 实现邮箱机制及系统调用，并通过 `Rust测例 <https://github.com/DeathWish5/rCore_tutorial_tests>`_ 中 chapter6 对应的所有测例。
 
 .. challenge: 支持多核。
