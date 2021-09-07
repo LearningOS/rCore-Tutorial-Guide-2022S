@@ -65,6 +65,10 @@ Windows10 用户可以通过系统内置的 **WSL2** 虚拟机（请不要使用
 
 使用 macOS 进行实验理论上也是可行的，但本章节仅介绍 Ubuntu 下的环境配置方案。
 
+.. note::
+
+   经初步测试，使用 M1 芯片的 macOS 也可以运行本实验的框架，即我们的实验对平台的要求不是很高。但我们仍建议同学配置 Ubuntu 环境，以避免未知的环境问题。
+
 Rust 开发环境配置
 -------------------------------------------
 
@@ -74,7 +78,7 @@ Rust 开发环境配置
 
    curl https://sh.rustup.rs -sSf | sh
 
-如果因网络问题通过命令行下载脚本失败了，可以在浏览器地址栏中输入 `<https://sh.rustup.rs>`_ 将脚本下载到本地运行。
+如果因网络问题通过命令行下载脚本失败了，可以在浏览器地址栏中输入 `<https://sh.rustup.rs>`_ 将脚本下载到本地运行。或者使用字节跳动提供的镜像源。
 
 建议将 rustup 的镜像地址修改为中科大的镜像服务器，以加速安装：
 
@@ -84,7 +88,7 @@ Rust 开发环境配置
    export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
    curl https://sh.rustup.rs -sSf | sh
 
-或者使用tuna源来加速 `参见 rustup 帮助 <https://mirrors.tuna.tsinghua.edu.cn/help/rustup/>`_：
+或者使用 tuna 源来加速（建议清华同学在校园网中使用） `参见 rustup 帮助 <https://mirrors.tuna.tsinghua.edu.cn/help/rustup/>`_：
 
 .. code-block:: bash
    
@@ -150,6 +154,10 @@ Qemu 模拟器安装
 ----------------------------------------
 
 我们需要使用 Qemu 5.0.0 版本进行实验，为此，从源码手动编译安装 Qemu 模拟器：
+
+.. note::
+
+   经初步测试，各系统软件源中的 Qemu 6 也可以运行本实验的框架，但由于实验基于 Qemu 5 开发，仍建议按照下方所述安装 Qemu 5.0 以避免未知的不兼容问题。
 
 .. code-block:: bash
 
