@@ -18,7 +18,7 @@ ch2 中，我们实现了第一个系统调用 ``sys_write``，这使得我们�
 stride 调度算法
 +++++++++++++++++++++++++++++++++++++++++
 
-ch3 中我们实现的调度算法十分简单。现在我们要为我们的 os 实现一种带优先级的调度算法：stide 调度算法。
+ch3 中我们实现的调度算法十分简单。现在我们要为我们的 os 实现一种带优先级的调度算法：stride 调度算法。
 
 算法描述如下:
 
@@ -91,7 +91,7 @@ lab3 有 2 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 s
 
 3. 请通过 gdb 简单跟踪从机器加电到跳转到 0x80200000 的简单过程，描述重要的跳转即可。程序是如何进入 S 态的？
   
-   - 事实上进入 rustsbi (0x80000000) 之后就不需要使用 gdb 调试了。可以直接阅读代码。`rustsbi起始代码 <https://github.com/rustsbi/rustsbi-qemu/blob/main/rustsbi-qemu/src/main.rs#L146>`_ 。
+   - 事实上进入 rustsbi (0x80000000) 之后就不需要使用 gdb 调试了。可以直接阅读 `代码 <https://github.com/rustsbi/rustsbi-qemu/blob/main/rustsbi-qemu/src/main.rs>`_ 。
    - 可以使用 Makefile 中的 ``make debug`` 指令。
    - 一些可能用到的 gdb 指令：
        - ``x/10i 0x80000000`` : 显示 0x80000000 处的10条汇编指令。

@@ -111,7 +111,9 @@
 .. note::
 
     ``UPSafeCell`` 实现在 ``sync`` 模块中，调用 ``exclusive_access`` 方法能获取其内部对象的可变引用，
-    如果程序运行中同时存在多个这样的引用，会触发 ``already borrowed: BorrowMutError``
+    如果程序运行中同时存在多个这样的引用，会触发 ``already borrowed: BorrowMutError``。
+
+    ``UPSafeCell`` 既提供了内部可变性，又在单核情境下防止了内部对象被重复借用，我们将在后文中多次见到它。
 
 这里使用了外部库 ``lazy_static`` 提供的 ``lazy_static!`` 宏。
 

@@ -191,7 +191,7 @@ sys_exec 将命令行参数压入用户栈
     #[no_mangle]
     #[link_section = ".text.entry"]
     pub extern "C" fn _start(argc: usize, argv: usize) -> ! {
-        unsafe {
+        unsafe {    // 初始化堆分配器
             HEAP.lock()
                 .init(HEAP_SPACE.as_ptr() as usize, USER_HEAP_SIZE);
         }
