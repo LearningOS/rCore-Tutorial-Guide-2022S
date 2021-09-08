@@ -1,11 +1,7 @@
 基于地址空间的分时多任务
 ==============================================================
 
-
-本节导读
---------------------------
-
-本节我们介绍如何基于地址空间抽象而不是对于物理内存的直接访问来实现第三章的分时多任务系统。这样，我们的应用编写会更加方便，与操作系统的关联也松耦合一些，操作系统自身的安全性也得到了加强。
+本节我们介绍如何基于地址空间抽象来实现第三章的分时多任务系统。
 
 建立并开启基于分页模式的虚拟地址空间
 --------------------------------------------
@@ -26,14 +22,14 @@
     // os/src/mm/memory_set.rs
 
     lazy_static! {
-        pub static ref KERNEL_SPACE: Arc<Mutex<MemorySet>> = Arc::new(Mutex::new(
-            MemorySet::new_kernel()
-        ));
+        pub static ref KERNEL_SPACE: Arc<UPSafeCell<MemorySet>> = Arc::new(unsafe {
+            UPSafeCell::new(MemorySet::new_kernel()
+        )});
     }
 
 从之前对于 ``lazy_static!`` 宏的介绍可知， ``KERNEL_SPACE`` 在运行期间它第一次被用到时才会实际进行初始化，而它所
-占据的空间则是编译期被放在全局数据段中。这里使用经典的 ``Arc<Mutex<T>>`` 组合是因为我们既需要 ``Arc<T>`` 提供的共享
-引用，也需要 ``Mutex<T>`` 提供的互斥访问。在多核环境下才能体现出它的全部能力，目前在单核环境下主要是为了通过编译器检查。
+占据的空间则是编译期被放在全局数据段中。 ``Arc<UPSafeCell<_>>`` 同时带来 ``Arc<T>`` 提供的共享
+引用，和 ``UPSafeCell<T>`` 提供的互斥访问。
 
 在 ``rust_main`` 函数中，我们首先调用 ``mm::init`` 进行内存管理子系统的初始化：
 
@@ -46,7 +42,7 @@
     pub fn init() {
         heap_allocator::init_heap();
         frame_allocator::init_frame_allocator();
-        KERNEL_SPACE.lock().activate();
+        KERNEL_SPACE.exclusive_access().activate();
     }
 
 可以看到，我们最先进行了全局动态内存分配器的初始化，因为接下来马上就要用到 Rust 的堆数据结构。接下来我们初始化物理页帧
@@ -54,18 +50,9 @@
 MMU 在地址转换的时候使用内核的多级页表，这一切均在一行之内做到：
 
 - 首先，我们引用 ``KERNEL_SPACE`` ，这是它第一次被使用，就在此时它会被初始化，调用 ``MemorySet::new_kernel`` 
-  创建一个内核地址空间并使用 ``Arc<Mutex<T>>`` 包裹起来；
-- 接着使用 ``.lock()`` 获取一个可变引用 ``&mut MemorySet`` 。需要注意的是这里发生了两次隐式类型转换：
+  创建一个内核地址空间并使用 ``Arc<UPSafeCell<T>>`` 包裹起来；
 
-  1.  我们知道 
-      ``lock`` 是 ``Mutex<T>`` 的方法而不是 ``Arc<T>`` 的方法，由于 ``Arc<T>`` 实现了 ``Deref`` Trait ，当 
-      ``lock`` 需要一个 ``&Mutex<T>`` 类型的参数的时候，编译器会自动将传入的 ``&Arc<Mutex<T>>`` 转换为 
-      ``&Mutex<T>`` 这样就实现了类型匹配；
-  2.  事实上 ``Mutex<T>::lock`` 返回的是一个 ``MutexGuard<'a, T>`` ，这同样是 
-      RAII 的思想，当这个类型生命周期结束后互斥锁就会被释放。而该类型实现了 ``DerefMut`` Trait，因此当一个函数接受类型
-      为 ``&mut T`` 的参数却被传入一个类型为 ``&mut MutexGuard<'a, T>`` 的参数的时候，编译器会自动进行类型转换使
-      参数匹配。
-- 最后，我们调用 ``MemorySet::activate`` ：
+- 最然后，我们调用 ``MemorySet::activate`` ：
 
     .. code-block:: rust 
         :linenos:
@@ -83,7 +70,7 @@ MMU 在地址转换的时候使用内核的多级页表，这一切均在一行�
                 let satp = self.page_table.token();
                 unsafe {
                     satp::write(satp);
-                    llvm_asm!("sfence.vma" :::: "volatile");
+                    asm!("sfence.vma");
                 }
             }
         }
@@ -117,48 +104,6 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
 能够及时与 satp 的修改同步，我们可以选择立即使用 ``sfence.vma`` 指令将快表清空，这样 MMU 就不会看到快表中已经
 过期的键值对了。
 
-.. note::
-
-    **sfence.vma 是一个屏障**
-
-    对于一种仅含有快表的 RISC-V CPU 实现来说，我们可以认为 ``sfence.vma`` 的作用就是清空快表。事实上它在特权级
-    规范中被定义为一种含义更加丰富的内存屏障，具体来说： ``sfence.vma`` 可以使得所有发生在它后面的地址转换都能够
-    看到所有排在它前面的写入操作，在不同的平台上这条指令要做的事情也都是不同的。这条指令还可以被精细配置来减少同步开销，
-    详情请参考 RISC-V 特权级规范。
-
-
-检查内核地址空间的多级页表设置
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-调用 ``mm::init`` 之后我们就使能了内核动态内存分配、物理页帧管理，还启用了分页模式进入了内核地址空间。之后我们可以
-通过 ``mm::remap_test`` 来检查内核地址空间的多级页表是否被正确设置：
-
-.. code-block:: rust
-
-    // os/src/mm/memory_set.rs
-
-    pub fn remap_test() {
-        let mut kernel_space = KERNEL_SPACE.lock();
-        let mid_text: VirtAddr = ((stext as usize + etext as usize) / 2).into();
-        let mid_rodata: VirtAddr = ((srodata as usize + erodata as usize) / 2).into();
-        let mid_data: VirtAddr = ((sdata as usize + edata as usize) / 2).into();
-        assert_eq!(
-            kernel_space.page_table.translate(mid_text.floor()).unwrap().writable(),
-            false
-        );
-        assert_eq!(
-            kernel_space.page_table.translate(mid_rodata.floor()).unwrap().writable(),
-            false,
-        );
-        assert_eq!(
-            kernel_space.page_table.translate(mid_data.floor()).unwrap().executable(),
-            false,
-        );
-        println!("remap_test passed!");
-    }
-
-其中分别通过手动查内核多级页表的方式验证代码段和只读数据段不允许被写入，同时不允许从数据段上取指。
-
 .. _term-trampoline:
 
 跳板的实现
@@ -167,7 +112,7 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
 上一小节我们看到无论是内核还是应用的地址空间，最高的虚拟页面都是一个跳板。同时应用地址空间的次高虚拟页面还被设置为用来
 存放应用的 Trap 上下文。那么跳板究竟起什么作用呢？为何不直接把 Trap 上下文仍放到应用的内核栈中呢？
 
-回忆曾在第二章介绍过的 :ref:`Trap 上下文保存与恢复 <trap-context-save-restore>` 。当一个应用 Trap 到内核的时候，
+回忆曾在第二章介绍过的，当一个应用 Trap 到内核的时候，
 ``sscratch`` 已经指出了该应用内核栈的栈顶，我们用一条指令即可从用户栈切换到内核栈，然后直接将 Trap 上下文压入内核栈
 栈顶。当 Trap 处理完毕返回用户态的时候，将 Trap 上下文中的内容恢复到寄存器上，最后将保存着应用用户栈顶的 ``sscratch`` 
 与 sp 进行交换，也就从内核栈切换回了用户栈。在这个过程中， ``sscratch`` 起到了非常关键的作用，它使得我们可以在不破坏
@@ -194,7 +139,7 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
     之前设计方式的优点在于： Trap 的时候无需切换地址空间，而在任务切换的时候才需要切换地址空间。由于后者比前者更容易
     实现，这降低了实现的复杂度。而且在应用高频进行系统调用的时候能够避免地址空间切换的开销，这通常源于快表或 cache 
     的失效问题。但是这种设计方式也有缺点：即内核的逻辑段需要在每个应用的地址空间内都映射一次，这会带来一些无法忽略的
-    内存占用开销，并显著限制了嵌入式平台（如我们所采用的 K210 ）的任务并发数。此外，这种做法无法应对处理器的 `熔断 
+    内存占用开销，并显著限制了嵌入式平台的任务并发数。此外，这种做法无法应对处理器的 `熔断 
     (Meltdown) 漏洞 <https://cacm.acm.org/magazines/2020/6/245161-meltdown/fulltext>`_ ，使得恶意应用能够以某种方式看到它本来无权访问的地址空间中内核部分的数据。将内核与地址空间隔离
     便是修复此漏洞的一种方法。
 
@@ -374,7 +319,7 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
 跳板汇编代码所在的物理页帧的键值对，访问方式限制与代码段相同，即 RX 。
 
 最后可以解释为何我们在 ``__alltraps`` 中需要借助寄存器 ``jr`` 而不能直接 ``call trap_handler`` 了。因为在
-内存布局中，这条 ``.text.trampoline`` 段中的跳转指令和 ``trap_handler`` 都在代码段之内，汇编器（Assembler）和链接器（Linker）会根据 ``linker-qemu/k210.ld`` 的地址布局描述，设定电子指令的地址，并计算二者地址偏移量
+内存布局中，这条 ``.text.trampoline`` 段中的跳转指令和 ``trap_handler`` 都在代码段之内，汇编器（Assembler）和链接器（Linker）会根据 ``linker.ld`` 的地址布局描述，设定电子指令的地址，并计算二者地址偏移量
 并让跳转指令的实际效果为当前 pc 自增这个偏移量。但实际上我们知道由于我们设计的缘故，这条跳转指令在被执行的时候，
 它的虚拟地址被操作系统内核设置在地址空间中的最高页面之内，加上这个偏移量并不能正确的得到 ``trap_handler`` 的入口地址。
 
@@ -395,8 +340,8 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
     // os/src/task/task.rs
 
     pub struct TaskControlBlock {
-        pub task_cx_ptr: usize,
         pub task_status: TaskStatus,
+        pub task_cx: TaskContext,
         pub memory_set: MemorySet,
         pub trap_cx_ppn: PhysPageNum,
         pub base_size: usize,
@@ -440,18 +385,15 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
             // map a kernel-stack in kernel space
             let (kernel_stack_bottom, kernel_stack_top) = kernel_stack_position(app_id);
             KERNEL_SPACE
-                .lock()
+                .exclusive_access()
                 .insert_framed_area(
                     kernel_stack_bottom.into(),
                     kernel_stack_top.into(),
                     MapPermission::R | MapPermission::W,
-                );
-            let task_cx_ptr = (kernel_stack_top - core::mem::size_of::<TaskContext>()) 
-                as *mut TaskContext;
-            unsafe { *task_cx_ptr = TaskContext::goto_trap_return(); }
+            );
             let task_control_block = Self {
-                task_cx_ptr: task_cx_ptr as usize,
                 task_status,
+                task_cx: TaskContext::goto_trap_return(kernel_stack_top),
                 memory_set,
                 trap_cx_ppn,
                 base_size: user_sp,
@@ -461,7 +403,7 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
             *trap_cx = TrapContext::app_init_context(
                 entry_point,
                 user_sp,
-                KERNEL_SPACE.lock().token(),
+                KERNEL_SPACE.exclusive_access().token(),
                 kernel_stack_top,
                 trap_handler as usize,
             );
@@ -477,14 +419,11 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
 
 .. _trap-return-intro:
 
-- 第 30~32 行，我们在应用的内核栈顶压入一个跳转到 ``trap_return`` 而不是 ``__restore`` 的任务上下文，这主要是为了能够支持对该应用的启动并顺利切换到用户地址空间执行。在构造方式上，只是将 ra 寄存器的值设置为 ``trap_return`` 的地址。 ``trap_return`` 是我们后面要介绍的
+- 我们在应用的内核栈顶压入一个跳转到 ``trap_return`` 而不是 ``__restore`` 的任务上下文，这主要是为了能够支持对该应用的启动并顺利切换到用户地址空间执行。在构造方式上，只是将 ra 寄存器的值设置为 ``trap_return`` 的地址。 ``trap_return`` 是我们后面要介绍的
   新版的 Trap 处理的一部分。
 
-  这里我们对裸指针解引用成立的原因在于：我们之前已经进入了内核地址空间，而我们要操作的内核栈也是在内核地址空间中的；
-- 第 33 行开始我们用上面的信息来创建任务控制块实例 ``task_control_block``；
-- 第 41 行我们需要初始化该应用的 Trap 上下文，由于它是在应用地址空间而不是在内核地址空间中，我们只能手动查页表找到 
-  Trap 上下文实际被放在的物理页帧，然后通过之前介绍的 :ref:`在内核地址空间读写特定物理页帧的能力 <access-frame-in-kernel-as>` 
-  获得在用户空间的 Trap 上下文的可变引用用于初始化：
+- 初始化该应用的 Trap 上下文，由于它是在应用地址空间而不是在内核地址空间中，我们只能手动查页表找到 
+  Trap 上下文实际被放在的物理页帧，再获得在用户空间的 Trap 上下文的可变引用用于初始化：
 
   .. code-block:: rust
 
@@ -499,7 +438,6 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
   此处需要说明的是，返回 ``'static`` 的可变引用和之前一样可以看成一个绕过 unsafe 的裸指针；而 ``PhysPageNum::get_mut`` 
   是一个泛型函数，由于我们已经声明了总体返回 ``TrapContext`` 的可变引用，则Rust编译器会给 ``get_mut`` 泛型函数针对具体类型 ``TrapContext`` 
   的情况生成一个特定版本的 ``get_mut`` 函数实现。在 ``get_trap_cx`` 函数中则会静态调用``get_mut`` 泛型函数的特定版本实现。
-- 第 42 行我们正式通过 Trap 上下文的可变引用来对其进行初始化：
 
   .. code-block:: rust
       :linenos:
@@ -548,22 +486,21 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
 
     lazy_static! {
         pub static ref TASK_MANAGER: TaskManager = {
-            println!("init TASK_MANAGER");
+            info!("init TASK_MANAGER");
             let num_app = get_num_app();
-            println!("num_app = {}", num_app);
+            info!("num_app = {}", num_app);
             let mut tasks: Vec<TaskControlBlock> = Vec::new();
             for i in 0..num_app {
-                tasks.push(TaskControlBlock::new(
-                    get_app_data(i),
-                    i,
-                ));
+                tasks.push(TaskControlBlock::new(get_app_data(i), i));
             }
             TaskManager {
                 num_app,
-                inner: RefCell::new(TaskManagerInner {
-                    tasks,
-                    current_task: 0,
-                }),
+                inner: unsafe {
+                    UPSafeCell::new(TaskManagerInner {
+                        tasks,
+                        current_task: 0,
+                    })
+                },
             }
         };
     }
@@ -576,38 +513,9 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
 回过头来介绍一下应用构建器 ``os/build.rs`` 的改动：
 
 - 首先，我们在 ``.incbin`` 中不再插入清除全部符号的应用二进制镜像 ``*.bin`` ，而是将构建得到的 ELF 格式文件直接链接进来；
-- 其次，在链接每个 ELF 格式文件之前我们都加入一行 ``.align 3`` 来确保它们对齐到 8 字节，这是由于如果不这样做， ``xmas-elf`` crate 可能会在解析 ELF 的时候进行不对齐的内存读写，例如使用 ``ld`` 指令从内存的一个没有对齐到 8 字节的地址加载一个 64 位的值到一个通用寄存器。而在 k210 平台上，由于其硬件限制，这会触发一个内存读写不对齐的异常，导致解析无法正常完成。
+- 其次，在链接每个 ELF 格式文件之前我们都加入一行 ``.align 3`` 来确保它们对齐到 8 字节，这是由于如果不这样做， ``xmas-elf`` crate 可能会在解析 ELF 的时候进行不对齐的内存读写，例如使用 ``ld`` 指令从内存的一个没有对齐到 8 字节的地址加载一个 64 位的值到一个通用寄存器。
 
-为了方便后续的实现，全局任务管理器还需要提供关于当前应用与地址空间有关的一些信息：
-
-.. code-block:: rust
-    :linenos:
-
-    // os/src/task/mod.rs
-
-    impl TaskManager {
-            fn get_current_token(&self) -> usize {
-            let inner = self.inner.borrow();
-            let current = inner.current_task;
-            inner.tasks[current].get_user_token()
-        }
-
-        fn get_current_trap_cx(&self) -> &mut TrapContext {
-            let inner = self.inner.borrow();
-            let current = inner.current_task;
-            inner.tasks[current].get_trap_cx()
-        }
-    }
-
-    pub fn current_user_token() -> usize {
-        TASK_MANAGER.get_current_token()
-    }
-
-    pub fn current_trap_cx() -> &'static mut TrapContext {
-        TASK_MANAGER.get_current_trap_cx()
-    }
-
-通过 ``current_user_token`` 和 ``current_trap_cx`` 分别可以获得当前正在执行的应用的地址空间的 token 和可以在
+为了方便后续的实现，全局任务管理器还需要提供关于当前应用与地址空间有关的一些信息。通过 ``current_user_token`` 和 ``current_trap_cx`` 分别可以获得当前正在执行的应用的地址空间的 token 和可以在
 内核地址空间中修改位于该应用地址空间中的 Trap 上下文的可变引用。
 
 改进 Trap 处理的实现
@@ -676,10 +584,13 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
         }
         let restore_va = __restore as usize - __alltraps as usize + TRAMPOLINE;
         unsafe {
-            llvm_asm!("fence.i" :::: "volatile");
-            llvm_asm!("jr $0" 
-                :: "r"(restore_va), "{a0}"(trap_cx_ptr), "{a1}"(user_satp) 
-                :: "volatile"
+                asm!(
+                "fence.i",
+                "jr {restore_va}",
+                restore_va = in(reg) restore_va,
+                in("a0") trap_cx_ptr,
+                in("a1") user_satp,
+                options(noreturn)
             );
         }
         panic!("Unreachable in back_to_user!");
@@ -695,28 +606,10 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
   关键在于如何找到 ``__restore`` 在内核/应用地址空间中共同的虚拟地址。第 18 行我们展示了计算它的过程：由于 
   ``__alltraps`` 是对齐到地址空间跳板页面的起始地址 ``TRAMPOLINE`` 上的， 则 ``__restore`` 的虚拟地址只需在 
   ``TRAMPOLINE`` 基础上加上 ``__restore`` 相对于 ``__alltraps`` 的偏移量即可。这里 ``__alltraps`` 和 
-  ``__restore`` 都是指编译器在链接时看到的内核内存布局中的地址。在第 21 行我们使用 ``jr`` 指令完成了跳转的任务。
-- 在开始执行应用之前，第 20 行我们需要使用 ``fence.i`` 指令清空指令缓存 i-cache 。这是因为，在内核中进行的一些操作
+  ``__restore`` 都是指编译器在链接时看到的内核内存布局中的地址。我们使用 ``jr`` 指令完成了跳转的任务。
+- 在开始执行应用之前，我们需要使用 ``fence.i`` 指令清空指令缓存 i-cache 。这是因为，在内核中进行的一些操作
   可能导致一些原先存放某个应用代码的物理页帧如今用来存放数据或者是其他应用的代码，i-cache 中可能还保存着该物理页帧的
   错误快照。因此我们直接将整个 i-cache 清空避免错误。
-
-当每个应用第一次获得 CPU 使用权即将进入用户态执行的时候，它的内核栈顶放置着我们在 
-:ref:`内核加载应用的时候 <trap-return-intro>` 构造的一个任务上下文：
-
-.. code-block:: rust
-
-    // os/src/task/context.rs
-
-    impl TaskContext {
-        pub fn goto_trap_return() -> Self {
-            Self {
-                ra: trap_return as usize,
-                s: [0; 12],
-            }
-        }
-    }
-
-在 ``__switch`` 切换到它的时候，这将会跳转到 ``trap_return`` 并第一次返回用户态。
 
 改进 sys_write 的实现
 ------------------------------------
@@ -783,11 +676,3 @@ MMU 仅需单次访存就能找到页表项并完成地址转换，而多级页�
 
 我们尝试将每个字节数组切片转化为字符串 ``&str`` 然后输出即可。
 
-
-
-小结
--------------------------------------
-
-这一章内容很多，讲解了 **地址空间** 这一抽象概念是如何在一个具体的“头甲龙”操作系统中实现的。这里面的核心内容是如何建立基于页表机制的虚拟地址空间。为此，操作系统需要知道并管理整个系统中的物理内存；需要建立虚拟地址到物理地址映射关系的页表；并基于页表给操作系统自身和每个应用提供一个虚拟地址空间；并需要对管理应用的任务控制块进行扩展，确保能对应用的地址空间进行管理；由于应用和内核的地址空间是隔离的，需要有一个跳板来帮助完成应用与内核之间的切换执行；并导致了对异常、中断、系统调用的相应更改。这一系列的改进，最终的效果是编写应用更加简单了，且应用的执行或错误不会影响到内核和其他应用的正常工作。为了得到这些好处，我们需要比较费劲地进化我们的操作系统。如果同学结合阅读代码，编译并运行应用+内核，读懂了上面的文档，那完成本章的实验就有了一个坚实的基础。
-
-如果同学能想明白如何插入/删除页表；如何在 ``trap_handler`` 下处理 ``LoadPageFault`` ；以及 ``sys_get_time`` 在使能页机制下如何实现，那就会发现下一节的实验练习也许 **就和lab1一样** 。

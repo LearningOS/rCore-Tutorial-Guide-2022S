@@ -142,7 +142,7 @@ sys_exec 将命令行参数压入用户栈
                 }
                 *translated_refmut(memory_set.token(), p as *mut u8) = 0;
             }
-            // make the user_sp aligned to 8B for k210 platform
+            // make the user_sp aligned to 8B
             user_sp -= user_sp % core::mem::size_of::<usize>();
 
             // **** access current TCB exclusively
