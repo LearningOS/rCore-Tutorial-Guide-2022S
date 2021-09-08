@@ -19,7 +19,7 @@ mmap 系统调用新定义：
 - syscall ID：222
 - C接口： ``int mmap(void* start, unsigned long long len, int port)``
 - Rust接口： ``fn mmap(start: usize, len: usize, port: usize) -> i32``
-- 功能：申请长度为 len 字节的物理内存（不要求实际物理内存位置，可以随便找一块），并映射到 addr 开始的虚存，内存页属性为 port。
+- 功能：申请长度为 len 字节的物理内存（不要求实际物理内存位置，可以随便找一块），并映射到 start 开始的虚存，内存页属性为 port。
 - 参数：
     - start：需要映射的虚存起始地址。
     - len：映射字节长度，可以为 0 （如果是则直接返回），不可过大 (上限 1GiB )。
