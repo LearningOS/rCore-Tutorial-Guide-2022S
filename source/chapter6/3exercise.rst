@@ -7,24 +7,36 @@ chapter6练习
 共享内存
 +++++++++++++++++++++++++++++++++++++++++++++
 
-文档中花了大量篇幅描述文件以及管道机制，此外共享内存也是一种常用的进程间通信机制。请你在 ch4 的基础上，利用 ch6 新增加或修改的接口，修改 mmap 实现共享内存的申请。
+进程间通信(IPC)对于某些系统和应用其实十分重要，它被称为微内核的 Achilles tendon，同时在 android 应用中也十分常见，为此 android 系统专门设计了一套 binder 机制来加速 IPC 的效率。
+
+最基础的 IPC 方式大致分两类：
+- 内核拷贝：指通过内核完成数据的拷贝，比如 pipe。
+- 共享内存：直接将同一段物理内存映射到不同进程的虚存空间。
+
+其中内核拷贝的方式一般效率较低，但安全可靠，容易同步。而共享内存的方式不需要内核参与，速度较快，但需要用户态自己想办法同步，同时可能会导致某些攻击，感兴趣的同学可以参考 `TOCTTOU <https://en.wikipedia.org/wiki/TOCTTOU>`_ 。
+
+框架实现的 pipe 属于第一类，那么现在我们来实现第二类。实现 share memory 的方法不止一种，这里我们拓展 ch4 实现的 mmap 的功能，请你在 ch4 的基础上，利用 ch6 新增加或修改的接口，修改 mmap 实现共享内存的申请。
 
 mmap 系统调用新定义：
 
 - syscall ID: 222
-- C接口：``int mmap(void* start, unsigned long long len, int port, int flag, int fd)``
-- Rust 接口：``fn mmap(start: usize, len: usize, prot: usize, flag: usize, fd: usize) -> i32``
-- 功能：当 flag 等于 0 时，fd 被忽略，逻辑与 ch4 时一致；当 flag 不等于 0 时，视为申请共享内存（可类比 posix 接口的 MAP_SHARED 标志），这时需要根据 fd （实际是内核记录的一段共享内存所用物理内存的 id）将对应的物理内存映射到 start 开始的虚存，内存页的属性为 prot。当 fd 为 0 时，视为需要申请一段新的物理内存作为共享内存使用。
+- C接口：``int mmap(void* start, unsigned long long len, int port, int flag, int shmem_id)``
+- Rust 接口：``fn mmap(start: usize, len: usize, prot: usize, flag: usize, shmem_id: isize) -> i32``
+- 功能：当 flag 等于 0 时，fd 被忽略，逻辑与 ch4 时一致；当 flag 等于 1 时，视为申请共享内存（可类比 posix 接口的 MAP_SHARED 标志），这时需要根据 shmem_id 将对应的物理内存映射到 start 开始的虚存，内存页的属性为 prot。若此时 shmem_id 为 -1 时，视为需要申请一段新的物理内存作为共享内存使用; 若 shmem_id != -1，视作申请对应 id 的共享内存。
 - 参数：
     - start：需要映射的虚存起始地址。
     - len：映射字节长度，可以为 0 （如果是则直接返回），不可过大 (上限 1GiB )。
     - port：第 0 位表示是否可读，第 1 位表示是否可写，第 2 位表示是否可执行。其他位无效（必须为 0 ）。
     - flag：申请内存的模式，为 0 时为申请物理内存，不为 0 时为申请共享内存。
-    - fd：申请共享内存时使用，表示内核记录的一段共享内存的 id。
+    - shmem_id：申请共享内存时使用，表示内核记录的一段共享内存的 id，该 id 全内核唯一（注意和 fd 的区别，fd 是 process 的属性, shmem_id 是全内核的属性）。
+- 返回值：
+    - 若发生错误，返回 -1.
+    - 若 flag == 0，返回值同 ch4。
+    - 若 flag == 1，总返回映射的 shmem_id。
 - 说明：
     - 我们尚未有文件系统，所以这只是一个看上去像 posix 的 mmap 但实际不是的系统调用。
+    - 我们不定义共享内存与 fork 的相互作用，不会加以测试，任何实现都可以。
     - 内核在 ``mm/memory_set.rs`` 中添加了 ``SharedMemory`` 等结构，用于记录已经分配给共享内存使用。可以理解为有一个表，记录 (shared_memory_id, physical_frames)。通过本次实验等测例，应该不需要修改相关结构，需要用到的接口已经在 MapArea 中实现。
-    - 申请共享内存时，正确时返回 shared_memory_id，错误返回 -1。即尝试申请新的共享内存时，返回新分配的 id；尝试将已经存在的共享内存分配给某地址时，返回传进去的 id。
     - 为了简单，addr 要求按页对齐(否则报错)，len 可直接按页上取整。
     - 为了简单，不考虑分配失败时的页回收（也就是内存泄漏）。
 - 错误：
@@ -32,6 +44,8 @@ mmap 系统调用新定义：
     - 物理内存不足。
     - port & !0x7 != 0 (port 其余位必须为0)。
     - port & 0x7 = 0 (这样的内存无意义)。
+    - flag & ~0x1 != 0 (flag 应为 0 或 1)。
+    - shmem_id 无效。
 
 munmap 系统调用定义：
 
