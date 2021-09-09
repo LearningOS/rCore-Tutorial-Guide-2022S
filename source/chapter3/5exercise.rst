@@ -85,11 +85,10 @@ lab3 有 2 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 s
 
 简答作业
 --------------------------------------------
-1. 请自行阅读 ch3 的 os/Makefile 和 user/Makefile 文件，描述在 os 目录下执行 ``make run`` 时执行了哪些命令。
 
-2. 请问 riscv64 支持哪些中断 / 异常？如何判断进入内核是由于中断还是异常？为了方便 os 处理，Ｍ 态软件会将 S 态异常/中断委托给 S 态软件，请指出有哪些寄存器记录了委托信息，rustsbi 委托了哪些异常/中断？（RustSBI 在启动时输出了什么？）
+1. 为了方便 os 处理，Ｍ 态软件会将 S 态异常/中断委托给 S 态软件，请指出有哪些寄存器记录了委托信息，rustsbi 委托了哪些异常/中断？（RustSBI 在启动时输出了什么？）
 
-3. 请通过 gdb 简单跟踪从机器加电到跳转到 0x80200000 的简单过程，描述重要的跳转即可。程序是如何进入 S 态的？
+2. 请通过 gdb 跟踪或阅读源代码了解机器从加电到跳转到 0x80200000 的过程，并描述重要的跳转。回答内核是如何进入 S 态的？
   
    - 事实上进入 rustsbi (0x80000000) 之后就不需要使用 gdb 调试了。可以直接阅读 `代码 <https://github.com/rustsbi/rustsbi-qemu/blob/main/rustsbi-qemu/src/main.rs>`_ 。
    - 可以使用 Makefile 中的 ``make debug`` 指令。
@@ -104,7 +103,7 @@ lab3 有 2 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 s
        - ``continue``: 执行直到碰到断点。
        - ``si``: 单步执行一条汇编指令。
 
-4. 深入理解 `trap.S <https://github.com/rcore-os/rCore-Tutorial-v3/blob/ch2/os/src/trap/trap.S>`_ 中两个函数 ``__alltraps`` 和 ``__restore`` 的作用，并回答如下几个问题:
+3. 深入理解 `trap.S <https://github.com/rcore-os/rCore-Tutorial-v3/blob/ch2/os/src/trap/trap.S>`_ 中两个函数 ``__alltraps`` 和 ``__restore`` 的作用，并回答如下问题:
 
    1. L40：刚进入 ``__restore`` 时，``a0`` 代表了什么值。请指出 ``__restore`` 的两种使用情景。
 
@@ -147,7 +146,7 @@ lab3 有 2 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 s
 
    7. 从 U 态进入 S 态是哪一条指令发生的？
 
-5. stride 算法深入
+4. stride 算法深入
    
    stride 算法原理非常简单，但是有一个比较大的问题。例如两个 pass = 10 的进程，使用 8bit 无符号整形储存 stride， p1.stride = 255, p2.stride = 250，在 p2 执行一个时间片后，理论上下一次应该 p1 执行。
 
@@ -155,7 +154,7 @@ lab3 有 2 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 s
 
    我们之前要求进程优先级 >= 2 其实就是为了解决这个问题。可以证明，**在不考虑溢出的情况下**, 在进程优先级全部 >= 2 的情况下，如果严格按照算法执行，那么 STRIDE_MAX – STRIDE_MIN <= BigStride / 2。
 
-   - 为什么？尝试简单说明（传达思想即可，不要求严格证明）。
+   - 为什么？尝试简单说明（不要求严格证明）。
 
 
 报告要求
