@@ -21,35 +21,7 @@ OS 环境配置
 目前，实验主要支持 Ubuntu18.04/20.04 操作系统。使用 Windows10 和 macOS 的读者，可以安装一台 Ubuntu18.04 虚拟机或 Docker
 进行实验。
 
-Windows10 用户可以通过系统内置的 **WSL2** 虚拟机（请不要使用 WSL1）来安装 Ubuntu 18.04 / 20.04 。
-步骤如下：
-
-- 升级 Windows 10 到最新版（Windows 10 版本 18917 或以后的内部版本）。注意，如果
-  不是 Windows 10 专业版，可能需要手动更新，在微软官网上下载。升级之后，
-  可以在 PowerShell 中输入 ``winver`` 命令来查看内部版本号。
-- 「Windows 设置 > 更新和安全 > Windows 预览体验计划」处选择加入 “Dev 开发者模式”。
-- 以管理员身份打开 PowerShell 终端并输入以下命令：
-
-  .. code-block::
-
-     # 启用 Windows 功能：“适用于 Linux 的 Windows 子系统”
-     >> dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-
-     # 启用 Windows 功能：“已安装的虚拟机平台”
-     >> dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-
-     # <Distro> 改为对应从微软应用商店安装的 Linux 版本名，比如：`wsl --set-version Ubuntu 2`
-     # 如果你没有提前从微软应用商店安装任何 Linux 版本，请跳过此步骤
-     >> wsl --set-version <Distro> 2
-
-     # 设置默认为 WSL 2，如果 Windows 版本不够，这条命令会出错
-     >> wsl --set-default-version 2
-
--  `下载 Linux 内核安装包 <https://docs.microsoft.com/zh-cn/windows/wsl/install-win10#step-4---download-the-linux-kernel-update-package>`_
--  在微软商店（Microsoft Store）中安装 Ubuntu18.04 / 20.04。
-
-.. _link-docker-env:
-
+Windows10 用户可以通过系统内置的 **WSL2** 虚拟机（请不要使用 WSL1）来安装 Ubuntu 18.04 / 20.04 。读者请自行在互联网上搜索相关安装教程。
 .. note::
 
    **Docker 开发环境**
@@ -59,7 +31,7 @@ Windows10 用户可以通过系统内置的 **WSL2** 虚拟机（请不要使用
    使用方法如下（以 Ubuntu18.04 为例）：
 
    1. 通过 ``su`` 切换到管理员账户 ``root`` ；
-   2. 在 ``rCore-Tutorial-v3`` 根目录下 ``make docker`` 进入到 Docker 环境；
+   2. 在 ``rCore-Tutorial`` 根目录下 ``make docker`` 进入到 Docker 环境；
    3. 进入 Docker 之后，会发现当前处于根目录 ``/`` ，我们通过 ``cd mnt`` 将当前工作路径切换到 ``/mnt`` 目录；
    4. 通过 ``ls`` 可以发现 ``/mnt`` 目录下的内容和 ``rCore-Tutorial-v3`` 目录下的内容完全相同，接下来就可以在这个环境下运行 tutorial 了。例如 ``cd os && make run`` 。    
 
