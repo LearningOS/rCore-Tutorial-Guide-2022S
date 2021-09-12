@@ -195,6 +195,19 @@ Qemu 模拟器安装
 .. attention::
 
    请务必执行 ``make run``，这将为你安装一些上文没有提及的 Rust 包依赖。
+   
+   如果卡在了 
+   
+   .. code-block::
+   
+      Updating git repository `https://github.com/rcore-os/riscv`
+      
+   请通过更换 hosts 等方式解决科学上网问题，或者将 riscv 项目下载到本地，并修改 os/Cargo.toml 中的 riscv 包依赖路径
+   
+   .. code-block::
+   
+      [dependencies]
+      riscv = { path = "YOUR riscv PATH", features = ["inline-asm"] }
 
 恭喜你完成了实验环境的配置，可以开始阅读教程的正文部分了！
 
@@ -204,6 +217,7 @@ GDB 调试支持*
 .. attention::
 
    使用 GDB debug 并不是必须的，你可以暂时跳过本小节。
+
 
 
 在 ``os`` 目录下 ``make debug`` 可以调试我们的内核，这需要安装终端复用工具 ``tmux`` ，还需要基于 riscv64 平台的 gdb 调试器 ``riscv64-unknown-elf-gdb`` 。该调试器包含在 riscv64 gcc 工具链中，工具链的预编译版本可以在如下链接处下载：
