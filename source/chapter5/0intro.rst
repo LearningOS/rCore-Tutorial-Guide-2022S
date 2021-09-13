@@ -22,7 +22,7 @@
 
 .. code-block:: console
 
-   $ git clone https://github.com/zhanghx0905/rCore-Tutorial-2021Autumn.git
+   $ git clone https://github.com/LearningOS/rCore-Tutorial-2021Autumn.git
    $ cd rCore-Tutorial-2021Autumn
    $ git checkout ch5
 
