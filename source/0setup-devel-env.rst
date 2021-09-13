@@ -128,9 +128,9 @@ Qemu 模拟器安装
 
 我们需要使用 Qemu 5.0.0 版本进行实验，为此，从源码手动编译安装 Qemu 模拟器：
 
-.. note::
+.. attention::
 
-   经初步测试，各系统软件源中的 Qemu 6 也可以运行本实验的框架，但由于实验基于 Qemu 5 开发，仍建议按照下方所述安装 Qemu 5.0 以避免未知的不兼容问题。
+   Qemu6 与我们使用的 RustSBI 存在未知不兼容问题！
 
 .. code-block:: bash
 
@@ -186,7 +186,7 @@ Qemu 模拟器安装
 
 .. code-block:: bash
 
-   git clone https://github.com/zhanghx0905/rCore-Tutorial-2021Autumn -b ch7
+   git clone https://github.com/LearningOS/rCore-Tutorial-2021Autumn
 
 只需在 ``os`` 目录下 ``make run`` 即可。在内核加载完毕之后，可以看到目前可用的应用程序。 ``usertests`` 打包了其中的很大一部分，我们可以运行它，只需输入在终端中输入它的名字即可。
 
