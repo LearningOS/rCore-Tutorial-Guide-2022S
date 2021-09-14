@@ -130,7 +130,7 @@ Qemu 模拟器安装
 
 .. attention::
 
-   Qemu6 与我们使用的 RustSBI 存在未知不兼容问题！
+   也可以使用 Qemu6，但要小心潜在的不兼容问题！
 
 .. code-block:: bash
 
