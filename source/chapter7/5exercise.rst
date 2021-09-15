@@ -116,7 +116,7 @@ chapter7练习
 - 实现分支：ch7。
 - 通过所有测例。
 
-进入 Shell 后，输入 ``test_usertest`` 进行测试。
+在 os 目录下 ``make run TEST=1`` 加载所有测例， ``test_usertest`` 打包了所有你需要通过的测例，你也可以通过修改这个文件调整本地测试的内容。
 
 .. note::
 

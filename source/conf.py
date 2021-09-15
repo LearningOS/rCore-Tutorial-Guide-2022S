@@ -39,7 +39,7 @@ extensions = [
 
 comments_config = {
    "utterances": {
-       "repo": "duskmoon314/rCore-Tutorial-Book-v3",
+       "repo": "LearningOS/rCore-Tutorial-Book-2021Autumn",
        "issue-term": "pathname",
        "label": "comments",
        "theme": "github-light",
