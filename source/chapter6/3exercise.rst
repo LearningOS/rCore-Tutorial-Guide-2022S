@@ -125,6 +125,27 @@ munmap 系统调用定义：
 
 (1) 举出使用 pipe 的一个实际应用的例子。
 
+(2) 共享内存的测例中有如下C语言片段(伪代码)：
+
+    .. code-block:: c 
+
+    int main()
+    {
+        uint64 *A = (void *)0x10000000;
+        uint64 *B = (void *)(0x10000000 + 0x1000);
+        uint64 len = 0x1000;
+        make_shmem(A, B, len); // 会将 [A, A + len) [B, B + len) 这两段虚存映射到同一段物理内存
+        *A = 0xabab;
+        __sync_synchronize();  // zssm？
+        if(*B != 0xabab) {
+            return ERROR;
+        }
+        printf("OK!");
+        return 0;
+    }
+
+    请自己查阅注释 ``zssm?`` 对应的这一行代码有什么作用？如果去掉有可能会导致什么错误？为什么？
+
 
 报告要求
 ---------------------------------------
