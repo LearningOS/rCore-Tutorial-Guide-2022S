@@ -91,9 +91,16 @@ lab3 有 3 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 `
 简答作业
 --------------------------------------------
 
-1. 为了方便 os 处理，Ｍ 态软件会将 S 态异常/中断委托给 S 态软件，请指出有哪些寄存器记录了委托信息，rustsbi 委托了哪些异常/中断？（RustSBI 在启动时输出了什么？）
+1. 请依次简要回答如下问题：
 
-2. 请通过 gdb 跟踪或阅读源代码了解机器从加电到跳转到 0x80200000 的过程，并描述重要的跳转。回答内核是如何进入 S 态的？
+   - 程序陷入内核的原因有中断和异常（系统调用），请问 RISC-V 64 支持哪些中断 / 异常？
+   - 如何判断进入内核是由于中断还是异常？请描述陷入内核时的几个重要寄存器及其值。
+   - 为了方便 os 处理，Ｍ 态软件会将 S 态异常/中断委托给 S 态软件，请指出有哪些寄存器记录了委托信息。
+   - RustSBI 委托了哪些异常/中断？（提示：看看 RustSBI 在启动时输出了什么？）
+
+2. 正确进入 U 态后，程序的特征还应有：使用 S 态特权指令，访问 S 态寄存器后会报错。请同学们可以自行测试这些内容 (运行 `Rust 三个bad测例 <https://github.com/LearningOS/rCore-Tutorial-2021Autumn/tree/ch2/user/src/bin>`_ ) ，描述程序出错行为，同时注意注明你使用的 sbi 及其版本。
+
+3. 请通过 gdb 跟踪或阅读源代码了解机器从加电到跳转到 0x80200000 的过程，并描述重要的跳转。回答内核是如何进入 S 态的？
   
    - 事实上进入 rustsbi (0x80000000) 之后就不需要使用 gdb 调试了。可以直接阅读 `代码 <https://github.com/rustsbi/rustsbi-qemu/blob/7d71bfb7b3ad8e36f06f92c2ffe2066bbb0f9254/rustsbi-qemu/src/main.rs#L56>`_ 。
    - 可以使用 Makefile 中的 ``make debug`` 指令。
@@ -108,7 +115,7 @@ lab3 有 3 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 `
        - ``continue``: 执行直到碰到断点。
        - ``si``: 单步执行一条汇编指令。
 
-3. 深入理解 `trap.S <https://github.com/rcore-os/rCore-Tutorial-v3/blob/ch2/os/src/trap/trap.S>`_ 中两个函数 ``__alltraps`` 和 ``__restore`` 的作用，并回答如下问题:
+4. 深入理解 `trap.S <https://github.com/rcore-os/rCore-Tutorial-v3/blob/ch2/os/src/trap/trap.S>`_ 中两个函数 ``__alltraps`` 和 ``__restore`` 的作用，并回答如下问题:
 
    1. L40：刚进入 ``__restore`` 时，``a0`` 代表了什么值。请指出 ``__restore`` 的两种使用情景。
 
@@ -151,7 +158,7 @@ lab3 有 3 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 `
 
    7. 从 U 态进入 S 态是哪一条指令发生的？
 
-4. stride 算法深入
+5. stride 算法深入
    
    stride 算法原理非常简单，但是有一个比较大的问题。例如两个 pass = 10 的进程，使用 8bit 无符号整形储存 stride， p1.stride = 255, p2.stride = 250，在 p2 执行一个时间片后，理论上下一次应该 p1 执行。
 
