@@ -48,15 +48,6 @@ ch3 中我们实现的调度算法十分简单。现在我们要为我们的 os 
     // 返回值：如果输入合法则返回 prio，否则返回 -1
     fn sys_set_priority(prio: isize) -> isize;
 
-实验要求
-+++++++++++++++++++++++++++++++++++++++++
-
-- 完成分支: ch3。
-
-- 通过所有测例：
-
-lab3 有 3 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 ``sys_write`` 安全检查的实现， ``make run TEST=2`` 检查 ``set_priority`` 语义的正确性， ``make run TEST=3`` 检查 stride 调度算法是否满足公平性要求，
-六个子程序运行的次数应该大致与其优先级呈正比。
 
 .. attention::
 
@@ -65,12 +56,10 @@ lab3 有 3 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 `
     背景知识： `Rust 中的动态内存分配 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter4/1rust-dynamic-allocation.html>`_
 
 
-.. note::
+实验要求
++++++++++++++++++++++++++++++++++++++++++
 
-    你的实现只需且必须通过测例，建议读者感到困惑时先检查测例。
-
-实验检查
-++++++++++++++++++++++++++++++++++++++++
+- 完成分支: ch3。
 
 - 实验目录要求
 
@@ -86,7 +75,18 @@ lab3 有 3 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 `
    │   └── ...
    ├── ...
 
-测试时 os/makefile 文件和 user 文件夹将被替换。
+
+- 通过所有测例：
+  
+  lab3 有 3 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 ``sys_write`` 安全检查的实现， ``make run TEST=2`` 检查 ``set_priority`` 语义的正确性， ``make run TEST=3`` 检查 stride 调度算法是否满足公平性要求，
+  六个子程序运行的次数应该大致与其优先级呈正比，测试通过标准是 :math:`\max{\frac{runtimes}{prio}}/ \min{\frac{runtimes}{prio}} < 1.5`.
+
+  CI 使用的测例与本地相同，测试中，user 文件夹及其它与构建相关的文件将被替换，请不要试图依靠硬编码通过测试。
+
+.. note::
+
+    你的实现只需且必须通过测例，建议读者感到困惑时先检查测例。
+
 
 简答作业
 --------------------------------------------
@@ -167,6 +167,28 @@ lab3 有 3 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 `
    我们之前要求进程优先级 >= 2 其实就是为了解决这个问题。可以证明，**在不考虑溢出的情况下**, 在进程优先级全部 >= 2 的情况下，如果严格按照算法执行，那么 STRIDE_MAX – STRIDE_MIN <= BigStride / 2。
 
    - 为什么？尝试简单说明（不要求严格证明）。
+
+   - 已知以上结论，**考虑溢出的情况下**，可以为 Stride 设计特别的比较器，让 BinaryHeap<Stride> 的 pop 方法能返回真正最小的 Stride。补全下列代码中的 ``partial_cmp`` 函数，假设两个 Stride 永远不会相等。
+
+   .. code-block:: rust
+
+     use core::cmp::Ordering;
+
+     struct Stride(u64);
+
+     impl PartialOrd for Stride {
+         fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+             // ...
+         }
+     }
+
+     impl PartialEq for Stride {
+         fn eq(&self, other: &Self) -> bool {
+             false
+         }
+     }
+
+   TIPS: 使用 8 bits 存储 stride, BigStride = 255, 则: ``(125 < 255) == false``, ``(129 < 255) == true``.
 
 
 报告要求
