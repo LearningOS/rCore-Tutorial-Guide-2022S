@@ -95,7 +95,7 @@ lab3 有 3 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 `
 
 2. 请通过 gdb 跟踪或阅读源代码了解机器从加电到跳转到 0x80200000 的过程，并描述重要的跳转。回答内核是如何进入 S 态的？
   
-   - 事实上进入 rustsbi (0x80000000) 之后就不需要使用 gdb 调试了。可以直接阅读 `代码 <https://github.com/rustsbi/rustsbi-qemu/blob/main/rustsbi-qemu/src/main.rs>`_ 。
+   - 事实上进入 rustsbi (0x80000000) 之后就不需要使用 gdb 调试了。可以直接阅读 `代码 <https://github.com/rustsbi/rustsbi-qemu/blob/7d71bfb7b3ad8e36f06f92c2ffe2066bbb0f9254/rustsbi-qemu/src/main.rs#L56>`_ 。
    - 可以使用 Makefile 中的 ``make debug`` 指令。
    - 一些可能用到的 gdb 指令：
        - ``x/10i 0x80000000`` : 显示 0x80000000 处的10条汇编指令。
