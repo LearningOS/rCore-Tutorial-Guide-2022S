@@ -45,7 +45,7 @@ ch3 中我们实现的调度算法十分简单。现在我们要为我们的 os 
 .. code-block:: rust
 
     // 输入参数：进程优先级，要求 prio >= 2
-    // 返回值：如果输入合法则返回 0，否则返回 -1
+    // 返回值：如果输入合法则返回 prio，否则返回 -1
     fn sys_set_priority(prio: isize) -> isize;
 
 实验要求
