@@ -14,7 +14,6 @@ chapter6练习
 **mailread**:
 
     * syscall ID：401
-    * C接口： ``int mailread(void* buf, int len)``
     * Rust接口: ``fn mailread(buf: *mut u8, len: usize)``
     * 功能：读取一个报文，如果成功返回报文长度.
     * 参数：
@@ -30,7 +29,6 @@ chapter6练习
 **mailwrite**:
 
     * syscall ID：402
-    * C接口： ``int mailwrite(int pid, void* buf, int len)``
     * Rust接口: ``fn mailwrite(pid: usize, buf: *mut u8, len: usize)``
     * 功能：向对应进程邮箱插入一条报文.
     * 参数：
@@ -45,10 +43,13 @@ chapter6练习
         * 邮箱满。
         * buf 无效。
   
-实现完成之后，你应该能通过 ch6_mail* 对应的所有测例，在 shell 中执行 ch6_usertest 来执行所有测试。
 
 [挑战，不占分]进程通信：共享内存
 +++++++++++++++++++++++++++++++++++++++++++++
+
+.. note::
+
+    本来这才是本次实验的内容，大家觉得太难了，把它毙掉了。
 
 进程间通信(IPC)对于某些系统和应用其实十分重要，它被称为微内核的 Achilles tendon，同时在 android 应用中也十分常见，为此 android 系统专门设计了一套 binder 机制来加速 IPC 的效率。
 

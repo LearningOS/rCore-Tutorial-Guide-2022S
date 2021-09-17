@@ -9,47 +9,54 @@ chapter4练习
 
 引入虚存机制后，原来内核的 sys_get_time 函数实现就无效了。请你重写这个函数，恢复其正常功能。
 
-申请内存
+mmap 和 munmap 匿名映射
 ++++++++++++++++++++++++++++++++++++++++++++
 
-`mmap <https://man7.org/linux/man-pages/man2/mmap.2.html>`_ 本身主要使用在内存中映射文件，这里我们简化它的功能，仅仅用来提供申请内存的功能。
+`mmap <https://man7.org/linux/man-pages/man2/mmap.2.html>`_ 在 Linux 中主要用于在内存中映射文件，本次实验简化它的功能，仅用于申请内存。
 
-mmap 系统调用新定义：
+请实现 mmap 和 munmap 系统调用，mmap 定义如下：
+
+
+.. code-block:: rust
+
+    fn sys_mmap(start: usize, len: usize, port: usize) -> isize
 
 - syscall ID：222
-- C接口： ``int mmap(void* start, unsigned long long len, int port)``
-- Rust接口： ``fn mmap(start: usize, len: usize, port: usize) -> i32``
-- 功能：申请长度为 len 字节的物理内存（不要求实际物理内存位置，可以随便找一块），并映射到 start 开始的虚存，内存页属性为 port。
+- 申请长度为 len 字节的物理内存（不要求实际物理内存位置，可以随便找一块），将其映射到 start 开始的虚存，内存页属性为 port
 - 参数：
-    - start：需要映射的虚存起始地址。
-    - len：映射字节长度，可以为 0 （如果是则直接返回），不可过大 (上限 1GiB )。
-    - port：第 0 位表示是否可读，第 1 位表示是否可写，第 2 位表示是否可执行。其他位无效（必须为 0 ）。
+    - start 需要映射的虚存起始地址，要求按页对齐
+    - len 映射字节长度，可以为 0
+    - port：第 0 位表示是否可读，第 1 位表示是否可写，第 2 位表示是否可执行。其他位无效且必须为 0
+- 返回值：执行成功则返回 0，错误返回 -1
 - 说明：
-    - 正确时返回实际 0，错误返回 -1 。
-    - 为了简单，addr 要求按页对齐(否则报错)，len 可直接按页上取整。
-    - 为了简单，不考虑分配失败时的页回收（也就是内存泄漏）。
-- 错误：
-    - [addr, addr + len) 存在已经被映射的页。
-    - 物理内存不足。
-    - port & !0x7 != 0 (port 其余位必须为0)。
-    - port & 0x7 = 0 (这样的内存无意义)。
+    - 为了简单，目标虚存区间要求按页对齐，len 可直接按页向上取整，不考虑分配失败时的页回收。
+- 可能的错误：
+    - start 没有按页大小对齐
+    - port & !0x7 != 0 (port 其余位必须为0)
+    - port & 0x7 = 0 (这样的内存无意义)
+    - [start, start + len) 中存在已经被映射的页
+    - 物理内存不足
 
-munmap 系统调用新定义：
+munmap 定义如下：
+
+.. code-block:: rust
+
+    fn sys_munmap(start: usize, len: usize) -> isize
 
 - syscall ID：215
-- C接口： ``int munmap(void* start, unsigned long long len)``
-- Rust接口： ``fn munmap(start: usize, len: usize) -> i32``
-- 功能：取消一块虚存的映射。
-- 参数：同 mmap
+- 取消到 [start, start + len) 虚存的映射
+- 参数和返回值请参考 mmap
 - 说明：
     - 为了简单，参数错误时不考虑内存的恢复和回收。
-- 错误：
+- 可能的错误：
     - [start, start + len) 中存在未被映射的虚存。
+
+TIPS：注意 port 参数的语义，它与内核定义的 MapPermission 有明显不同！
 
 实验要求
 +++++++++++++++++++++++++++++++++++++++++++++
 - 实现分支：ch4。
-- 实验目录请参考 ch3。
+- 实验目录请参考 ch3，报告命名 lab2.md/pdf
 - 通过所有测例。
 
   在 os 目录下 ``make run TEST=1`` 测试 sys_get_time， ``make run TEST=2`` 测试 map 和 unmap。
@@ -63,7 +70,7 @@ munmap 系统调用新定义：
     缺页指的是进程访问页面时页面不在页表中或在页表中无效的现象，此时 MMU 将会返回一个中断，告知 os 进程内存访问出了问题。os 选择填补页表并重新执行异常指令或者杀死进程。
 
     - 请问哪些异常可能是缺页导致的？
-    - 发生缺页时，描述相关的重要寄存器的值。
+    - 发生缺页时，描述相关重要寄存器的值，上次实验描述过的可以简略。
 
     缺页有两个常见的原因，其一是 Lazy 策略，也就是直到内存页面被访问才实际进行页表操作。比如，一个程序被执行时，进程的代码段理论上需要从磁盘加载到内存。但是 os 并不会马上这样做，而是会保存 .text 段在磁盘的位置信息，在这些代码第一次被执行时才完成从磁盘的加载操作。
 

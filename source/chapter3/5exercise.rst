@@ -43,10 +43,12 @@ ch3 中我们实现的调度算法十分简单。现在我们要为我们的 os 
 为了实现该调度算法，内核还要增加 set_prio 系统调用
 
 .. code-block:: rust
-
-    // 输入参数：进程优先级，要求 prio >= 2
-    // 返回值：如果输入合法则返回 prio，否则返回 -1
-    fn sys_set_priority(prio: isize) -> isize;
+   
+   // syscall ID：140
+   // 设置当前进程优先级为 prio
+   // 参数：prio 进程优先级，要求 prio >= 2
+   // 返回值：如果输入合法则返回 prio，否则返回 -1
+   fn sys_set_priority(prio: isize) -> isize;
 
 
 .. attention::
