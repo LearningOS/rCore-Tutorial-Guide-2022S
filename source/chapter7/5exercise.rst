@@ -9,34 +9,7 @@ chapter7练习
 
 硬链接要求两个不同的目录项指向同一个文件，在我们的文件系统中也就是两个不同名称目录项指向同一个磁盘块。
 
-本节要求实现三个系统调用 ``sys_linkat、sys_unlinkat、sys_stat`` 。注意在测例中 ``sys_open`` 的接口定义也发生了变化。
-
-**open**
-
-    - syscall ID: 56
-    - 功能：打开一个文件，并返回可以访问它的文件描述符。
-    - C 接口： ``int open(int dirfd, char* path, unsigned int flags, unsigned int mode);``
-    - Rust 接口： ``fn open(dirfd: usize, path: *const u8, flags: u32, mode: u32);``
-    - 参数：
-        - **dirfd** : 仅为了兼容性考虑，本次实验中始终为 AT_FDCWD (-100)。可以忽略。
-        - **path** 描述要打开的文件的文件名（简单起见，文件系统不需要支持目录，所有的文件都放在根目录 ``/`` 下）
-        - **flags** 描述打开文件的标志，具体含义（其他参数不考虑）：
-          
-          .. code-block:: c
-
-                #define O_RDONLY  0x000
-                #define O_WRONLY  0x001
-                #define O_RDWR    0x002		// 可读可写
-                #define O_CREATE  0x200
-
-        - **mode** 表示创建文件的访问权限，为了简单，本次实验中中可忽略。
-    - 说明：
-        - 有 create 标志但文件存在时，忽略 create 标志，直接打开文件。
-    - 返回值：如果出现了错误则返回 -1，否则返回可以访问给定文件的文件描述符。
-    - 可能的错误：
-        - 文件不存在且无 create 标志。
-        - 标志非法（低两位为 0x3）
-        - 打开文件数量达到上限。
+本节要求实现三个系统调用 ``sys_linkat、sys_unlinkat、sys_stat`` 。
   
 **linkat**：
 
