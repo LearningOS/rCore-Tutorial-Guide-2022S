@@ -41,7 +41,7 @@ easy-fs与底层设备驱动之间通过抽象接口 ``BlockDevice`` 来连接�
 它定义了两个抽象方法：
 
 - ``read_block`` 可以将编号为 ``block_id`` 的块从磁盘读入内存中的缓冲区 ``buf`` ；
-- ``write_block`` 可以内存中的缓冲区 ``buf`` 中的数据写入磁盘编号为 ``block_id`` 的块。
+- ``write_block`` 可以将内存中的缓冲区 ``buf`` 中的数据写入磁盘编号为 ``block_id`` 的块。
 
 ``easy-fs`` 的使用者将负责提供抽象方法的实现。
 
