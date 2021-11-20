@@ -59,11 +59,7 @@ chapter7练习
             #[repr(C)]
             #[derive(Debug)]
             pub struct Stat {
-<<<<<<< HEAD
                 /// 文件所在磁盘驱动器号，该实验中写死为 0 即可
-=======
-                /// 文件所在磁盘驱动器号，为简单起见，可固定为 0
->>>>>>> 9750b9c6e4e67fb7651c05e2bf993f75a443753e
                 pub dev: u64,
                 /// inode 文件所在 inode 编号
                 pub ino: u64,
