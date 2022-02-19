@@ -1,13 +1,10 @@
-第七章：文件系统与I/O重定向
+第六章：进程间通信
 ==============================================
 
 .. toctree::
    :maxdepth: 4
 
    0intro
-   1fs-interface
-   2fs-implementation-1
-   2fs-implementation-2
-   3using-easy-fs-in-kernel
-   4cmdargs-and-redirection
-   5exercise
+   1file-descriptor
+   2pipe
+   3exercise
