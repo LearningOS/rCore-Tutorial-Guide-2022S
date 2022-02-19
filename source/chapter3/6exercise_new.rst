@@ -22,9 +22,8 @@ ch3 中，我们的系统已经能够支持多个任务分时轮流运行，我�
         call: [SyscallInfo; MAX_SYSCALL_NUM],
         time: usize
     }
-    
-    - 统计系统调用信息采用数组形式对每个系统调用的次数进行统计，相关结构定义如下：
-    .. code-block:: rust
+- 统计系统调用信息采用数组形式对每个系统调用的次数进行统计，相关结构定义如下：
+.. code-block:: rust
 
     struct SyscallInfo {
         id: usize,
