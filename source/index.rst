@@ -10,7 +10,7 @@ rCore-Tutorial-Book 2021 秋季学期
    :maxdepth: 2
    :caption: 正文
    :hidden:
-   
+
    0setup-devel-env
    chapter1/index
    chapter2/index
@@ -19,7 +19,8 @@ rCore-Tutorial-Book 2021 秋季学期
    chapter5/index
    chapter6/index
    chapter7/index
-   
+   chapter8/index
+
 .. toctree::
    :maxdepth: 2
    :caption: 附录
@@ -48,7 +49,7 @@ rCore-Tutorial-Book 2021 秋季学期
 
 导读
 ---------------------
- 
+
 请先阅读 :doc:`0setup-devel-env` 完成环境配置。
 
 以下是读者为了完成实验需掌握的技术，你可以在实操中熟悉它们。
