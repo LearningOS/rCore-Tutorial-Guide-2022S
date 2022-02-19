@@ -20,45 +20,6 @@ chapter3练习
 - `readdir`
 - `getdents`
 
-stride 调度算法
-+++++++++++++++++++++++++++++++++++++++++
-
-ch3 中我们实现的调度算法十分简单。现在我们要为我们的 os 实现一种带优先级的调度算法：stride 调度算法。
-
-算法描述如下:
-
-(1) 为每个进程设置一个当前 stride，表示该进程当前已经运行的“长度”。另外设置其对应的 pass 值（只与进程的优先权有关系），表示对应进程在调度后，stride 需要进行的累加值。
-
-(2) 每次需要调度时，从当前 runnable 态的进程中选择 stride 最小的进程调度。对于获得调度的进程 P，将对应的 stride 加上其对应的步长 pass。
-
-(3) 一个时间片后，回到上一步骤，重新调度当前 stride 最小的进程。
-
-可以证明，如果令 P.pass = BigStride / P.priority 其中 P.priority 表示进程的优先权（大于 1），而 BigStride 表示一个预先定义的大常数，则该调度方案为每个进程分配的时间将与其优先级成正比。证明过程我们在这里略去，有兴趣的同学可以在网上查找相关资料。
-
-其他实验细节：
-
-- stride 调度要求进程优先级 :math:`\geq 2`，所以设定进程优先级 :math:`\leq 1` 会导致错误。
-- 进程初始 stride 设置为 0 即可。
-- 进程初始优先级设置为 16。
-
-为了实现该调度算法，内核还要增加 set_prio 系统调用
-
-.. code-block:: rust
-
-   // syscall ID：140
-   // 设置当前进程优先级为 prio
-   // 参数：prio 进程优先级，要求 prio >= 2
-   // 返回值：如果输入合法则返回 prio，否则返回 -1
-   fn sys_set_priority(prio: isize) -> isize;
-
-
-.. attention::
-
-    为了让大家能在本编程作业中使用 ``Vec`` 等数据结构，我们利用第三方库 ``buddy_system_allocator`` 为大家实现了堆内存分配器，相关代码位于 ``heap_alloc`` 模块。
-
-    背景知识： `Rust 中的动态内存分配 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter4/1rust-dynamic-allocation.html>`_
-
-
 实验要求
 +++++++++++++++++++++++++++++++++++++++++
 
@@ -81,9 +42,6 @@ ch3 中我们实现的调度算法十分简单。现在我们要为我们的 os 
 
 - 通过所有测例：
 
-  lab3 有 3 类测例，在 os 目录下执行 ``make run TEST=1`` 检查基本 ``sys_write`` 安全检查的实现， ``make run TEST=2`` 检查 ``set_priority`` 语义的正确性， ``make run TEST=3`` 检查 stride 调度算法是否满足公平性要求，
-  六个子程序运行的次数应该大致与其优先级呈正比，测试通过标准是 :math:`\max{\frac{runtimes}{prio}}/ \min{\frac{runtimes}{prio}} < 1.5`.
-
   CI 使用的测例与本地相同，测试中，user 文件夹及其它与构建相关的文件将被替换，请不要试图依靠硬编码通过测试。
 
 .. note::
@@ -98,7 +56,7 @@ ch3 中我们实现的调度算法十分简单。现在我们要为我们的 os 
 
    - 程序陷入内核的原因有中断和异常（系统调用），请问 RISC-V 64 支持哪些中断 / 异常？
    - 如何判断进入内核是由于中断还是异常？请描述陷入内核时的几个重要寄存器及其值。
-   - 为了方便 os 处理，Ｍ 态软件会将 S 态异常/中断委托给 S 态软件，请指出有哪些寄存器记录了委托信息。
+   - 为了方便 os 处理，M 态软件会将 S 态异常/中断委托给 S 态软件，请指出有哪些寄存器记录了委托信息。
    - RustSBI 委托了哪些异常/中断？（提示：看看 RustSBI 在启动时输出了什么？）
 
 2. 正确进入 U 态后，程序的特征还应有：使用 S 态特权指令，访问 S 态寄存器后会报错。请同学们可以自行测试这些内容 (运行 `Rust 三个bad测例 <https://github.com/LearningOS/rCore-Tutorial-2021Autumn/tree/ch2/user/src/bin>`_ ) ，描述程序出错行为，同时注意注明你使用的 sbi 及其版本。
@@ -160,39 +118,6 @@ ch3 中我们实现的调度算法十分简单。现在我们要为我们的 os 
          csrrw sp, sscratch, sp
 
    7. 从 U 态进入 S 态是哪一条指令发生的？
-
-5. stride 算法深入
-
-   stride 算法原理非常简单，但是有一个比较大的问题。例如两个 pass = 10 的进程，使用 8bit 无符号整形储存 stride， p1.stride = 255, p2.stride = 250，在 p2 执行一个时间片后，理论上下一次应该 p1 执行。
-
-   - 实际情况是轮到 p1 执行吗？为什么？
-
-   我们之前要求进程优先级 >= 2 其实就是为了解决这个问题。可以证明，**在不考虑溢出的情况下**, 在进程优先级全部 >= 2 的情况下，如果严格按照算法执行，那么 STRIDE_MAX – STRIDE_MIN <= BigStride / 2。
-
-   - 为什么？尝试简单说明（不要求严格证明）。
-
-   - 已知以上结论，**考虑溢出的情况下**，可以为 Stride 设计特别的比较器，让 BinaryHeap<Stride> 的 pop 方法能返回真正最小的 Stride。补全下列代码中的 ``partial_cmp`` 函数，假设两个 Stride 永远不会相等。
-
-   .. code-block:: rust
-
-     use core::cmp::Ordering;
-
-     struct Stride(u64);
-
-     impl PartialOrd for Stride {
-         fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-             // ...
-         }
-     }
-
-     impl PartialEq for Stride {
-         fn eq(&self, other: &Self) -> bool {
-             false
-         }
-     }
-
-   TIPS: 使用 8 bits 存储 stride, BigStride = 255, 则: ``(125 < 255) == false``, ``(129 < 255) == true``.
-
 
 报告要求
 -------------------------------
