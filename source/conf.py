@@ -17,8 +17,8 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'rCore-Tutorial-Autumn2021'
-copyright = 'OS2021Autumn'
+project = 'rCore-Tutorial-Guide-2022S'
+copyright = 'OS2022Spring'
 author = 'Yifan Wu'
 language = 'zh_CN'
 html_search_language = 'zh'
@@ -39,7 +39,7 @@ extensions = [
 
 comments_config = {
    "utterances": {
-       "repo": "LearningOS/rCore-Tutorial-Guide",
+       "repo": "LearningOS/rCore-Tutorial-Guide-2022S",
        "issue-term": "pathname",
        "label": "comments",
        "theme": "github-light",
