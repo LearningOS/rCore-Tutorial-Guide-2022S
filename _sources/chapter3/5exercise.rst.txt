@@ -33,7 +33,7 @@ ch3 中，我们的系统已经能够支持多个任务分时轮流运行，我�
         id: usize,
         status: TaskStatus,
         syscall_ids: [usize; MAX_SYSCALL_NUM],
-        syscall_times: [usize: MAX_SYSCALL_NUM],
+        syscall_times: [usize; MAX_SYSCALL_NUM],
         time: usize
     }
 
