@@ -301,8 +301,8 @@
 </div>
 <div class="section" id="id3">
 <h3>获取任务信息<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
-<p>ch3 中，我们的系统已经能够支持多个任务分时轮流运行，我们希望引入一个新的系统调用 <code class="docutils literal notranslate"><span class="pre">sys_task_info</span></code> 以获取任务的信息，定义如下：</p>
-<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> <span class="nf">sys_task_info</span><span class="p">(</span><span class="n">id</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="n">ts</span>: <span class="o">*</span><span class="k">mut</span><span class="w"> </span><span class="n">TaskInfo</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">isize</span>
+<p>ch3 中，我们的系统已经能够支持多个任务分时轮流运行，我们希望引入一个新的系统调用 <code class="docutils literal notranslate"><span class="pre">sys_task_info</span></code> 以获取当前任务的信息，定义如下：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> <span class="nf">sys_task_info</span><span class="p">(</span><span class="n">ti</span>: <span class="o">*</span><span class="k">mut</span><span class="w"> </span><span class="n">TaskInfo</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">isize</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -312,25 +312,16 @@
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">TaskInfo</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">id</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="n">status</span>: <span class="nc">TaskStatus</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">call</span>: <span class="p">[</span><span class="n">SyscallInfo</span><span class="p">;</span><span class="w"> </span><span class="n">MAX_SYSCALL_NUM</span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="n">syscall_ids</span>: <span class="p">[</span><span class="kt">usize</span><span class="p">;</span><span class="w"> </span><span class="n">MAX_SYSCALL_NUM</span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="n">syscall_times</span>: <span class="p">[</span><span class="kt">usize</span>: <span class="nc">MAX_SYSCALL_NUM</span><span class="p">],</span><span class="w"></span>
 <span class="w">    </span><span class="n">time</span>: <span class="kt">usize</span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>系统调用信息采用数组形式对每个系统调用的次数进行统计，相关结构定义如下：</p></li>
-</ul>
-<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">SyscallInfo</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">id</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">times</span>: <span class="kt">usize</span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><dl class="simple">
 <dt>参数：</dt><dd><ul>
-<li><p>id: 待查询任务id</p></li>
-<li><p>ts: 待查询任务信息</p></li>
+<li><p>ti: 待查询任务信息</p></li>
 </ul>
 </dd>
 </dl>
@@ -339,6 +330,7 @@
 <li><dl class="simple">
 <dt>说明：</dt><dd><ul>
 <li><p>相关结构已在框架中给出，只需添加逻辑实现功能需求即可。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TaskInfo</span></code> 结构中有关syscall的信息不需要考虑顺序，但id和times应该保证严格对应。</p></li>
 </ul>
 </dd>
 </dl>
@@ -348,7 +340,7 @@
 <li><p>大胆修改已有框架！除了配置文件，你几乎可以随意修改已有框架的内容。</p></li>
 <li><p>程序运行时间可以通过调用 <code class="docutils literal notranslate"><span class="pre">get_time()</span></code> 获取。</p></li>
 <li><p>系统调用次数可以考虑在进入内核态系统调用异常处理函数之后，进入具体系统调用函数之前维护。</p></li>
-<li><p>阅读 TaskManager 的实现，思考如何维护内核控制块信息（可以在控制块可变部分加入其他需要的信息）</p></li>
+<li><p>阅读 TaskManager 的实现，思考如何维护内核控制块信息（可以在控制块可变部分加入需要的信息）</p></li>
 </ul>
 </dd>
 </dl>
