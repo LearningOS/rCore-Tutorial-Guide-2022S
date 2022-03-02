@@ -92,14 +92,13 @@
 
     // os/src/task/switch.rs
 
-    global_asm!(include_str!("switch.S"));
+    core::arch::global_asm!(include_str!("switch.S"));
 
     extern "C" {
         pub fn __switch(
-            current_task_cx_ptr: *mut TaskContext, 
+            current_task_cx_ptr: *mut TaskContext,
             next_task_cx_ptr: *const TaskContext);
     }
 
 我们会调用该函数来完成切换功能，而不是直接跳转到符号 ``__switch`` 的地址。
 因此在调用前后，编译器会帮我们保存和恢复调用者保存寄存器。
-  

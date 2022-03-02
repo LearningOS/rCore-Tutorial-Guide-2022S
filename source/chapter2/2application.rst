@@ -114,7 +114,7 @@
     ///      `buf` 表示内存中缓冲区的起始地址；
     ///      `len` 表示内存中缓冲区的长度。
     /// 返回值：返回成功写入的长度。
-    /// syscall ID：64               
+    /// syscall ID：64
     fn sys_write(fd: usize, buf: *const u8, len: usize) -> isize;
 
     /// 功能：退出应用程序并将返回值告知批处理系统。
@@ -130,8 +130,8 @@
 .. note::
 
    RISC-V 寄存器编号从 ``0~31`` ，表示为 ``x0~x31`` 。 其中：
-   -  ``x10~x17`` : 对应  ``a0~a7`` 
-   -  ``x1`` ：对应 ``ra`` 
+   -  ``x10~x17`` : 对应  ``a0~a7``
+   -  ``x1`` ：对应 ``ra``
 
 约定寄存器 ``a0~a6`` 保存系统调用的参数， ``a0~a1`` 保存系统调用的返回值，
 寄存器 ``a7`` 用来传递 syscall ID。
@@ -145,7 +145,7 @@
     fn syscall(id: usize, args: [usize; 3]) -> isize {
        let mut ret: isize;
        unsafe {
-           asm!(
+           core::arch::asm!(
                "ecall",
                inlateout("x10") args[0] => ret,
                in("x11") args[1],
