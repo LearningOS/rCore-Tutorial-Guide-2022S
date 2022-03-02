@@ -15,7 +15,7 @@
    echo "Hello world!"
    println!("Hello world!");
 
-然而，要用几行代码向世界问好，并不像表面上那么简单。 
+然而，要用几行代码向世界问好，并不像表面上那么简单。
 ``Hello, world!`` 程序能够编译运行，靠的是以 **编译器** 为主的开发环境和以 **操作系统** 为主的执行环境。
 
 在本章中，我们将抽丝剥茧，一步步让 ``Hello, world!`` 程序脱离其依赖的执行环境，
@@ -23,7 +23,7 @@
 
 .. attention::
    实验指导书存在的目的是帮助读者理解框架代码。
-   
+
    为便于测试，完成编程实验时，请以框架代码为基础，不必跟着文档从零开始编写内核。
 
 为了做到这一步，首先需要让程序不依赖于标准库，
@@ -43,8 +43,8 @@
 
 .. code-block:: console
 
-   $ git clone https://github.com/LearningOS/rCore-Tutorial-2021Autumn.git
-   $ cd rCore-Tutorial-2021Autumn
+   $ git clone --recurse-submodules https://github.com/LearningOS/rCore-Tutorial-Code-2022S
+   $ cd rCore-Tutorial-Code-2022S
    $ git checkout ch1
 
 运行本章代码，并设置日志级别为 ``TRACE``：
@@ -68,7 +68,7 @@
 
 .. code-block::
 
-   ├── bootloader (内核依赖的运行在 M 特权级的 SBI 实现，本项目中我们使用 RustSBI) 
+   ├── bootloader (内核依赖的运行在 M 特权级的 SBI 实现，本项目中我们使用 RustSBI)
    │   └── rustsbi-qemu.bin
    ├── os
    │   ├── Cargo.toml (cargo 项目配置文件)

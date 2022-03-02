@@ -18,8 +18,8 @@
 
 .. code-block:: console
 
-   $ git clone https://github.com/LearningOS/rCore-Tutorial-2021Autumn.git
-   $ cd rCore-Tutorial-2021Autumn
+   $ git clone --recurse-submodules https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
+   $ cd rCore-Tutorial-Code-2022S
    $ git checkout ch3
 
 在 qemu 模拟器上运行本章代码：
@@ -170,7 +170,7 @@
               ├── context.rs
               ├── mod.rs(修改：时钟中断相应处理)
               └── trap.S
-  
+
    cloc os
    -------------------------------------------------------------------------------
    Language                     files          blank        comment           code
@@ -193,7 +193,7 @@
 .. - 应用在整个执行过程中会暂停或被抢占，即会有主动或被动的任务切换
 
 .. 这些实现上差异主要集中在对应用程序执行过程的管理、支持应用程序暂停的系统调用和主动切换应用程序所需的时钟中断机制的管理。
-  
+
 .. 对于第一个不同情况，需要对应用程序的地址空间布局进行调整，每个应用的地址空间都不相同，且不能重叠。这并不要修改应用程序本身，而是通过一个脚本 ``build.py`` 来针对每个应用程序修改链接脚本 ``linker.ld`` 中的 ``BASE_ADDRESS`` ，让编译器在编译不同应用时用到的 ``BASE_ADDRESS`` 都不同，且有足够大的地址间隔。这样就可以让每个应用所在的内存空间是不同的。
 
 .. 对于第二个不同情况，需要实现任务切换，这就需要在上一章的 ``trap`` 上下文切换的基础上，再加上一个 ``task`` 上下文切换，才能完成完整的任务切换。这里面的关键数据结构是表示应用执行上下文的 ``TaskContext`` 数据结构和具体完成上下文切换的汇编语言编写的 ``__switch`` 函数。一个应用的执行需要被操作系统管理起来，这是通过 ``TaskControlBlock`` 数据结构来表示应用执行上下文的动态过程和动态状态（运行态、就绪态等）。而为了做好应用程序第一次执行的前期初始化准备， ``TaskManager`` 数据结构的全局变量实例 ``TASK_MANAGER`` 描述了应用程序初始化所需的数据， 而 ``TASK_MANAGER`` 的初始化赋值过程是实现这个准备的关键步骤。

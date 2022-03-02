@@ -24,8 +24,8 @@
 
 .. code-block:: console
 
-   $ git clone https://github.com/LearningOS/rCore-Tutorial-2021Autumn.git
-   $ cd rCore-Tutorial-2021Autumn
+   $ git clone --recurse-submodules https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
+   $ cd rCore-Tutorial-Code-2022S
    $ git checkout ch2
 
 在 qemu 模拟器上运行本章代码：
@@ -37,8 +37,8 @@
 
 批处理系统自动加载并运行了所有的用户程序，尽管某些程序出错了：
 
-.. code-block:: 
-   
+.. code-block::
+
    [rustsbi] RustSBI version 0.2.0-alpha.4
   .______       __    __      _______.___________.  _______..______   __
   |   _  \     |  |  |  |    /       |           | /       ||   _  \ |  |
@@ -132,7 +132,7 @@
          ├── linker.ld(应用的链接脚本)
          └── syscall.rs(包含 syscall 方法生成实际用于系统调用的汇编指令，
                         各个具体的 syscall 都是通过 syscall 来实现的)
-   
+
    cloc os
    -------------------------------------------------------------------------------
    Language                     files          blank        comment           code
