@@ -158,8 +158,7 @@
 
 第 3 行，我们将所有的系统调用都封装成 ``syscall`` 函数，可以看到它支持传入 syscall ID 和 3 个参数。
 
-第 6 行开始，我们使用 Rust 提供的 ``asm!`` 宏在代码中内嵌汇编，这个宏在 Rust 中还不稳定，
-我们需要在 ``lib.rs`` 开头加入 ``#![feature(asm)]`` 。
+第 6 行开始，我们使用 Rust 提供的 ``asm!`` 宏在代码中内嵌汇编。
 Rust 编译器无法判定汇编代码的安全性，所以我们需要将其包裹在 unsafe 块中。
 
 简而言之，这条汇编代码的执行结果是以寄存器 ``a0~a2`` 来保存系统调用的参数，以及寄存器 ``a7`` 保存 syscall ID，
@@ -169,7 +168,7 @@ Rust 编译器无法判定汇编代码的安全性，所以我们需要将其包
 
 .. note::
 
-   可以查看 `inline-asm RFC <https://doc.rust-lang.org/beta/unstable-book/library-features/asm.html>`_ 了解 ``asm`` 宏。
+   可以查看 `Inline assembly <https://doc.rust-lang.org/nightly/reference/inline-assembly.html>`_ 了解 ``asm`` 宏。
 
 于是 ``sys_write`` 和 ``sys_exit`` 只需将 ``syscall`` 进行包装：
 
