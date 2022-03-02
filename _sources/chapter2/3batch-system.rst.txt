@@ -18,13 +18,13 @@
 
 .. code-block:: rust
 
-    global_asm!(include_str!("link_app.S"));
+    core::arch::global_asm!(include_str!("link_app.S"));
 
 这里我们引入了一段汇编代码 ``link_app.S`` ，它是在 ``make run`` 构建操作系统时自动生成的，里面的内容大致如下：
 
 .. code-block:: asm
     :linenos:
-    
+
     # os/src/link_app.S
 
         .align 3
@@ -36,21 +36,21 @@
         .quad app_1_start
         .quad app_2_start
         .quad app_2_end
-        
+
         .section .data
         .global app_0_start
         .global app_0_end
     app_0_start:
         .incbin "../user/target/riscv64gc-unknown-none-elf/release/hello_world.bin"
     app_0_end:
-            
+
         .section .data
         .global app_1_start
         .global app_1_end
     app_1_start:
         .incbin "../user/target/riscv64gc-unknown-none-elf/release/bad_address.bin"
     app_1_end:
-            
+
         .section .data
         .global app_2_start
         .global app_2_end
@@ -133,7 +133,7 @@
         }
         info!("[kernel] Loading app_{}", app_id);
         // clear icache
-        asm!("fence.i");
+        core::arch::asm!("fence.i");
         // clear app area
         core::slice::from_raw_parts_mut(APP_BASE_ADDRESS as *mut u8, APP_SIZE_LIMIT).fill(0);
         let app_src = core::slice::from_raw_parts(
@@ -153,9 +153,9 @@
 通常情况下， CPU 会认为程序的代码段不会发生变化，因此 i-cache 是一种只读缓存。
 但在这里，我们会修改会被 CPU 取指的内存区域，使得 i-cache 中含有与内存不一致的内容，
 必须使用 ``fence.i`` 指令手动清空 i-cache ，让里面所有的内容全部失效，
-才能够保证程序执行正确性。 
+才能够保证程序执行正确性。
 
-.. warning:: 
+.. warning::
 
    **模拟器与真机的不同之处**
 

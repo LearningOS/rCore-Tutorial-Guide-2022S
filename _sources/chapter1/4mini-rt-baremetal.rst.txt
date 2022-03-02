@@ -8,7 +8,7 @@
    :maxdepth: 5
 
 有了上一节实现的用户态的最小执行环境，稍加改造，就可以完成裸机上的最小执行环境了。
-本节中，我们将把 ``Hello world!`` 应用程序从用户态搬到内核态。 
+本节中，我们将把 ``Hello world!`` 应用程序从用户态搬到内核态。
 
 
 裸机启动过程
@@ -17,7 +17,7 @@
 用 QEMU 软件 ``qemu-system-riscv64`` 来模拟 RISC-V 64 计算机。加载内核程序的命令如下：
 
 .. code-block:: bash
-    
+
     qemu-system-riscv64 \
 		-machine virt \
 		-nographic \
@@ -60,7 +60,7 @@ RustSBI完成硬件初始化后，会跳转到 ``$(KERNEL_BIN)`` 所在内存位
     fn sbi_call(which: usize, arg0: usize, arg1: usize, arg2: usize) -> usize {
      let mut ret;
       unsafe {
-          asm!(
+          core::arch::asm!(
               "ecall",
     ...
 
@@ -212,7 +212,7 @@ RustSBI 约定的 ``0x80200000`` 。我们需要修改程序的内存布局并�
 在第 8 行，我们预留了一块大小为 4096 * 16 字节，也就是 :math:`64\text{KiB}` 的空间，
 用作操作系统的栈空间。
 栈顶地址被全局符号 ``boot_stack_top`` 标识，栈底则被全局符号 ``boot_stack`` 标识。
-同时，这块栈空间被命名为 
+同时，这块栈空间被命名为
 ``.bss.stack`` ，链接脚本里有它的位置。
 
 ``_start`` 作为操作系统的入口地址，将依据链接脚本被放在 ``BASE_ADDRESS`` 处。
@@ -225,16 +225,15 @@ RustSBI 约定的 ``0x80200000`` 。我们需要修改程序的内存布局并�
 
 .. code-block:: rust
     :linenos:
-    :emphasize-lines: 4,8,10,11,12,13
+    :emphasize-lines: 7,9,10,11,12
 
     // os/src/main.rs
     #![no_std]
     #![no_main]
-    #![feature(global_asm)]
 
     mod lang_items;
 
-    global_asm!(include_str!("entry.asm"));
+    core::arch::global_asm!(include_str!("entry.asm"));
 
     #[no_mangle]
     pub fn rust_main() -> ! {
@@ -243,12 +242,11 @@ RustSBI 约定的 ``0x80200000`` 。我们需要修改程序的内存布局并�
 
 背景高亮指出了 ``main.rs`` 中新增的代码。
 
-第 4 行中，我们手动设置 ``global_asm`` 特性，以支持在 Rust 代码中嵌入全局汇编代码。
-第 8 行，我们将同目录下的汇编文件 ``entry.asm`` 嵌入到代码中。
+第 7 行，我们使用 ``global_asm`` 宏，将同目录下的汇编文件 ``entry.asm`` 嵌入到代码中。
 
-从第 10 行开始，
-我们声明了应用的入口点 ``rust_main`` ，需要注意的是，这里通过宏将 ``rust_main`` 标记为 ``#[no_mangle]`` 
-以避免编译器对它的名字进行混淆，不然在链接时，
+从第 9 行开始，
+我们声明了应用的入口点 ``rust_main`` ，需要注意的是，这里通过宏将 ``rust_main``
+标记为 ``#[no_mangle]`` 以避免编译器对它的名字进行混淆，不然在链接时，
 ``entry.asm`` 将找不到 ``main.rs`` 提供的外部符号 ``rust_main``，导致链接失败。
 
 再次使用上节中的编译，生成和运行操作，我们看到QEMU模拟的RISC-V 64计算机 **优雅** 地退出了！
@@ -259,7 +257,7 @@ RustSBI 约定的 ``0x80200000`` 。我们需要修改程序的内存布局并�
     > -machine virt \
     > -nographic \
     > -bios ../bootloader/rustsbi-qemu.bin \
-    > -device loader,file=target/riscv64gc-unknown-none-elf/release/os.bin,addr=0x80200000 
+    > -device loader,file=target/riscv64gc-unknown-none-elf/release/os.bin,addr=0x80200000
     [rustsbi] Version 0.1.0
     .______       __    __      _______.___________.  _______..______   __
     |   _  \     |  |  |  |    /       |           | /       ||   _  \ |  |
@@ -278,7 +276,7 @@ RustSBI 约定的 ``0x80200000`` 。我们需要修改程序的内存布局并�
 清空 .bss 段
 ----------------------------------
 
-等一等，与内存相关的部分太容易出错了， **清零 .bss段** 的工作我们还没有完成。
+等一等，与内存相关的部分太容易出错了， **清零 .bss 段** 的工作我们还没有完成。
 
 .. code-block:: rust
     :linenos:
@@ -315,7 +313,7 @@ RustSBI 约定的 ``0x80200000`` 。我们需要修改程序的内存布局并�
 
 .. note::
 
-    在 cargo 项目中引入外部库 log，需要修改 ``Cargo.toml``，并在代码中声明 ``extern crate log``
+    在 cargo 项目中引入外部库 log，需要修改 ``Cargo.toml`` 加入相应的依赖信息。
 
 现在，让我们重复一遍本章开头的试验，``make run LOG=TRACE``！
 

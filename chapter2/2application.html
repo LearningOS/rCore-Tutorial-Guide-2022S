@@ -403,7 +403,7 @@
 <span class="linenos"> 3</span><span class="k">fn</span> <span class="nf">syscall</span><span class="p">(</span><span class="n">id</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="n">args</span>: <span class="p">[</span><span class="kt">usize</span><span class="p">;</span><span class="w"> </span><span class="mi">3</span><span class="p">])</span><span class="w"> </span>-&gt; <span class="kt">isize</span> <span class="p">{</span><span class="w"></span>
 <span class="linenos"> 4</span><span class="w">   </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">ret</span>: <span class="kt">isize</span><span class="p">;</span><span class="w"></span>
 <span class="linenos"> 5</span><span class="w">   </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="linenos"> 6</span><span class="w">       </span><span class="fm">asm!</span><span class="p">(</span><span class="w"></span>
+<span class="linenos"> 6</span><span class="w">       </span><span class="n">core</span>::<span class="n">arch</span>::<span class="fm">asm!</span><span class="p">(</span><span class="w"></span>
 <span class="linenos"> 7</span><span class="w">           </span><span class="s">"ecall"</span><span class="p">,</span><span class="w"></span>
 <span class="linenos"> 8</span><span class="w">           </span><span class="n">inlateout</span><span class="p">(</span><span class="s">"x10"</span><span class="p">)</span><span class="w"> </span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">ret</span><span class="p">,</span><span class="w"></span>
 <span class="linenos"> 9</span><span class="w">           </span><span class="k">in</span><span class="p">(</span><span class="s">"x11"</span><span class="p">)</span><span class="w"> </span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"></span>
@@ -416,15 +416,14 @@
 </pre></div>
 </div>
 <p>第 3 行，我们将所有的系统调用都封装成 <code class="docutils literal notranslate"><span class="pre">syscall</span></code> 函数，可以看到它支持传入 syscall ID 和 3 个参数。</p>
-<p>第 6 行开始，我们使用 Rust 提供的 <code class="docutils literal notranslate"><span class="pre">asm!</span></code> 宏在代码中内嵌汇编，这个宏在 Rust 中还不稳定，
-我们需要在 <code class="docutils literal notranslate"><span class="pre">lib.rs</span></code> 开头加入 <code class="docutils literal notranslate"><span class="pre">#![feature(asm)]</span></code> 。
+<p>第 6 行开始，我们使用 Rust 提供的 <code class="docutils literal notranslate"><span class="pre">asm!</span></code> 宏在代码中内嵌汇编。
 Rust 编译器无法判定汇编代码的安全性，所以我们需要将其包裹在 unsafe 块中。</p>
 <p>简而言之，这条汇编代码的执行结果是以寄存器 <code class="docutils literal notranslate"><span class="pre">a0~a2</span></code> 来保存系统调用的参数，以及寄存器 <code class="docutils literal notranslate"><span class="pre">a7</span></code> 保存 syscall ID，
 返回值通过寄存器 <code class="docutils literal notranslate"><span class="pre">a0</span></code> 传递给局部变量 <code class="docutils literal notranslate"><span class="pre">ret</span></code>。</p>
 <p>这段汇编代码与第一章中出现过的内嵌汇编很像，读者可以查看 <code class="docutils literal notranslate"><span class="pre">os/src/sbi.rs</span></code> 。</p>
 <div class="admonition note">
 <p class="admonition-title">注解</p>
-<p>可以查看 <a class="reference external" href="https://doc.rust-lang.org/beta/unstable-book/library-features/asm.html">inline-asm RFC</a> 了解 <code class="docutils literal notranslate"><span class="pre">asm</span></code> 宏。</p>
+<p>可以查看 <a class="reference external" href="https://doc.rust-lang.org/nightly/reference/inline-assembly.html">Inline assembly</a> 了解 <code class="docutils literal notranslate"><span class="pre">asm</span></code> 宏。</p>
 </div>
 <p>于是 <code class="docutils literal notranslate"><span class="pre">sys_write</span></code> 和 <code class="docutils literal notranslate"><span class="pre">sys_exit</span></code> 只需将 <code class="docutils literal notranslate"><span class="pre">syscall</span></code> 进行包装：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// user/src/syscall.rs</span>

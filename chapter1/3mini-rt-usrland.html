@@ -357,14 +357,13 @@
 </div>
 <p>目前的执行环境还缺了一个退出机制，我们需要操作系统提供的 <code class="docutils literal notranslate"><span class="pre">exit</span></code> 系统调用来退出程序。这里先给出代码：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/main.rs</span>
-<span class="cp">#![feature(asm)]</span><span class="w"></span>
 
 <span class="k">const</span><span class="w"> </span><span class="n">SYSCALL_EXIT</span>: <span class="kt">usize</span> <span class="o">=</span><span class="w"> </span><span class="mi">93</span><span class="p">;</span><span class="w"></span>
 
 <span class="k">fn</span> <span class="nf">syscall</span><span class="p">(</span><span class="n">id</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="n">args</span>: <span class="p">[</span><span class="kt">usize</span><span class="p">;</span><span class="w"> </span><span class="mi">3</span><span class="p">])</span><span class="w"> </span>-&gt; <span class="kt">isize</span> <span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="fm">asm!</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">core</span>::<span class="n">arch</span>::<span class="fm">asm!</span><span class="p">(</span><span class="w"></span>
 <span class="w">            </span><span class="s">"ecall"</span><span class="p">,</span><span class="w"></span>
 <span class="w">            </span><span class="n">inlateout</span><span class="p">(</span><span class="s">"x10"</span><span class="p">)</span><span class="w"> </span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">ret</span><span class="p">,</span><span class="w"></span>
 <span class="w">            </span><span class="k">in</span><span class="p">(</span><span class="s">"x11"</span><span class="p">)</span><span class="w"> </span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"></span>

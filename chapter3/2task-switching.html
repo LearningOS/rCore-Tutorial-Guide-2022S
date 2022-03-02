@@ -358,7 +358,7 @@
 <p>我们将这段汇编代码 <code class="docutils literal notranslate"><span class="pre">__switch</span></code> 解释为一个 Rust 函数：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1">// os/src/task/switch.rs</span>
 <span class="linenos">2</span>
-<span class="linenos">3</span><span class="fm">global_asm!</span><span class="p">(</span><span class="fm">include_str!</span><span class="p">(</span><span class="s">"switch.S"</span><span class="p">));</span><span class="w"></span>
+<span class="linenos">3</span><span class="n">core</span>::<span class="n">arch</span>::<span class="fm">global_asm!</span><span class="p">(</span><span class="fm">include_str!</span><span class="p">(</span><span class="s">"switch.S"</span><span class="p">));</span><span class="w"></span>
 <span class="linenos">4</span>
 <span class="linenos">5</span><span class="k">extern</span><span class="w"> </span><span class="s">"C"</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="linenos">6</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">__switch</span><span class="p">(</span><span class="w"></span>

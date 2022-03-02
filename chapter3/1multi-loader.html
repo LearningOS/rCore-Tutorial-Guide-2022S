@@ -291,13 +291,8 @@
 正因如此，内存中同时最多只能驻留一个应用，</p>
 <p>要一次加载运行多个程序，就要求每个用户程序被内核加载到内存中的起始地址都不同。
 为此，我们编写脚本 <code class="docutils literal notranslate"><span class="pre">user/build.py</span></code> 为每个应用定制各自的起始地址。
-它的思路很简单，对于每一个应用程序：</p>
-<ul class="simple">
-<li><p>找到 <code class="docutils literal notranslate"><span class="pre">src/linker.ld</span></code> 中的 <code class="docutils literal notranslate"><span class="pre">BASE_ADDRESS</span> <span class="pre">=</span> <span class="pre">0x80400000;</span></code> 这一行，并将后面的地址
-替换为 <code class="docutils literal notranslate"><span class="pre">0x80400000</span> <span class="pre">+</span> <span class="pre">app_id</span> <span class="pre">*</span> <span class="pre">0x20000</span></code>；</p></li>
-<li><p>使用 <code class="docutils literal notranslate"><span class="pre">cargo</span> <span class="pre">build</span> <span class="pre">--bin</span></code> 构建当前应用；</p></li>
-<li><p>将 <code class="docutils literal notranslate"><span class="pre">src/linker.ld</span></code> 还原。</p></li>
-</ul>
+它的思路很简单，对于每一个应用程序，使用 <code class="docutils literal notranslate"><span class="pre">cargo</span> <span class="pre">rustc</span></code> 单独编译，
+用 <code class="docutils literal notranslate"><span class="pre">-Clink-args=-Ttext=xxxx</span></code> 选项指定链接时 .text 段的地址为 <code class="docutils literal notranslate"><span class="pre">0x80400000</span> <span class="pre">+</span> <span class="pre">app_id</span> <span class="pre">*</span> <span class="pre">0x20000</span></code> 。</p>
 <div class="admonition note">
 <p class="admonition-title">注解</p>
 <p>qemu 预留的内存空间是有限的，如果加载的程序过多，程序地址超出内存空间，可能出现 <code class="docutils literal notranslate"><span class="pre">core</span> <span class="pre">dumped</span></code>.</p>
@@ -319,7 +314,7 @@
 <span class="linenos"> 9</span><span class="w">     </span><span class="kd">let</span><span class="w"> </span><span class="n">app_start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">core</span>::<span class="n">slice</span>::<span class="n">from_raw_parts</span><span class="p">(</span><span class="n">num_app_ptr</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">num_app</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
 <span class="linenos">10</span><span class="w">     </span><span class="c1">// clear i-cache first</span>
 <span class="linenos">11</span><span class="w">     </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="linenos">12</span><span class="w">         </span><span class="fm">asm!</span><span class="p">(</span><span class="s">"fence.i"</span><span class="p">);</span><span class="w"></span>
+<span class="linenos">12</span><span class="w">         </span><span class="n">core</span>::<span class="n">arch</span>::<span class="fm">asm!</span><span class="p">(</span><span class="s">"fence.i"</span><span class="p">);</span><span class="w"></span>
 <span class="linenos">13</span><span class="w">     </span><span class="p">}</span><span class="w"></span>
 <span class="linenos">14</span><span class="w">     </span><span class="c1">// load apps</span>
 <span class="linenos">15</span><span class="w">     </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="n">num_app</span><span class="w"> </span><span class="p">{</span><span class="w"></span>

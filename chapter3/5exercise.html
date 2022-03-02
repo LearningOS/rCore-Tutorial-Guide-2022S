@@ -348,16 +348,7 @@
 </ul>
 </div>
 <div class="section" id="id4">
-<h3>打印调用堆栈（选做）<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
-<p>我们在调试程序时，除了正在执行的函数外，往往还需要知道当前的调用堆栈。这样的功能通常由调试器、运行环境、 IDE 或操作系统等提供，但现在我们只能靠自己了。最基本的实现只需打印出调用链上的函数地址，更丰富的功能包括打印出函数名、函数定义、传递的参数等等。</p>
-<p>本实验我们不提供测例，仅提供参考实现，各位同学可以通过对照 GDB 、参考实现或自行构造调用链等方式检验自己的实现是否正确。</p>
-<div class="admonition hint">
-<p class="admonition-title">提示</p>
-<p>可以参考《编译原理》课程中关于函数调用栈帧的内容。</p>
-</div>
-</div>
-<div class="section" id="id5">
-<h3>实验要求<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h3>
+<h3>实验要求<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
 <ul class="simple">
 <li><p>完成分支: ch3。</p></li>
 <li><p>实验目录要求</p></li>
@@ -375,7 +366,10 @@
 </div>
 <ul>
 <li><p>通过所有测例：</p>
-<p>CI 使用的测例与本地相同，测试中，user 文件夹及其它与构建相关的文件将被替换，请不要试图依靠硬编码通过测试。</p>
+<blockquote>
+<div><p>CI 使用的测例与本地相同，测试中，user 文件夹及其它与构建相关的文件将被替换，请不要试图依靠硬编码通过测试。
+默认情况下，makefile 仅编译基础测例 (<code class="docutils literal notranslate"><span class="pre">BASE=1</span></code>)，即无需修改框架即可正常运行的测例。你需要在编译时指定 <code class="docutils literal notranslate"><span class="pre">BASE=0</span></code> 控制框架仅编译实验测例（在 os 目录执行 <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">run</span> <span class="pre">BASE=0</span></code>），或指定 <code class="docutils literal notranslate"><span class="pre">BASE=2</span></code> 控制框架同时编译基础测例和实验测例。</p>
+</div></blockquote>
 </li>
 </ul>
 <div class="admonition note">
@@ -384,8 +378,8 @@
 </div>
 </div>
 </div>
-<div class="section" id="id6">
-<h2>简答作业<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id5">
+<h2>简答作业<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p>请依次简要回答如下问题：</p>
 <ul class="simple">
@@ -457,8 +451,8 @@
 </li>
 </ol>
 </div>
-<div class="section" id="id8">
-<h2>报告要求<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id7">
+<h2>报告要求<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
 <ul class="simple">
 <li><p>简单总结你实现的功能（200字以内，不要贴代码）。</p></li>
 <li><p>完成问答题。</p></li>
@@ -525,12 +519,11 @@
 <li><a class="reference internal" href="#id1">编程作业</a><ul>
 <li><a class="reference internal" href="#id2">读取目录信息</a></li>
 <li><a class="reference internal" href="#id3">获取任务信息</a></li>
-<li><a class="reference internal" href="#id4">打印调用堆栈（选做）</a></li>
-<li><a class="reference internal" href="#id5">实验要求</a></li>
+<li><a class="reference internal" href="#id4">实验要求</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id6">简答作业</a></li>
-<li><a class="reference internal" href="#id8">报告要求</a></li>
+<li><a class="reference internal" href="#id5">简答作业</a></li>
+<li><a class="reference internal" href="#id7">报告要求</a></li>
 </ul>
 </li>
 </ul>

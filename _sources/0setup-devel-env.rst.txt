@@ -1,10 +1,10 @@
 第零章：实验环境配置
-============
+================================
 
 .. toctree::
    :hidden:
    :maxdepth: 4
-   
+
 本节我们将完成环境配置并成功运行 rCore-Tutorial 。整个流程分为下面几个部分：
 
 - OS 环境配置
@@ -28,13 +28,13 @@ Windows10 用户可以通过系统内置的 **WSL2** 虚拟机（请不要使用
    **Docker 开发环境**
 
    感谢 dinghao188 和张汉东老师帮忙配置好的 Docker 开发环境，进入 Docker 开发环境之后不需要任何软件工具链的安装和配置，可以直接将 tutorial 运行起来，目前应该仅支持将 tutorial 运行在 Qemu 模拟器上。
-   
+
    使用方法如下（以 Ubuntu18.04 为例）：
 
    1. 通过 ``su`` 切换到管理员账户 ``root`` ；
    2. 在 ``rCore-Tutorial`` 根目录下 ``make docker`` 进入到 Docker 环境；
    3. 进入 Docker 之后，会发现当前处于根目录 ``/`` ，我们通过 ``cd mnt`` 将当前工作路径切换到 ``/mnt`` 目录；
-   4. 通过 ``ls`` 可以发现 ``/mnt`` 目录下的内容和 ``rCore-Tutorial-v3`` 目录下的内容完全相同，接下来就可以在这个环境下运行 tutorial 了。例如 ``cd os && make run`` 。    
+   4. 通过 ``ls`` 可以发现 ``/mnt`` 目录下的内容和 ``rCore-Tutorial-v3`` 目录下的内容完全相同，接下来就可以在这个环境下运行 tutorial 了。例如 ``cd os && make run`` 。
 
 使用 macOS 进行实验理论上也是可行的，但本章节仅介绍 Ubuntu 下的环境配置方案。
 
@@ -56,7 +56,7 @@ Rust 开发环境配置
 建议将 rustup 的镜像地址修改为中科大的镜像服务器，以加速安装：
 
 .. code-block:: bash
-   
+
    export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
    export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
    curl https://sh.rustup.rs -sSf | sh
@@ -64,14 +64,14 @@ Rust 开发环境配置
 或者使用 tuna 源来加速（建议清华同学在校园网中使用） `参见 rustup 帮助 <https://mirrors.tuna.tsinghua.edu.cn/help/rustup/>`_：
 
 .. code-block:: bash
-   
+
    export RUSTUP_DIST_SERVER=https://mirrors.tuna.edu.cn/rustup
    export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.edu.cn/rustup/rustup
    curl https://sh.rustup.rs -sSf | sh
 
 也可以设置科学上网代理：
 
-.. code-block:: bash 
+.. code-block:: bash
 
    # e.g. Shadowsocks 代理，请根据自身配置灵活调整下面的链接
    export https_proxy=http://127.0.0.1:1080
@@ -80,7 +80,7 @@ Rust 开发环境配置
 
 安装中全程选择默认选项即可。
 
-安装完成后，我们可以重新打开一个终端来让新设置的环境变量生效，可以手动将环境变量设置应用到当前终端，
+安装完成后，我们可以重新打开一个终端来让新设置的环境变量生效，也可以手动将环境变量设置应用到当前终端，
 只需输入以下命令：
 
 .. code-block:: bash
@@ -90,7 +90,7 @@ Rust 开发环境配置
 确认一下我们正确安装了 Rust 工具链：
 
 .. code-block:: bash
-   
+
    rustc --version
 
 最好把 Rust 包管理器 cargo 镜像地址 crates.io 也替换成中国科学技术大学的镜像服务器，来加速三方库的下载。
@@ -138,7 +138,7 @@ Qemu 模拟器安装
    sudo apt install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev \
                  gawk build-essential bison flex texinfo gperf libtool patchutils bc \
                  zlib1g-dev libexpat-dev pkg-config  libglib2.0-dev libpixman-1-dev git tmux python3
-   # 下载源码包 
+   # 下载源码包
    # 如果下载速度过慢可以使用我们提供的百度网盘链接：https://pan.baidu.com/s/1z-iWIPjxjxbdFS2Qf-NKxQ
    # 提取码 8woe
    wget https://download.qemu.org/qemu-5.0.0.tar.xz
@@ -150,16 +150,18 @@ Qemu 模拟器安装
    make -j$(nproc)
 
 .. note::
-   
+
    注意，上面的依赖包可能并不完全，比如在 Ubuntu 18.04 上：
 
    - 出现 ``ERROR: pkg-config binary 'pkg-config' not found`` 时，可以安装 ``pkg-config`` 包；
-   - 出现 ``ERROR: glib-2.48 gthread-2.0 is required to compile QEMU`` 时，可以安装 
+   - 出现 ``ERROR: glib-2.48 gthread-2.0 is required to compile QEMU`` 时，可以安装
      ``libglib2.0-dev`` 包；
    - 出现 ``ERROR: pixman >= 0.21.8 not present`` 时，可以安装 ``libpixman-1-dev`` 包。
 
-   另外一些 Linux 发行版编译 Qemu 的依赖包可以从 `这里 <https://risc-v-getting-started-guide.readthedocs.io/en/latest/linux-qemu.html#prerequisites>`_ 
+   另外一些 Linux 发行版编译 Qemu 的依赖包可以从 `这里 <https://risc-v-getting-started-guide.readthedocs.io/en/latest/linux-qemu.html#prerequisites>`_
    找到。
+
+   GCC 11 可能无法正常编译 Qemu5 ，而 GCC 9.3.0 (Ubuntu 20.04 自带) 及 GCC 10.3.0 经测试可以编译，请自行选择合适的编译器版本。
 
 之后我们可以在同目录下 ``sudo make install`` 将 Qemu 安装到 ``/usr/local/bin`` 目录下，但这样经常会引起
 冲突。个人来说更习惯的做法是，编辑 ``~/.bashrc`` 文件（如果使用的是默认的 ``bash`` 终端），在文件的末尾加入
@@ -186,7 +188,7 @@ Qemu 模拟器安装
 
 .. code-block:: bash
 
-   git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S
+   git clone --recurse-submodules https://github.com/LearningOS/rCore-Tutorial-Code-2022S
 
 只需在 ``os`` 目录下 ``make run`` 即可。在内核加载完毕之后，可以看到目前可用的应用程序。 ``usertests`` 打包了其中的很大一部分，我们可以运行它，只需输入在终端中输入它的名字即可。
 
@@ -195,17 +197,17 @@ Qemu 模拟器安装
 .. attention::
 
    请务必执行 ``make run``，这将为你安装一些上文没有提及的 Rust 包依赖。
-   
-   如果卡在了 
-   
+
+   如果卡在了
+
    .. code-block::
-   
+
       Updating git repository `https://github.com/rcore-os/riscv`
-      
+
    请通过更换 hosts 等方式解决科学上网问题，或者将 riscv 项目下载到本地，并修改 os/Cargo.toml 中的 riscv 包依赖路径
-   
+
    .. code-block::
-   
+
       [dependencies]
       riscv = { path = "YOUR riscv PATH", features = ["inline-asm"] }
 

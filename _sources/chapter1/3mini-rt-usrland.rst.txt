@@ -8,8 +8,8 @@
    :maxdepth: 5
 
 .. note::
-  
-  前三小节的用户态程序案例代码在 `此处 <https://github.com/LearningOS/rCore-Tutorial-Book-2021Autumn/tree/ch2-U-nostd>`_ 获取。 
+
+  前三小节的用户态程序案例代码在 `此处 <https://github.com/LearningOS/rCore-Tutorial-Book-2021Autumn/tree/ch2-U-nostd>`_ 获取。
 
 
 用户态最小化执行环境
@@ -39,7 +39,7 @@
    $ cargo build
       Compiling os v0.1.0 (/home/shinbokuow/workspace/v3/rCore-Tutorial-v3/os)
        Finished dev [unoptimized + debuginfo] target(s) in 0.06s
-   
+
    [反汇编导出汇编程序]
    $ rust-objdump -S target/riscv64gc-unknown-none-elf/debug/os
       target/riscv64gc-unknown-none-elf/debug/os:	file format elf64-littleriscv
@@ -88,11 +88,11 @@
 .. note::
 
   QEMU有两种运行模式：
-  
+
   ``User mode`` 模式，即用户态模拟，如 ``qemu-riscv64`` 程序，
   能够模拟不同处理器的用户态指令的执行，并可以直接解析ELF可执行文件，
-  加载运行那些为不同处理器编译的用户级Linux应用程序。 
-  
+  加载运行那些为不同处理器编译的用户级Linux应用程序。
+
   ``System mode`` 模式，即系统态模式，如 ``qemu-system-riscv64`` 程序，
   能够模拟一个完整的基于不同CPU的硬件系统，包括处理器、内存及其他外部设备，支持运行完整的操作系统。
 
@@ -100,16 +100,15 @@
 目前的执行环境还缺了一个退出机制，我们需要操作系统提供的 ``exit`` 系统调用来退出程序。这里先给出代码：
 
 .. code-block:: rust
-  
+
   // os/src/main.rs
-  #![feature(asm)]
 
   const SYSCALL_EXIT: usize = 93;
 
   fn syscall(id: usize, args: [usize; 3]) -> isize {
       let mut ret;
       unsafe {
-          asm!(
+          core::arch::asm!(
               "ecall",
               inlateout("x10") args[0] => ret,
               in("x11") args[1],
@@ -141,8 +140,8 @@
     $ cargo build --target riscv64gc-unknown-none-elf
       Compiling os v0.1.0 (/media/chyyuu/ca8c7ba6-51b7-41fc-8430-e29e31e5328f/thecode/rust/os_kernel_lab/os)
         Finished dev [unoptimized + debuginfo] target(s) in 0.26s
-    
-    [打印程序的返回值]    
+
+    [打印程序的返回值]
     $ qemu-riscv64 target/riscv64gc-unknown-none-elf/debug/os; echo $?
     9
 
@@ -167,7 +166,7 @@ Rust 的 core 库内建了以一系列帮助实现显示字符的基本 Trait �
 首先封装一下对 ``SYSCALL_WRITE`` 系统调用。
 
 .. code-block:: rust
-  
+
   const SYSCALL_WRITE: usize = 64;
 
   pub fn sys_write(fd: usize, buffer: &[u8]) -> isize {
@@ -178,7 +177,7 @@ Rust 的 core 库内建了以一系列帮助实现显示字符的基本 Trait �
 
 
 .. code-block:: rust
-  
+
   struct Stdout;
 
   impl Write for Stdout {
@@ -219,7 +218,7 @@ Rust 的 core 库内建了以一系列帮助实现显示字符的基本 Trait �
   extern "C" fn _start() {
       println!("Hello, world!");
       sys_exit(9);
-  } 
+  }
 
 
 现在，我们编译并执行一下，可以看到正确的字符串输出，且程序也能正确退出！
@@ -236,7 +235,7 @@ Rust 的 core 库内建了以一系列帮助实现显示字符的基本 Trait �
     9
 
 
-.. 下面出错的情况是会在采用 linker.ld，加入了 .cargo/config 
+.. 下面出错的情况是会在采用 linker.ld，加入了 .cargo/config
 .. 的内容后会出错：
 .. .. [build]
 .. .. target = "riscv64gc-unknown-none-elf"
@@ -245,7 +244,7 @@ Rust 的 core 库内建了以一系列帮助实现显示字符的基本 Trait �
 .. ..    "-Clink-arg=-Tsrc/linker.ld", "-Cforce-frame-pointers=yes"
 .. .. ]
 
-.. 重新定义了栈和地址空间布局后才会出错    
+.. 重新定义了栈和地址空间布局后才会出错
 
 .. 段错误 (核心已转储)
 
@@ -254,7 +253,7 @@ Rust 的 core 库内建了以一系列帮助实现显示字符的基本 Trait �
 .. .. code-block:: asm
 
 ..   # entry.asm
-  
+
 ..       .section .text.entry
 ..       .globl _start
 ..   _start:

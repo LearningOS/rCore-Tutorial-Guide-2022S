@@ -328,7 +328,7 @@ RustSBI完成硬件初始化后，会跳转到 <code class="docutils literal not
 <span class="k">fn</span> <span class="nf">sbi_call</span><span class="p">(</span><span class="n">which</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="n">arg0</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="n">arg1</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="n">arg2</span>: <span class="kt">usize</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">usize</span> <span class="p">{</span><span class="w"></span>
 <span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="fm">asm!</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">core</span>::<span class="n">arch</span>::<span class="fm">asm!</span><span class="p">(</span><span class="w"></span>
 <span class="w">          </span><span class="s">"ecall"</span><span class="p">,</span><span class="w"></span>
 <span class="o">..</span><span class="p">.</span><span class="w"></span>
 
@@ -472,30 +472,28 @@ RustSBI 约定的 <code class="docutils literal notranslate"><span class="pre">0
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// os/src/main.rs</span>
 <span class="linenos"> 2</span><span class="cp">#![no_std]</span><span class="w"></span>
 <span class="linenos"> 3</span><span class="cp">#![no_main]</span><span class="w"></span>
-<span class="hll"><span class="linenos"> 4</span><span class="cp">#![feature(global_asm)]</span><span class="w"></span>
-</span><span class="linenos"> 5</span>
-<span class="linenos"> 6</span><span class="k">mod</span> <span class="nn">lang_items</span><span class="p">;</span><span class="w"></span>
-<span class="linenos"> 7</span>
-<span class="hll"><span class="linenos"> 8</span><span class="fm">global_asm!</span><span class="p">(</span><span class="fm">include_str!</span><span class="p">(</span><span class="s">"entry.asm"</span><span class="p">));</span><span class="w"></span>
-</span><span class="linenos"> 9</span>
-<span class="hll"><span class="linenos">10</span><span class="cp">#[no_mangle]</span><span class="w"></span>
-</span><span class="hll"><span class="linenos">11</span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">rust_main</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="o">!</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-</span><span class="hll"><span class="linenos">12</span><span class="w">    </span><span class="n">shutdown</span><span class="p">();</span><span class="w"></span>
-</span><span class="hll"><span class="linenos">13</span><span class="p">}</span><span class="w"></span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="k">mod</span> <span class="nn">lang_items</span><span class="p">;</span><span class="w"></span>
+<span class="linenos"> 6</span>
+<span class="hll"><span class="linenos"> 7</span><span class="n">core</span>::<span class="n">arch</span>::<span class="fm">global_asm!</span><span class="p">(</span><span class="fm">include_str!</span><span class="p">(</span><span class="s">"entry.asm"</span><span class="p">));</span><span class="w"></span>
+</span><span class="linenos"> 8</span>
+<span class="hll"><span class="linenos"> 9</span><span class="cp">#[no_mangle]</span><span class="w"></span>
+</span><span class="hll"><span class="linenos">10</span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">rust_main</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="o">!</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class="hll"><span class="linenos">11</span><span class="w">    </span><span class="n">shutdown</span><span class="p">();</span><span class="w"></span>
+</span><span class="hll"><span class="linenos">12</span><span class="p">}</span><span class="w"></span>
 </span></pre></div>
 </div>
 <p>背景高亮指出了 <code class="docutils literal notranslate"><span class="pre">main.rs</span></code> 中新增的代码。</p>
-<p>第 4 行中，我们手动设置 <code class="docutils literal notranslate"><span class="pre">global_asm</span></code> 特性，以支持在 Rust 代码中嵌入全局汇编代码。
-第 8 行，我们将同目录下的汇编文件 <code class="docutils literal notranslate"><span class="pre">entry.asm</span></code> 嵌入到代码中。</p>
-<p>从第 10 行开始，
-我们声明了应用的入口点 <code class="docutils literal notranslate"><span class="pre">rust_main</span></code> ，需要注意的是，这里通过宏将 <code class="docutils literal notranslate"><span class="pre">rust_main</span></code> 标记为 <code class="docutils literal notranslate"><span class="pre">#[no_mangle]</span></code>
-以避免编译器对它的名字进行混淆，不然在链接时，
+<p>第 7 行，我们使用 <code class="docutils literal notranslate"><span class="pre">global_asm</span></code> 宏，将同目录下的汇编文件 <code class="docutils literal notranslate"><span class="pre">entry.asm</span></code> 嵌入到代码中。</p>
+<p>从第 9 行开始，
+我们声明了应用的入口点 <code class="docutils literal notranslate"><span class="pre">rust_main</span></code> ，需要注意的是，这里通过宏将 <code class="docutils literal notranslate"><span class="pre">rust_main</span></code>
+标记为 <code class="docutils literal notranslate"><span class="pre">#[no_mangle]</span></code> 以避免编译器对它的名字进行混淆，不然在链接时，
 <code class="docutils literal notranslate"><span class="pre">entry.asm</span></code> 将找不到 <code class="docutils literal notranslate"><span class="pre">main.rs</span></code> 提供的外部符号 <code class="docutils literal notranslate"><span class="pre">rust_main</span></code>，导致链接失败。</p>
 <p>再次使用上节中的编译，生成和运行操作，我们看到QEMU模拟的RISC-V 64计算机 <strong>优雅</strong> 地退出了！</p>
 </div>
 <div class="section" id="bss">
 <h2>清空 .bss 段<a class="headerlink" href="#bss" title="永久链接至标题">¶</a></h2>
-<p>等一等，与内存相关的部分太容易出错了， <strong>清零 .bss段</strong> 的工作我们还没有完成。</p>
+<p>等一等，与内存相关的部分太容易出错了， <strong>清零 .bss 段</strong> 的工作我们还没有完成。</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// os/src/main.rs</span>
 <span class="linenos"> 2</span><span class="k">fn</span> <span class="nf">clear_bss</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="linenos"> 3</span><span class="w">    </span><span class="k">extern</span><span class="w"> </span><span class="s">"C"</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -524,7 +522,7 @@ RustSBI 约定的 <code class="docutils literal notranslate"><span class="pre">0
 <p>我们还使用第三方库 <code class="docutils literal notranslate"><span class="pre">log</span></code> 为你实现了日志模块，相关代码位于 <code class="docutils literal notranslate"><span class="pre">os/src/logging.rs</span></code> 中。</p>
 <div class="admonition note">
 <p class="admonition-title">注解</p>
-<p>在 cargo 项目中引入外部库 log，需要修改 <code class="docutils literal notranslate"><span class="pre">Cargo.toml</span></code>，并在代码中声明 <code class="docutils literal notranslate"><span class="pre">extern</span> <span class="pre">crate</span> <span class="pre">log</span></code></p>
+<p>在 cargo 项目中引入外部库 log，需要修改 <code class="docutils literal notranslate"><span class="pre">Cargo.toml</span></code> 加入相应的依赖信息。</p>
 </div>
 <p>现在，让我们重复一遍本章开头的试验，<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">run</span> <span class="pre">LOG=TRACE</span></code>！</p>
 <div class="figure align-center">

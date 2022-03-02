@@ -13,8 +13,8 @@
 
 .. code-block:: console
 
-   $ git clone https://github.com/LearningOS/rCore-Tutorial-2021Autumn.git
-   $ cd rCore-Tutorial-2021Autumn
+   $ git clone --recurse-submodules https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
+   $ cd rCore-Tutorial-Code-2022S
    $ git checkout ch6
 
 在 qemu 模拟器上运行本章代码：
@@ -34,7 +34,7 @@
    Read OK, child process exited!
    pipetest passed!
    Shell: Process 2 exited with code 0
-   >> 
+   >>
 
 
 
@@ -85,7 +85,7 @@
 
 
 .. 本章代码导读
-.. -----------------------------------------------------             
+.. -----------------------------------------------------
 
 .. 在本章第一节 :doc:`/chapter6/1file-descriptor` 中，我们引入了文件的概念，用它来代表进程可以读写的多种被内核管理的硬件/软件资源。进程必须通过系统调用打开一个文件，将文件加入到自身的文件描述符表中，才能通过文件描述符（也就是某个特定文件在自身文件描述符表中的下标）来读写该文件。
 

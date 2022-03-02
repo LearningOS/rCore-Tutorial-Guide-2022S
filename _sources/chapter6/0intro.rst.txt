@@ -17,8 +17,8 @@
 
 .. code-block:: console
 
-   $ git clone https://github.com/LearningOS/rCore-Tutorial-2021Autumn.git
-   $ cd rCore-Tutorial-2021Autumn
+   $ git clone --recurse-submodules https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
+   $ cd rCore-Tutorial-Code-2022S
    $ git checkout ch7
 
 在 qemu 模拟器上运行本章代码：
@@ -35,7 +35,7 @@
     >> filetest_simple
     file_test passed!
     Shell: Process 2 exited with code 0
-    >> 
+    >>
 
 它会将 ``Hello, world!`` 输出到另一个文件 ``filea`` ，并读取里面的内容确认输出正确。我们也可以通过命令行工具 ``cat`` 来查看 ``filea`` 中的内容：
 
@@ -44,7 +44,7 @@
    >> cat filea
    Hello, world!
    Shell: Process 2 exited with code 0
-   >> 
+   >>
 
 此外，在本章我们为shell程序支持了输入/输出重定向功能，可以将一个应用的输出保存到一个指定的文件。例如，下面的命令可以将 ``yield`` 应用的输出保存在文件 ``fileb`` 当中，并在应用执行完毕之后确认它的输出：
 
@@ -62,7 +62,7 @@
    yield pass.
 
    Shell: Process 2 exited with code 0
-   >> 
+   >>
 
 本章代码树
 -----------------------------------------
@@ -137,7 +137,7 @@
    -------------------------------------------------------------------------------
 
 .. 本章代码导读
-.. -----------------------------------------------------          
+.. -----------------------------------------------------
 
 .. 本章涉及的代码量相对较多，且与进程执行相关的管理还有直接的关系。其实我们是参考经典的UNIX基于索引的文件系统，设计了一个简化的有一级目录并支持创建/打开/读写/关闭文件一系列操作的文件系统。这里简要介绍一下在内核中添加文件系统的大致开发过程。
 
@@ -152,7 +152,7 @@
 .. 有了块缓存，我们就可以在内存中方便地处理easyfs文件系统在磁盘上的各种数据了，这就是第三层文件系统的磁盘数据结构。easyfs文件系统中的所有需要持久保存的数据都会放到磁盘上，这包括了管理这个文件系统的 **超级块 (Super Block)**，管理空闲磁盘块的 **索引节点位图区** 和  **数据块位图区** ，以及管理文件的 **索引节点区** 和 放置文件数据的 **数据块区** 组成。
 
 .. easyfs文件系统中管理这些磁盘数据的控制逻辑主要集中在 **磁盘块管理器** 中，这是文件系统的第四层。对于文件系统管理而言，其核心是 ``EasyFileSystem`` 数据结构及其关键成员函数：
- 
+
 ..  - EasyFileSystem.create：创建文件系统
 ..  - EasyFileSystem.open：打开文件系统
 ..  - EasyFileSystem.alloc_inode：分配inode （dealloc_inode未实现，所以还不能删除文件）
