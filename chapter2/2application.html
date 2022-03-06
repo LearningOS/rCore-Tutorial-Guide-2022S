@@ -395,7 +395,7 @@
 -  <code class="docutils literal notranslate"><span class="pre">x10~x17</span></code> : 对应  <code class="docutils literal notranslate"><span class="pre">a0~a7</span></code>
 -  <code class="docutils literal notranslate"><span class="pre">x1</span></code> ：对应 <code class="docutils literal notranslate"><span class="pre">ra</span></code></p>
 </div>
-<p>约定寄存器 <code class="docutils literal notranslate"><span class="pre">a0~a6</span></code> 保存系统调用的参数， <code class="docutils literal notranslate"><span class="pre">a0~a1</span></code> 保存系统调用的返回值，
+<p>约定寄存器 <code class="docutils literal notranslate"><span class="pre">a0~a6</span></code> 保存系统调用的参数， <code class="docutils literal notranslate"><span class="pre">a0</span></code> 保存系统调用的返回值，
 寄存器 <code class="docutils literal notranslate"><span class="pre">a7</span></code> 用来传递 syscall ID。
 这超出了 Rust 语言的表达能力，我们需要内嵌汇编来完成参数/返回值绑定和 <code class="docutils literal notranslate"><span class="pre">ecall</span></code> 指令的插入：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// user/src/syscall.rs</span>
