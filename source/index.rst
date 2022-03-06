@@ -79,7 +79,7 @@ rCore-Tutorial-Book 2022 春季学期
 ----------------------
 
 - :doc:`/setup-sphinx` 介绍了如何基于 Sphinx 框架配置文档开发环境，之后可以本地构建并渲染 html 或其他格式的文档；
-- :doc:`/rest-example` 给出了目前编写文档才用的 ReStructuredText 标记语言的一些基础语法及用例；
+- :doc:`/rest-example` 给出了目前编写文档采用的 ReStructuredText 标记语言的一些基础语法及用例；
 - 时间仓促，本项目还有很多不完善之处，欢迎大家积极在每一个章节的评论区留言，或者提交 Issues 或 Pull Requests，让我们
   一起努力让这本书变得更好！
 
