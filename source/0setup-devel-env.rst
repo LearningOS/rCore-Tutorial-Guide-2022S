@@ -190,7 +190,7 @@ Qemu 模拟器安装
 
    git clone --recurse-submodules https://github.com/LearningOS/rCore-Tutorial-Code-2022S
 
-只需在 ``os`` 目录下 ``make run`` 即可。在内核加载完毕之后，可以看到目前可用的应用程序。 ``usertests`` 打包了其中的很大一部分，我们可以运行它，只需输入在终端中输入它的名字即可。
+只需在 ``os`` 目录下 ``make run`` 即可。在内核加载完毕之后，可以看到目前可用的应用程序。 ``usertests`` 打包了其中的很大一部分，我们可以运行它，只需在终端中输入它的名字即可。
 
 之后，可以先按下 ``Ctrl+A`` ，再按下 ``X`` 来退出 Qemu。
 
