@@ -295,7 +295,7 @@
 </div>
 <ul class="simple">
 <li><p>syscall ID: 410</p></li>
-<li><p>查询当前正在执行的任务信息，任务信息包括任务控制块相关信息（任务状态）、任务使用的系统调用及调用次数、任务总运行时长。</p></li>
+<li><p>查询当前正在执行的任务信息，任务信息包括任务控制块相关信息（任务状态）、任务使用的系统调用及调用次数、任务总运行时长（单位ms）。</p></li>
 </ul>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">TaskInfo</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">status</span>: <span class="nc">TaskStatus</span><span class="p">,</span><span class="w"></span>
@@ -327,7 +327,7 @@
 <li><dl class="simple">
 <dt>提示：</dt><dd><ul>
 <li><p>大胆修改已有框架！除了配置文件，你几乎可以随意修改已有框架的内容。</p></li>
-<li><p>程序运行时间可以通过调用 <code class="docutils literal notranslate"><span class="pre">get_time()</span></code> 获取。</p></li>
+<li><p>程序运行时间可以通过调用 <code class="docutils literal notranslate"><span class="pre">get_time()</span></code> 获取，注意任务运行总时长的单位是ms。</p></li>
 <li><p>系统调用次数可以考虑在进入内核态系统调用异常处理函数之后，进入具体系统调用函数之前维护。</p></li>
 <li><p>阅读 TaskManager 的实现，思考如何维护内核控制块信息（可以在控制块可变部分加入需要的信息）。</p></li>
 </ul>
