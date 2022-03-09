@@ -189,10 +189,45 @@ Qemu 模拟器安装
 .. code-block:: bash
 
    git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S
+   cd rCore-Tutorial-Code-2022S
 
-只需在 ``os`` 目录下 ``make run`` 即可。在内核加载完毕之后，可以看到目前可用的应用程序。 ``usertests`` 打包了其中的很大一部分，我们可以运行它，只需输入在终端中输入它的名字即可。
+我们先运行不需要处理用户代码的 ch1 分支：
 
-之后，可以先按下 ``Ctrl+A`` ，再按下 ``X`` 来退出 Qemu。
+.. code-block:: bash
+
+   git checkout ch1
+   cd os
+   LOG=DEBUG make run
+
+如果你的环境配置正确，你应当会看到如下输出：
+
+.. code-block:: bash
+
+   [rustsbi] RustSBI version 0.2.0-alpha.4
+   .______       __    __      _______.___________.  _______..______   __
+   |   _  \     |  |  |  |    /       |           | /       ||   _  \ |  |
+   |  |_)  |    |  |  |  |   |   (----`---|  |----`|   (----`|  |_)  ||  |
+   |      /     |  |  |  |    \   \       |  |      \   \    |   _  < |  |
+   |  |\  \----.|  `--'  |.----)   |      |  |  .----)   |   |  |_)  ||  |
+   | _| `._____| \______/ |_______/       |__|  |_______/    |______/ |__|
+
+   [rustsbi] Implementation: RustSBI-QEMU Version 0.0.1
+   [rustsbi-dtb] Hart count: cluster0 with 1 cores
+   [rustsbi] misa: RV64ACDFIMSU
+   [rustsbi] mideleg: ssoft, stimer, sext (0x222)
+   [rustsbi] medeleg: ima, ia, bkpt, la, sa, uecall, ipage, lpage, spage (0xb1ab)
+   [rustsbi] pmp0: 0x80000000 ..= 0x800fffff (rwx)
+   [rustsbi] pmp1: 0x80000000 ..= 0x807fffff (rwx)
+   [rustsbi] pmp2: 0x0 ..= 0xffffffffffffff (---)
+   [rustsbi] enter supervisor 0x80200000
+   Hello, world!
+   [DEBUG] .rodata [0x80203000, 0x80205000)
+   [ INFO] .data [0x80205000, 0x80206000)
+   [ WARN] boot_stack [0x80206000, 0x80216000)
+   [ERROR] .bss [0x80216000, 0x80217000)
+   Panicked at src/main.rs:48 Shutdown machine!
+
+通常 rCore 会自动关闭 Qemu 。如果在某些情况下需要强制结束，可以先按下 ``Ctrl+A`` ，再按下 ``X`` 来退出 Qemu。
 
 .. attention::
 
