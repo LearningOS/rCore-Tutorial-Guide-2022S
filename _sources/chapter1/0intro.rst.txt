@@ -43,7 +43,7 @@
 
 .. code-block:: console
 
-   $ git clone --recurse-submodules https://github.com/LearningOS/rCore-Tutorial-Code-2022S
+   $ git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S
    $ cd rCore-Tutorial-Code-2022S
    $ git checkout ch1
 
