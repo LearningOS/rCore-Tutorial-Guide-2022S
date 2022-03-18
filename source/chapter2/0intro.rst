@@ -27,7 +27,7 @@
    $ git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
    $ cd rCore-Tutorial-Code-2022S
    $ git checkout ch2
-   $ git clone https://github.com/LearningOS/uCore-Tutorial-Test-2022S.git user
+   $ git clone https://github.com/LearningOS/rCore-Tutorial-Test-2022S.git user
 
 上面的指令会将测例仓库克隆到代码仓库下并命名为 ``user`` ，注意 ``/user`` 在代码仓库的 ``.gitignore`` 文件中，因此不会出现 ``.git`` 文件夹嵌套的问题，并且你在代码仓库进行 checkout 操作时也不会影响测例仓库的内容。
 

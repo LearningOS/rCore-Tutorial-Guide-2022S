@@ -21,7 +21,7 @@
    $ git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
    $ cd rCore-Tutorial-Code-2022S
    $ git checkout ch3
-   $ git clone https://github.com/LearningOS/uCore-Tutorial-Test-2022S.git user
+   $ git clone https://github.com/LearningOS/rCore-Tutorial-Test-2022S.git user
 
 在 qemu 模拟器上运行本章代码：
 
