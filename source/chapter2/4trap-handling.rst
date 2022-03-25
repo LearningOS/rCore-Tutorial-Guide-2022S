@@ -229,7 +229,7 @@ Trap 处理的总体流程如下：首先通过 ``__alltraps`` 将 Trap 上下�
         call trap_handler
 
 - 第 7 行我们使用 ``.align`` 将 ``__alltraps`` 的地址 4 字节对齐，这是 RISC-V 特权级规范的要求；
-- 第 8 行的 ``csrrw`` 原型是 :math:`\text{csrrw rd, csr, rs}` 可以将 CSR 当前的值读到通用寄存器 :math:`\text{rd}` 中，然后将
+- 第 9 行的 ``csrrw`` 原型是 :math:`\text{csrrw rd, csr, rs}` 可以将 CSR 当前的值读到通用寄存器 :math:`\text{rd}` 中，然后将
   通用寄存器 :math:`\text{rs}` 的值写入该 CSR 。因此这里起到的是交换 sscratch 和 sp 的效果。在这一行之前 sp 指向用户栈， sscratch
   指向内核栈（原因稍后说明），现在 sp 指向内核栈， sscratch 指向用户栈。
 - 第 12 行，我们准备在内核栈上保存 Trap 上下文，于是预先分配 :math:`34\times 8` 字节的栈帧，这里改动的是 sp ，说明确实是在内核栈上。
@@ -240,7 +240,7 @@ Trap 处理的总体流程如下：首先通过 ``__alltraps`` 将 Trap 上下�
   应该被保存在地址区间 :math:`[\text{sp}+8n,\text{sp}+8(n+1))` 。
 
   为了简化代码，x5~x31 这 27 个通用寄存器我们通过类似循环的 ``.rept`` 每次使用 ``SAVE_GP`` 宏来保存，其实质是相同的。注意我们需要在
-  ``Trap.S`` 开头加上 ``.altmacro`` 才能正常使用 ``.rept`` 命令。
+  ``trap.S`` 开头加上 ``.altmacro`` 才能正常使用 ``.rept`` 命令。
 - 第 25~28 行，我们将 CSR sstatus 和 sepc 的值分别读到寄存器 t0 和 t1 中然后保存到内核栈对应的位置上。指令
   :math:`\text{csrr rd, csr}`  的功能就是将 CSR 的值读到寄存器 :math:`\text{rd}` 中。这里我们不用担心 t0 和 t1 被覆盖，
   因为它们刚刚已经被保存了。
