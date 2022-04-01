@@ -63,7 +63,10 @@ ch3 中，我们的系统已经能够支持多个任务分时轮流运行，我�
 - 通过所有测例：
 
    CI 使用的测例与本地相同，测试中，user 文件夹及其它与构建相关的文件将被替换，请不要试图依靠硬编码通过测试。
-   默认情况下，makefile 仅编译基础测例 (``BASE=1``)，即无需修改框架即可正常运行的测例。你需要在编译时指定 ``BASE=0`` 控制框架仅编译实验测例（在 os 目录执行 ``make run BASE=0``），或指定 ``BASE=2`` 控制框架同时编译基础测例和实验测例。
+
+   默认情况下，makefile 仅编译基础测例 (``BASE=1``)，即无需修改框架即可正常运行的测例。
+   你需要在编译时指定 ``BASE=0`` 控制框架仅编译实验测例（在 os 目录执行 ``make run BASE=0``），
+   或指定 ``BASE=2`` 控制框架同时编译基础测例和实验测例。
 
 .. note::
 
@@ -74,7 +77,8 @@ ch3 中，我们的系统已经能够支持多个任务分时轮流运行，我�
 --------------------------------------------
 
 1. 正确进入 U 态后，程序的特征还应有：使用 S 态特权指令，访问 S 态寄存器后会报错。
-   请同学们可以自行测试这些内容 (运行 `Rust 三个 bad 测例 (ch2b_bad_*.rs) <https://github.com/LearningOS/rCore-Tutorial-Test-2022S/tree/master/src/bin>`_ ) ，
+   请同学们可以自行测试这些内容 (运行 `Rust 三个 bad 测例 (ch2b_bad_*.rs) <https://github.com/LearningOS/rCore-Tutorial-Test-2022S/tree/master/src/bin>`_ ，
+   注意在编译时至少需要指定 ``LOG=ERROR`` 才能观察到内核的报错信息) ，
    描述程序出错行为，同时注意注明你使用的 sbi 及其版本。
 
 2. 深入理解 `trap.S <https://github.com/LearningOS/rCore-Tutorial-Code-2022S/blob/ch3/os/src/trap/trap.S>`_
