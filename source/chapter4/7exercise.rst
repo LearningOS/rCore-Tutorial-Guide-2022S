@@ -4,15 +4,16 @@ chapter4练习
 编程作业
 ---------------------------------------------
 
-重写 sys_get_time
+重写 sys_get_time 和 sys_task_info
 ++++++++++++++++++++++++++++++++++++++++++++
 
-引入虚存机制后，原来内核的 sys_get_time 函数实现就无效了。请你重写这个函数，恢复其正常功能。
+引入虚存机制后，原来内核的 sys_get_time 和 sys_task_info 函数实现就无效了。请你重写这个函数，恢复其正常功能。
 
 mmap 和 munmap 匿名映射
 ++++++++++++++++++++++++++++++++++++++++++++
 
-`mmap <https://man7.org/linux/man-pages/man2/mmap.2.html>`_ 在 Linux 中主要用于在内存中映射文件，本次实验简化它的功能，仅用于申请内存。
+`mmap <https://man7.org/linux/man-pages/man2/mmap.2.html>`_ 在 Linux 中主要用于在内存中映射文件，
+本次实验简化它的功能，仅用于申请内存。
 
 请实现 mmap 和 munmap 系统调用，mmap 定义如下：
 
