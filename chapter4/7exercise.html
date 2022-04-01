@@ -287,13 +287,14 @@
 <h1>chapter4练习<a class="headerlink" href="#chapter4" title="永久链接至标题">¶</a></h1>
 <div class="section" id="id1">
 <h2>编程作业<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
-<div class="section" id="sys-get-time">
-<h3>重写 sys_get_time<a class="headerlink" href="#sys-get-time" title="永久链接至标题">¶</a></h3>
-<p>引入虚存机制后，原来内核的 sys_get_time 函数实现就无效了。请你重写这个函数，恢复其正常功能。</p>
+<div class="section" id="sys-get-time-sys-task-info">
+<h3>重写 sys_get_time 和 sys_task_info<a class="headerlink" href="#sys-get-time-sys-task-info" title="永久链接至标题">¶</a></h3>
+<p>引入虚存机制后，原来内核的 sys_get_time 和 sys_task_info 函数实现就无效了。请你重写这个函数，恢复其正常功能。</p>
 </div>
 <div class="section" id="mmap-munmap">
 <h3>mmap 和 munmap 匿名映射<a class="headerlink" href="#mmap-munmap" title="永久链接至标题">¶</a></h3>
-<p><a class="reference external" href="https://man7.org/linux/man-pages/man2/mmap.2.html">mmap</a> 在 Linux 中主要用于在内存中映射文件，本次实验简化它的功能，仅用于申请内存。</p>
+<p><a class="reference external" href="https://man7.org/linux/man-pages/man2/mmap.2.html">mmap</a> 在 Linux 中主要用于在内存中映射文件，
+本次实验简化它的功能，仅用于申请内存。</p>
 <p>请实现 mmap 和 munmap 系统调用，mmap 定义如下：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> <span class="nf">sys_mmap</span><span class="p">(</span><span class="n">start</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="n">len</span>: <span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="n">port</span>: <span class="kt">usize</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">isize</span>
 </pre></div>
@@ -478,7 +479,7 @@
             <ul>
 <li><a class="reference internal" href="#">chapter4练习</a><ul>
 <li><a class="reference internal" href="#id1">编程作业</a><ul>
-<li><a class="reference internal" href="#sys-get-time">重写 sys_get_time</a></li>
+<li><a class="reference internal" href="#sys-get-time-sys-task-info">重写 sys_get_time 和 sys_task_info</a></li>
 <li><a class="reference internal" href="#mmap-munmap">mmap 和 munmap 匿名映射</a></li>
 <li><a class="reference internal" href="#id2">实验要求</a></li>
 </ul>
