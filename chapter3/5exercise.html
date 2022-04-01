@@ -356,8 +356,10 @@
 <ul>
 <li><p>通过所有测例：</p>
 <blockquote>
-<div><p>CI 使用的测例与本地相同，测试中，user 文件夹及其它与构建相关的文件将被替换，请不要试图依靠硬编码通过测试。
-默认情况下，makefile 仅编译基础测例 (<code class="docutils literal notranslate"><span class="pre">BASE=1</span></code>)，即无需修改框架即可正常运行的测例。你需要在编译时指定 <code class="docutils literal notranslate"><span class="pre">BASE=0</span></code> 控制框架仅编译实验测例（在 os 目录执行 <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">run</span> <span class="pre">BASE=0</span></code>），或指定 <code class="docutils literal notranslate"><span class="pre">BASE=2</span></code> 控制框架同时编译基础测例和实验测例。</p>
+<div><p>CI 使用的测例与本地相同，测试中，user 文件夹及其它与构建相关的文件将被替换，请不要试图依靠硬编码通过测试。</p>
+<p>默认情况下，makefile 仅编译基础测例 (<code class="docutils literal notranslate"><span class="pre">BASE=1</span></code>)，即无需修改框架即可正常运行的测例。
+你需要在编译时指定 <code class="docutils literal notranslate"><span class="pre">BASE=0</span></code> 控制框架仅编译实验测例（在 os 目录执行 <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">run</span> <span class="pre">BASE=0</span></code>），
+或指定 <code class="docutils literal notranslate"><span class="pre">BASE=2</span></code> 控制框架同时编译基础测例和实验测例。</p>
 </div></blockquote>
 </li>
 </ul>
@@ -371,7 +373,8 @@
 <h2>简答作业<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
 <ol class="arabic">
 <li><p>正确进入 U 态后，程序的特征还应有：使用 S 态特权指令，访问 S 态寄存器后会报错。
-请同学们可以自行测试这些内容 (运行 <a class="reference external" href="https://github.com/LearningOS/rCore-Tutorial-Test-2022S/tree/master/src/bin">Rust 三个 bad 测例 (ch2b_bad_*.rs)</a> ) ，
+请同学们可以自行测试这些内容 (运行 <a class="reference external" href="https://github.com/LearningOS/rCore-Tutorial-Test-2022S/tree/master/src/bin">Rust 三个 bad 测例 (ch2b_bad_*.rs)</a> ，
+注意在编译时至少需要指定 <code class="docutils literal notranslate"><span class="pre">LOG=ERROR</span></code> 才能观察到内核的报错信息) ，
 描述程序出错行为，同时注意注明你使用的 sbi 及其版本。</p></li>
 <li><p>深入理解 <a class="reference external" href="https://github.com/LearningOS/rCore-Tutorial-Code-2022S/blob/ch3/os/src/trap/trap.S">trap.S</a>
 中两个函数 <code class="docutils literal notranslate"><span class="pre">__alltraps</span></code> 和 <code class="docutils literal notranslate"><span class="pre">__restore</span></code> 的作用，并回答如下问题:</p>

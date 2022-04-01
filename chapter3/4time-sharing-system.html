@@ -290,7 +290,8 @@
 简单起见，我们使用 <strong>时间片轮转算法</strong> (RR, Round-Robin) 来对应用进行调度。</p>
 <div class="section" id="id2">
 <h2>时钟中断与计时器<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
-<p>实现调度算法需要计时。RISC-V 要求处理器维护时钟计数器 <code class="docutils literal notranslate"><span class="pre">mtime</span></code>，还有另外一个 CSR <code class="docutils literal notranslate"><span class="pre">mtimecmp</span></code> 。一旦计数器 <code class="docutils literal notranslate"><span class="pre">mtime</span></code> 的值超过了 <code class="docutils literal notranslate"><span class="pre">mtimecmp</span></code>，就会触发一次时钟中断。</p>
+<p>实现调度算法需要计时。RISC-V 要求处理器维护时钟计数器 <code class="docutils literal notranslate"><span class="pre">mtime</span></code>，还有另外一个 CSR <code class="docutils literal notranslate"><span class="pre">mtimecmp</span></code> 。
+一旦计数器 <code class="docutils literal notranslate"><span class="pre">mtime</span></code> 的值超过了 <code class="docutils literal notranslate"><span class="pre">mtimecmp</span></code>，就会触发一次时钟中断。</p>
 <p>运行在 M 特权级的 SEE 已经预留了相应的接口，基于此编写的 <code class="docutils literal notranslate"><span class="pre">get_time</span></code> 函数可以取得当前 <code class="docutils literal notranslate"><span class="pre">mtime</span></code> 计数器的值；</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/timer.rs</span>
 
@@ -322,8 +323,11 @@
 </div>
 <ul>
 <li><p>第 5 行， <code class="docutils literal notranslate"><span class="pre">sbi</span></code> 子模块有一个 <code class="docutils literal notranslate"><span class="pre">set_timer</span></code> 调用，用来设置 <code class="docutils literal notranslate"><span class="pre">mtimecmp</span></code> 的值。</p></li>
-<li><p>第 14 行， <code class="docutils literal notranslate"><span class="pre">timer</span></code> 子模块的 <code class="docutils literal notranslate"><span class="pre">set_next_trigger</span></code> 函数对 <code class="docutils literal notranslate"><span class="pre">set_timer</span></code> 进行了封装，它首先读取当前 <code class="docutils literal notranslate"><span class="pre">mtime</span></code> 的值，然后计算出 10ms 之内计数器的增量，再将 <code class="docutils literal notranslate"><span class="pre">mtimecmp</span></code> 设置为二者的和。这样，10ms 之后一个 S 特权级时钟中断就会被触发。</p>
-<p>至于增量的计算方式， <code class="docutils literal notranslate"><span class="pre">CLOCK_FREQ</span></code> 是一个预先获取到的各平台不同的时钟频率，单位为赫兹，也就是一秒钟之内计数器的增量。它可以在 <code class="docutils literal notranslate"><span class="pre">config</span></code> 子模块中找到。10ms 的话只需除以常数 <code class="docutils literal notranslate"><span class="pre">TICKS_PER_SEC</span></code> 也就是 100 即可。</p>
+<li><p>第 14 行， <code class="docutils literal notranslate"><span class="pre">timer</span></code> 子模块的 <code class="docutils literal notranslate"><span class="pre">set_next_trigger</span></code> 函数对 <code class="docutils literal notranslate"><span class="pre">set_timer</span></code> 进行了封装，
+它首先读取当前 <code class="docutils literal notranslate"><span class="pre">mtime</span></code> 的值，然后计算出 10ms 之内计数器的增量，再将 <code class="docutils literal notranslate"><span class="pre">mtimecmp</span></code> 设置为二者的和。
+这样，10ms 之后一个 S 特权级时钟中断就会被触发。</p>
+<p>至于增量的计算方式， <code class="docutils literal notranslate"><span class="pre">CLOCK_FREQ</span></code> 是一个预先获取到的各平台不同的时钟频率，单位为赫兹，也就是一秒钟之内计数器的增量。
+它可以在 <code class="docutils literal notranslate"><span class="pre">config</span></code> 子模块中找到。10ms 的话只需除以常数 <code class="docutils literal notranslate"><span class="pre">TICKS_PER_SEC</span></code> 也就是 100 即可。</p>
 </li>
 </ul>
 <p>后面可能还有一些计时的需求，我们再设计一个函数：</p>
@@ -362,15 +366,17 @@
 <h2>RISC-V 架构中的嵌套中断问题<a class="headerlink" href="#risc-v" title="永久链接至标题">¶</a></h2>
 <p>默认情况下，当 Trap 进入某个特权级之后，在 Trap 处理的过程中同特权级的中断都会被屏蔽。</p>
 <ul class="simple">
-<li><p>当 Trap 发生时，<code class="docutils literal notranslate"><span class="pre">sstatus.sie</span></code> 会被保存在 <code class="docutils literal notranslate"><span class="pre">sstatus.spie</span></code> 字段中，同时 <code class="docutils literal notranslate"><span class="pre">sstatus.sie</span></code> 置零，这也就在 Trap 处理的过程中屏蔽了所有 S 特权级的中断；</p></li>
+<li><p>当 Trap 发生时，<code class="docutils literal notranslate"><span class="pre">sstatus.sie</span></code> 会被保存在 <code class="docutils literal notranslate"><span class="pre">sstatus.spie</span></code> 字段中，同时 <code class="docutils literal notranslate"><span class="pre">sstatus.sie</span></code> 置零，
+这也就在 Trap 处理的过程中屏蔽了所有 S 特权级的中断；</p></li>
 <li><p>当 Trap 处理完毕 <code class="docutils literal notranslate"><span class="pre">sret</span></code> 的时候， <code class="docutils literal notranslate"><span class="pre">sstatus.sie</span></code> 会恢复到 <code class="docutils literal notranslate"><span class="pre">sstatus.spie</span></code> 内的值。</p></li>
 </ul>
 <p>也就是说，如果不去手动设置 <code class="docutils literal notranslate"><span class="pre">sstatus</span></code> CSR ，在只考虑 S 特权级中断的情况下，是不会出现 <strong>嵌套中断</strong> (Nested Interrupt) 的。</p>
 <div class="admonition note">
 <p class="admonition-title">注解</p>
 <p><strong>嵌套中断与嵌套 Trap</strong></p>
-<p>嵌套中断可以分为两部分：在处理一个中断的过程中又被同特权级/高特权级中断所打断。默认情况下硬件会避免前一部分，也可以通过手动设置来允许前一部分的存在；而从上面介绍的规则可以知道，后一部分则是无论如何设置都不可避免的。</p>
-<p>嵌套 Trap 则是指处理一个 Trap 过程中又再次发生 Trap ，嵌套中断算是嵌套 Trap 的一部分。</p>
+<p>嵌套中断可以分为两部分：在处理一个中断的过程中又被同特权级/高特权级中断所打断。默认情况下硬件会避免前一部分，
+也可以通过手动设置来允许前一部分的存在；而从上面介绍的规则可以知道，后一部分则是无论如何设置都不可避免的。</p>
+<p>嵌套 Trap 则是指处理一个 Trap 过程中又再次发生 Trap ，嵌套中断算是嵌套 Trap 的一种。</p>
 </div>
 </div>
 <div class="section" id="id3">
@@ -386,9 +392,10 @@
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>我们只需在 <code class="docutils literal notranslate"><span class="pre">trap_handler</span></code> 函数下新增一个分支，触发了 S 特权级时钟中断时，重新设置计时器，调用 <code class="docutils literal notranslate"><span class="pre">suspend_current_and_run_next</span></code> 函数暂停当前应用并切换到下一个。</p>
-<p>为了避免 S 特权级时钟中断被屏蔽，我们需要在执行第一个应用前调用 <code class="docutils literal notranslate"><span class="pre">enable_timer_interrupt()</span></code> 设置 <code class="docutils literal notranslate"><span class="pre">sie.stie</span></code>，使得 S 特权级时钟中断不会被屏蔽；
-再设置第一个 10ms 的计时器。</p>
+<p>我们只需在 <code class="docutils literal notranslate"><span class="pre">trap_handler</span></code> 函数下新增一个分支，触发了 S 特权级时钟中断时，重新设置计时器，
+调用 <code class="docutils literal notranslate"><span class="pre">suspend_current_and_run_next</span></code> 函数暂停当前应用并切换到下一个。</p>
+<p>为了避免 S 特权级时钟中断被屏蔽，我们需要在执行第一个应用前调用 <code class="docutils literal notranslate"><span class="pre">enable_timer_interrupt()</span></code> 设置 <code class="docutils literal notranslate"><span class="pre">sie.stie</span></code>，
+使得 S 特权级时钟中断不会被屏蔽；再设置第一个 10ms 的计时器。</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// os/src/main.rs</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="cp">#[no_mangle]</span><span class="w"></span>
@@ -408,7 +415,8 @@
 <span class="linenos">17</span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>就这样，我们实现了时间片轮转任务调度算法。 <code class="docutils literal notranslate"><span class="pre">power</span></code> 系列用户程序可以验证我们取得的成果：这些应用并没有主动 yield，内核仍能公平地把时间片分配给它们。</p>
+<p>就这样，我们实现了时间片轮转任务调度算法。 <code class="docutils literal notranslate"><span class="pre">power</span></code> 系列用户程序可以验证我们取得的成果：这些应用并没有主动 yield，
+内核仍能公平地把时间片分配给它们。</p>
 </div>
 </div>
 

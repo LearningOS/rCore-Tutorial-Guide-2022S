@@ -307,7 +307,9 @@
 <div class="admonition note">
 <p class="admonition-title">注解</p>
 <p><strong>Rust 语法卡片：迭代器 Iterator</strong></p>
-<p>Rust编程的迭代器模式允许你对一个序列的项进行某些处理。迭代器（iterator）是负责遍历序列中的每一项和决定序列何时结束的控制逻辑。对于如何使用迭代器处理元素序列和如何实现 Iterator trait 来创建自定义迭代器的内容，可以参考 <a class="reference external" href="https://kaisery.github.io/trpl-zh-cn/ch13-02-iterators.html">Rust 程序设计语言-中文版第十三章第二节</a></p>
+<p>Rust编程的迭代器模式允许你对一个序列的项进行某些处理。迭代器（iterator）是负责遍历序列中的每一项和决定序列何时结束的控制逻辑。
+对于如何使用迭代器处理元素序列和如何实现 Iterator trait 来创建自定义迭代器的内容，
+可以参考 <a class="reference external" href="https://kaisery.github.io/trpl-zh-cn/ch13-02-iterators.html">Rust 程序设计语言-中文版第十三章第二节</a></p>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">MapType</span></code> 描述该逻辑段内的所有虚拟页面映射到物理页帧的同一种方式，它是一个枚举类型，在内核当前的实现中支持两种方式：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/mm/memory_set.rs</span>
@@ -342,7 +344,9 @@
 </div>
 <div class="section" id="id4">
 <h3>地址空间：一系列有关联的逻辑段<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
-<p>地址空间是一系列有关联的逻辑段，这种关联一般是指这些逻辑段属于一个运行的程序（目前把一个运行的程序称为任务，后续会称为进程）。用来表明正在运行的应用所在执行环境中的可访问内存空间，在这个内存空间中，包含了一系列的不一定连续的逻辑段。这样我们就有任务的地址空间，内核的地址空间等说法了。地址空间使用 <code class="docutils literal notranslate"><span class="pre">MemorySet</span></code> 类型来表示：</p>
+<p>地址空间是一系列有关联的逻辑段，这种关联一般是指这些逻辑段属于一个运行的程序（目前把一个运行的程序称为任务，后续会称为进程）。
+用来表明正在运行的应用所在执行环境中的可访问内存空间，在这个内存空间中，包含了一系列的不一定连续的逻辑段。
+这样我们就有任务的地址空间、内核的地址空间等说法了。地址空间使用 <code class="docutils literal notranslate"><span class="pre">MemorySet</span></code> 类型来表示：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/mm/memory_set.rs</span>
 
 <span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">MemorySet</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -535,7 +539,7 @@
 地址空间，它除了仍然需要允许内核的各数据段能够被正常访问之后，还需要包含所有应用的内核栈以及一个
 <strong>跳板</strong> (Trampoline) 。我们会在本章的最后一节再深入介绍跳板的机制。</p>
 <p>下图是软件看到的 64 位地址空间在 SV39 分页模式下实际可能通过 MMU 检查的最高 <span class="math notranslate nohighlight">\(256\text{GiB}\)</span> （之前在
-<a class="reference internal" href="3sv39-implementation-1.html#high-and-low-256gib"><span class="std std-ref">这里</span></a> 中解释过最高和最低 <span class="math notranslate nohighlight">\(256\text{GiB}\)</span> 的问题）：</p>
+<span class="xref std std-ref">这里</span> 中解释过最高和最低 <span class="math notranslate nohighlight">\(256\text{GiB}\)</span> 的问题）：</p>
 <a class="reference internal image-reference" href="../_images/kernel-as-high.png" id="kernel-as-high"><img alt="../_images/kernel-as-high.png" class="align-center" id="kernel-as-high" src="../_images/kernel-as-high.png" style="height: 400px;"/></a>
 <p>可以看到，跳板放在最高的一个虚拟页面中。接下来则是从高到低放置每个应用的内核栈，内核栈的大小由 <code class="docutils literal notranslate"><span class="pre">config</span></code> 子模块的
 <code class="docutils literal notranslate"><span class="pre">KERNEL_STACK_SIZE</span></code> 给出。它们的映射方式为 <code class="docutils literal notranslate"><span class="pre">MapPermission</span></code> 中的 rw 两个标志位，意味着这个逻辑段仅允许

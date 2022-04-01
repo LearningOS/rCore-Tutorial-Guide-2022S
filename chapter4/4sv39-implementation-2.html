@@ -296,7 +296,8 @@
 <span class="k">pub</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">MEMORY_END</span>: <span class="kt">usize</span> <span class="o">=</span><span class="w"> </span><span class="mh">0x80800000</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
-<p>我们硬编码整块物理内存的终止物理地址为 <code class="docutils literal notranslate"><span class="pre">0x80800000</span></code> 。 而物理内存的起始物理地址为 <code class="docutils literal notranslate"><span class="pre">0x80000000</span></code> ，意味着我们将可用内存大小设置为 <span class="math notranslate nohighlight">\(8\text{MiB}\)</span> ，当然也可以设置的更大一点。</p>
+<p>我们硬编码整块物理内存的终止物理地址为 <code class="docutils literal notranslate"><span class="pre">0x80800000</span></code> 。 而物理内存的起始物理地址为 <code class="docutils literal notranslate"><span class="pre">0x80000000</span></code> ，
+意味着我们将可用内存大小设置为 <span class="math notranslate nohighlight">\(8\text{MiB}\)</span> ，当然也可以设置的更大一点。</p>
 <p>用一个左闭右开的物理页号区间来表示可用的物理内存，则：</p>
 <ul class="simple">
 <li><p>区间的左端点应该是 <code class="docutils literal notranslate"><span class="pre">ekernel</span></code> 的物理地址以上取整方式转化成的物理页号；</p></li>
@@ -479,7 +480,8 @@
 <span class="linenos">16</span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>每个应用的地址空间都对应一个不同的多级页表，这也就意味这不同页表的起始地址（即页表根节点的地址）是不一样的。因此 <code class="docutils literal notranslate"><span class="pre">PageTable</span></code> 要保存它根节点的物理页号 <code class="docutils literal notranslate"><span class="pre">root_ppn</span></code> 作为页表唯一的区分标志。此外，
+<p>每个应用的地址空间都对应一个不同的多级页表，这也就意味这不同页表的起始地址（即页表根节点的地址）是不一样的。
+因此 <code class="docutils literal notranslate"><span class="pre">PageTable</span></code> 要保存它根节点的物理页号 <code class="docutils literal notranslate"><span class="pre">root_ppn</span></code> 作为页表唯一的区分标志。此外，
 向量 <code class="docutils literal notranslate"><span class="pre">frames</span></code> 以 <code class="docutils literal notranslate"><span class="pre">FrameTracker</span></code> 的形式保存了页表所有的节点（包括根节点）所在的物理页帧。这与物理页帧管理模块
 的测试程序是一个思路，即将这些 <code class="docutils literal notranslate"><span class="pre">FrameTracker</span></code> 的生命周期进一步绑定到 <code class="docutils literal notranslate"><span class="pre">PageTable</span></code> 下面。当 <code class="docutils literal notranslate"><span class="pre">PageTable</span></code>
 生命周期结束后，向量 <code class="docutils literal notranslate"><span class="pre">frames</span></code> 里面的那些 <code class="docutils literal notranslate"><span class="pre">FrameTracker</span></code> 也会被回收，也就意味着存放多级页表节点的那些物理页帧
@@ -550,9 +552,10 @@
 </div>
 <div class="section" id="id7">
 <h3>建立和拆除虚实地址映射关系<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h3>
-<p>接下来介绍建立和拆除虚实地址映射关系的 <code class="docutils literal notranslate"><span class="pre">map</span></code> 和 <code class="docutils literal notranslate"><span class="pre">unmap</span></code> 方法是如何实现的。它们都依赖于一个很重要的过程，也即在多级页表中找到一个虚拟地址对应的页表项。
-找到之后，只要修改页表项的内容即可完成键值对的插入和删除。在寻找页表项的时候，可能出现页表的中间级节点还未被创建的情况，
-这个时候我们需要手动分配一个物理页帧来存放这个节点，并将这个节点接入到当前的多级页表的某级中。</p>
+<p>接下来介绍建立和拆除虚实地址映射关系的 <code class="docutils literal notranslate"><span class="pre">map</span></code> 和 <code class="docutils literal notranslate"><span class="pre">unmap</span></code> 方法是如何实现的。它们都依赖于一个很重要的过程，
+也即在多级页表中找到一个虚拟地址对应的页表项。找到之后，只要修改页表项的内容即可完成键值对的插入和删除。
+在寻找页表项的时候，可能出现页表的中间级节点还未被创建的情况，这个时候我们需要手动分配一个物理页帧来存放这个节点，
+并将这个节点接入到当前的多级页表的某级中。</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// os/src/mm/address.rs</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">impl</span><span class="w"> </span><span class="n">VirtPageNum</span><span class="w"> </span><span class="p">{</span><span class="w"></span>

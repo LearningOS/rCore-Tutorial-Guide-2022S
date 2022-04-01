@@ -19,6 +19,7 @@
    $ git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
    $ cd rCore-Tutorial-Code-2022S
    $ git checkout ch4
+   $ git clone https://github.com/LearningOS/rCore-Tutorial-Test-2022S.git user
 
 在 qemu 模拟器上运行本章代码：
 
@@ -64,7 +65,7 @@
   │           ├── mod.rs(修改：基于地址空间修改了 Trap 机制，详见文档)
   │           └── trap.S(修改：基于地址空间修改了 Trap 上下文保存与恢复汇编代码)
   └── user
-      ├── build.py(移除)
+      ├── build.py(编译时不再使用)
       ├── ...
       └── src
           ├── linker.ld(修改：将所有应用放在各自地址空间中固定的位置)

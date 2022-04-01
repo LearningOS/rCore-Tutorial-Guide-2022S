@@ -296,6 +296,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
 <span class="gp">$ </span><span class="nb">cd</span> rCore-Tutorial-Code-2022S
 <span class="gp">$ </span>git checkout ch4
+<span class="gp">$ </span>git clone https://github.com/LearningOS/rCore-Tutorial-Test-2022S.git user
 </pre></div>
 </div>
 <p>在 qemu 模拟器上运行本章代码：</p>
@@ -336,7 +337,7 @@
 <span class="linenos">28</span>│           ├── mod.rs(修改：基于地址空间修改了 Trap 机制，详见文档)
 <span class="linenos">29</span>│           └── trap.S(修改：基于地址空间修改了 Trap 上下文保存与恢复汇编代码)
 <span class="linenos">30</span>└── user
-<span class="linenos">31</span>    ├── build.py(移除)
+<span class="linenos">31</span>    ├── build.py(编译时不再使用)
 <span class="linenos">32</span>    ├── ...
 <span class="linenos">33</span>    └── src
 <span class="linenos">34</span>        ├── linker.ld(修改：将所有应用放在各自地址空间中固定的位置)

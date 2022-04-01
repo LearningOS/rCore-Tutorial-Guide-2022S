@@ -310,7 +310,7 @@
 物理地址的高 44 位，即 <span class="math notranslate nohighlight">\([55:12]\)</span> 为它的物理页号 PPN。页号可以用来定位一个虚拟/物理地址属于哪一个虚拟页面/物理页帧。</p>
 <p>地址转换是以页为单位进行的，转换前后地址页内偏移部分不变。MMU 只是从虚拟地址中取出 27 位虚拟页号，
 在页表中查到其对应的物理页号，如果找到，就将得到的 44 位的物理页号与 12 位页内偏移拼接到一起，形成 56 位物理地址。</p>
-<div class="admonition note" id="high-and-low-256gib">
+<div class="admonition note">
 <p class="admonition-title">注解</p>
 <p><strong>RV64 架构中虚拟地址为何只有 39 位？</strong></p>
 <p>虚拟地址长度确实应该和位宽一致为 64 位，但是在启用 SV39 分页模式下，只有低 39 位是真正有意义的。
