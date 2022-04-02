@@ -21,6 +21,22 @@
    $ git checkout ch4
    $ git clone https://github.com/LearningOS/rCore-Tutorial-Test-2022S.git user
 
+或许你之前已经克隆过了仓库，只希望从远程仓库更新，而非再克隆一次：
+
+.. code-block:: console
+
+   $ cd rCore-Tutorial-Code-2022S
+   # 你可以将 upstream 改为你喜欢的名字
+   $ git remote add upstream https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
+   # 更新仓库信息
+   $ git fetch upstream
+   # 根据需求选择以下一种操作即可
+   # 在本地新建一个与远程仓库对应的分支：
+   $ git checkout -b ch4 upstream/ch4
+   # 本地已有分支，从远程仓库更新：
+   $ git checkout ch4
+   $ git merge upstream/ch4
+
 在 qemu 模拟器上运行本章代码：
 
 .. code-block:: console
