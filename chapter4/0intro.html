@@ -305,12 +305,16 @@
 <span class="gp">$ </span>git remote add upstream https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
 <span class="gp"># </span>更新仓库信息
 <span class="gp">$ </span>git fetch upstream
+<span class="gp"># </span>查看已添加的远程仓库；应该能看到已有一个 origin 和新添加的 upstream 仓库
+<span class="gp">$ </span>git remote -v
 <span class="gp"># </span>根据需求选择以下一种操作即可
 <span class="gp"># </span>在本地新建一个与远程仓库对应的分支：
 <span class="gp">$ </span>git checkout -b ch4 upstream/ch4
 <span class="gp"># </span>本地已有分支，从远程仓库更新：
 <span class="gp">$ </span>git checkout ch4
 <span class="gp">$ </span>git merge upstream/ch4
+<span class="gp"># </span>将更新推送到自己的远程仓库
+<span class="gp">$ </span>git push origin ch4
 </pre></div>
 </div>
 <p>在 qemu 模拟器上运行本章代码：</p>

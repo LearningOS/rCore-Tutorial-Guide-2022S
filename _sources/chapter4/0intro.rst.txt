@@ -30,12 +30,16 @@
    $ git remote add upstream https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
    # 更新仓库信息
    $ git fetch upstream
+   # 查看已添加的远程仓库；应该能看到已有一个 origin 和新添加的 upstream 仓库
+   $ git remote -v
    # 根据需求选择以下一种操作即可
    # 在本地新建一个与远程仓库对应的分支：
    $ git checkout -b ch4 upstream/ch4
    # 本地已有分支，从远程仓库更新：
    $ git checkout ch4
    $ git merge upstream/ch4
+   # 将更新推送到自己的远程仓库
+   $ git push origin ch4
 
 在 qemu 模拟器上运行本章代码：
 
