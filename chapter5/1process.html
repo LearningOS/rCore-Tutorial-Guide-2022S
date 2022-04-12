@@ -341,7 +341,7 @@
 <div class="section" id="initproc">
 <h3>用户初始程序-initproc<a class="headerlink" href="#initproc" title="永久链接至标题">¶</a></h3>
 <p>在内核初始化完毕后创建的第一个进程，是 <strong>用户初始进程</strong> (Initial Process) ，它将通过 <code class="docutils literal notranslate"><span class="pre">fork+exec</span></code> 创建 <code class="docutils literal notranslate"><span class="pre">user_shell</span></code> 子进程，并将被用于回收僵尸进程。</p>
-<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// user/src/bin/initproc.rs</span>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// user/src/bin/ch5b_initproc.rs</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="cp">#![no_std]</span><span class="w"></span>
 <span class="linenos"> 4</span><span class="cp">#![no_main]</span><span class="w"></span>
@@ -359,7 +359,7 @@
 <span class="linenos">16</span><span class="cp">#[no_mangle]</span><span class="w"></span>
 <span class="linenos">17</span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="kt">i32</span> <span class="p">{</span><span class="w"></span>
 <span class="linenos">18</span><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">fork</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="linenos">19</span><span class="w">        </span><span class="n">exec</span><span class="p">(</span><span class="s">"user_shell</span><span class="se">\0</span><span class="s">"</span><span class="p">);</span><span class="w"></span>
+<span class="linenos">19</span><span class="w">        </span><span class="n">exec</span><span class="p">(</span><span class="s">"ch5b_user_shell</span><span class="se">\0</span><span class="s">"</span><span class="p">);</span><span class="w"></span>
 <span class="linenos">20</span><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="linenos">21</span><span class="w">        </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="linenos">22</span><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">exit_code</span>: <span class="kt">i32</span> <span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
@@ -406,7 +406,7 @@
 </div>
 <p>我们在用户库中将其进一步封装成每次能够从 <strong>标准输入</strong> 中获取一个字符的 <code class="docutils literal notranslate"><span class="pre">getchar</span></code> 函数。</p>
 <p>shell程序 <code class="docutils literal notranslate"><span class="pre">user_shell</span></code> 实现如下：</p>
-<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// user/src/bin/user_shell.rs</span>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// user/src/bin/ch5b_user_shell.rs</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="cp">#![no_std]</span><span class="w"></span>
 <span class="linenos"> 4</span><span class="cp">#![no_main]</span><span class="w"></span>
@@ -482,6 +482,7 @@
 </li>
 <li><p>如果用户输入退格键（第 53 行），首先我们需要将屏幕上当前行的最后一个字符用空格替换掉，这可以通过输入一个特殊的退格字节 <code class="docutils literal notranslate"><span class="pre">BS</span></code> 来实现。其次，user_shell 进程内维护的 <code class="docutils literal notranslate"><span class="pre">line</span></code> 也需要弹出最后一个字符。</p></li>
 <li><p>如果用户输入了一个其他字符（第 61 行），就接将它打印在屏幕上，并加入到 <code class="docutils literal notranslate"><span class="pre">line</span></code> 中。</p></li>
+<li><p>按键 <code class="docutils literal notranslate"><span class="pre">Ctrl+A</span></code> 再输入 <code class="docutils literal notranslate"><span class="pre">X</span></code> 来退出qemu模拟器。</p></li>
 </ul>
 </div>
 </div>
