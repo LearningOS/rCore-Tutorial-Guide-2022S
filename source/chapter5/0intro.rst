@@ -27,6 +27,8 @@
    $ git checkout ch5
    $ git clone https://github.com/LearningOS/rCore-Tutorial-Test-2022S.git user
 
+请仿照ch4的做法将代码在本地更新并push到自己的实验仓库中。
+
 在 qemu 模拟器上运行本章代码：
 
 .. code-block:: console
@@ -75,7 +77,7 @@
    ch5b_forktest_simple
    ch5b_forktree
    ch5b_initproc
-   ch5b_usershell
+   ch5b_user_shell
    **************/
    Rust user shell
    >>

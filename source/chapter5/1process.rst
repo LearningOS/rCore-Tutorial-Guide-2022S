@@ -73,7 +73,7 @@ waitpid 系统调用
 .. code-block:: rust
     :linenos:
 
-    // user/src/bin/initproc.rs
+    // user/src/bin/ch5b_initproc.rs
 
     #![no_std]
     #![no_main]
@@ -91,7 +91,7 @@ waitpid 系统调用
     #[no_mangle]
     fn main() -> i32 {
         if fork() == 0 {
-            exec("user_shell\0");
+            exec("ch5b_user_shell\0");
         } else {
             loop {
                 let mut exit_code: i32 = 0;
@@ -147,7 +147,7 @@ shell程序 ``user_shell`` 实现如下：
     :linenos:
     :emphasize-lines: 28,53,61
 
-    // user/src/bin/user_shell.rs
+    // user/src/bin/ch5b_user_shell.rs
 
     #![no_std]
     #![no_main]
@@ -222,3 +222,4 @@ shell程序 ``user_shell`` 实现如下：
   fork 之后的 user_shell 进程自己的逻辑可以在第 41 行找到。它在等待 fork 出来的子进程结束并回收掉它的资源，还会顺带收集子进程的退出状态并打印出来。
 - 如果用户输入退格键（第 53 行），首先我们需要将屏幕上当前行的最后一个字符用空格替换掉，这可以通过输入一个特殊的退格字节 ``BS`` 来实现。其次，user_shell 进程内维护的 ``line`` 也需要弹出最后一个字符。
 - 如果用户输入了一个其他字符（第 61 行），就接将它打印在屏幕上，并加入到 ``line`` 中。
+- 按键 ``Ctrl+A`` 再输入 ``X`` 来退出qemu模拟器。
