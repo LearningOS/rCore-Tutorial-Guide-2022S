@@ -289,7 +289,8 @@
 <h2>编程作业<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
 <div class="section" id="id2">
 <h3>进程创建<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h3>
-<p>大家一定好奇过为啥进程创建要用 fork + exec 这么一个奇怪的系统调用，就不能直接搞一个新进程吗？思而不学则殆，我们就来试一试！这章的编程练习请大家实现一个完全 DIY 的系统调用 spawn，用以创建一个新进程。</p>
+<p>大家一定好奇过为啥进程创建要用 fork + exec 这么一个奇怪的系统调用，就不能直接搞一个新进程吗？
+思而不学则殆，我们就来试一试！这章的编程练习请大家实现一个完全 DIY 的系统调用 spawn，用以创建一个新进程。</p>
 <p>spawn 系统调用定义( <a class="reference external" href="https://man7.org/linux/man-pages/man3/posix_spawn.3.html">标准spawn看这里</a> )：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> <span class="nf">sys_spawn</span><span class="p">(</span><span class="n">path</span>: <span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="kt">u8</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">isize</span>
 </pre></div>
@@ -313,12 +314,14 @@
 <h3>stride 调度算法<a class="headerlink" href="#stride" title="永久链接至标题">¶</a></h3>
 <p>ch3 中我们实现的调度算法十分简单。现在我们要为我们的 os 实现一种带优先级的调度算法：stride 调度算法。</p>
 <p>算法描述如下:</p>
-<ol class="arabic simple">
-<li><p>为每个进程设置一个当前 stride，表示该进程当前已经运行的“长度”。另外设置其对应的 pass 值（只与进程的优先权有关系），表示对应进程在调度后，stride 需要进行的累加值。</p></li>
+<p>(1) 为每个进程设置一个当前 stride，表示该进程当前已经运行的“长度”。另外设置其对应的 pass
+值（只与进程的优先权有关系），表示对应进程在调度后，stride 需要进行的累加值。</p>
+<ol class="arabic simple" start="2">
 <li><p>每次需要调度时，从当前 runnable 态的进程中选择 stride 最小的进程调度。对于获得调度的进程 P，将对应的 stride 加上其对应的步长 pass。</p></li>
 <li><p>一个时间片后，回到上一步骤，重新调度当前 stride 最小的进程。</p></li>
 </ol>
-<p>可以证明，如果令 P.pass = BigStride / P.priority 其中 P.priority 表示进程的优先权（大于 1），而 BigStride 表示一个预先定义的大常数，则该调度方案为每个进程分配的时间将与其优先级成正比。证明过程我们在这里略去，有兴趣的同学可以在网上查找相关资料。</p>
+<p>可以证明，如果令 P.pass = BigStride / P.priority 其中 P.priority 表示进程的优先权（大于 1），而
+BigStride 表示一个预先定义的大常数，则该调度方案为每个进程分配的时间将与其优先级成正比。证明过程我们在这里略去，有兴趣的同学可以在网上查找相关资料。</p>
 <p>其他实验细节：</p>
 <ul class="simple">
 <li><p>stride 调度要求进程优先级 <span class="math notranslate nohighlight">\(\geq 2\)</span>，所以设定进程优先级 <span class="math notranslate nohighlight">\(\leq 1\)</span> 会导致错误。</p></li>
@@ -335,7 +338,8 @@
 </div>
 <div class="admonition attention">
 <p class="admonition-title">注意</p>
-<p>为了让大家能在本编程作业中使用 <code class="docutils literal notranslate"><span class="pre">Vec</span></code> 等数据结构，我们利用第三方库 <code class="docutils literal notranslate"><span class="pre">buddy_system_allocator</span></code> 为大家实现了堆内存分配器，相关代码位于 <code class="docutils literal notranslate"><span class="pre">heap_alloc</span></code> 模块。</p>
+<p>为了让大家能在本编程作业中使用 <code class="docutils literal notranslate"><span class="pre">Vec</span></code> 等数据结构，我们利用第三方库 <code class="docutils literal notranslate"><span class="pre">buddy_system_allocator</span></code>
+为大家实现了堆内存分配器，相关代码位于 <code class="docutils literal notranslate"><span class="pre">heap_alloc</span></code> 模块。</p>
 <p>背景知识： <a class="reference external" href="https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter4/1rust-dynamic-allocation.html">Rust 中的动态内存分配</a></p>
 </div>
 </div>
@@ -345,8 +349,10 @@
 <li><p>实现分支：ch5。</p></li>
 <li><p>实验目录请参考 ch3。注意在reports中放入lab1-3的所有报告。</p></li>
 <li><p>通过所有测例。</p>
-<p>在 os 目录下 <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">run</span> <span class="pre">BASE=2</span></code> 加载所有测例， <code class="docutils literal notranslate"><span class="pre">ch5_usertest</span></code> 打包了所有你需要通过的测例，你也可以通过修改这个文件调整本地测试的内容, 或者单独运行某测例来纠正特定的错误。 <code class="docutils literal notranslate"><span class="pre">ch5_stride</span></code> 检查 stride 调度算法是否满足公平性要求，
-六个子程序运行的次数应该大致与其优先级呈正比，测试通过标准是 <span class="math notranslate nohighlight">\(\max{\frac{runtimes}{prio}}/ \min{\frac{runtimes}{prio}} &lt; 1.5\)</span>.</p>
+<p>在 os 目录下 <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">run</span> <span class="pre">BASE=2</span></code> 加载所有测例， <code class="docutils literal notranslate"><span class="pre">ch5_usertest</span></code> 打包了所有你需要通过的测例，
+你也可以通过修改这个文件调整本地测试的内容, 或者单独运行某测例来纠正特定的错误。 <code class="docutils literal notranslate"><span class="pre">ch5_stride</span></code>
+检查 stride 调度算法是否满足公平性要求，六个子程序运行的次数应该大致与其优先级呈正比，测试通过标准是
+<span class="math notranslate nohighlight">\(\max{\frac{runtimes}{prio}}/ \min{\frac{runtimes}{prio}} &lt; 1.5\)</span>.</p>
 <p>CI 的原理是用 <code class="docutils literal notranslate"><span class="pre">ch5_usertest</span></code> 替代 <code class="docutils literal notranslate"><span class="pre">ch5b_initproc</span></code> ，使内核在所有测例执行完后直接退出。</p>
 <p>从本章开始，你的内核必须前向兼容，能通过前一章的所有测例。</p>
 </li>
@@ -359,9 +365,12 @@
 </div>
 <div class="section" id="id4">
 <h2>问答作业<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
-<ol class="arabic">
+<ol class="arabic simple">
 <li><p>fork + exec 的一个比较大的问题是 fork 之后的内存页/文件等资源完全没有使用就废弃了，针对这一点，有什么改进策略？</p></li>
-<li><p>[选做，不占分]其实使用了题(1)的策略之后，fork + exec 所带来的无效资源的问题已经基本被解决了，但是今年来 fork 还是在被不断的批判，那么到底是什么正在”杀死”fork？可以参考 <a class="reference external" href="https://www.microsoft.com/en-us/research/uploads/prod/2019/04/fork-hotos19.pdf">论文</a> 。</p></li>
+</ol>
+<p>(2) [选做，不占分]其实使用了题(1)的策略之后，fork + exec 所带来的无效资源的问题已经基本被解决了，但是今年来
+fork 还是在被不断的批判，那么到底是什么正在”杀死”fork？可以参考 <a class="reference external" href="https://www.microsoft.com/en-us/research/uploads/prod/2019/04/fork-hotos19.pdf">论文</a> 。</p>
+<ol class="arabic" start="3">
 <li><p>请阅读下列代码，并分析程序的输出，假定不发生运行错误，不考虑行缓冲，不考虑中断：</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span><span class="w"></span>
 <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
@@ -397,14 +406,17 @@
 <li><p>stride 算法深入</p></li>
 </ol>
 <blockquote>
-<div><p>stride 算法原理非常简单，但是有一个比较大的问题。例如两个 pass = 10 的进程，使用 8bit 无符号整形储存 stride， p1.stride = 255, p2.stride = 250，在 p2 执行一个时间片后，理论上下一次应该 p1 执行。</p>
+<div><p>stride 算法原理非常简单，但是有一个比较大的问题。例如两个 pass = 10 的进程，使用 8bit 无符号整形储存
+stride， p1.stride = 255, p2.stride = 250，在 p2 执行一个时间片后，理论上下一次应该 p1 执行。</p>
 <ul class="simple">
 <li><p>实际情况是轮到 p1 执行吗？为什么？</p></li>
 </ul>
-<p>我们之前要求进程优先级 &gt;= 2 其实就是为了解决这个问题。可以证明，<strong>在不考虑溢出的情况下</strong>, 在进程优先级全部 &gt;= 2 的情况下，如果严格按照算法执行，那么 STRIDE_MAX – STRIDE_MIN &lt;= BigStride / 2。</p>
+<p>我们之前要求进程优先级 &gt;= 2 其实就是为了解决这个问题。可以证明， <strong>在不考虑溢出的情况下</strong> , 在进程优先级全部 &gt;= 2
+的情况下，如果严格按照算法执行，那么 STRIDE_MAX – STRIDE_MIN &lt;= BigStride / 2。</p>
 <ul class="simple">
 <li><p>为什么？尝试简单说明（不要求严格证明）。</p></li>
-<li><p>已知以上结论，<strong>考虑溢出的情况下</strong>，可以为 Stride 设计特别的比较器，让 BinaryHeap&lt;Stride&gt; 的 pop 方法能返回真正最小的 Stride。补全下列代码中的 <code class="docutils literal notranslate"><span class="pre">partial_cmp</span></code> 函数，假设两个 Stride 永远不会相等。</p></li>
+<li><p>已知以上结论，<strong>考虑溢出的情况下</strong>，可以为 Stride 设计特别的比较器，让 BinaryHeap&lt;Stride&gt; 的 pop
+方法能返回真正最小的 Stride。补全下列代码中的 <code class="docutils literal notranslate"><span class="pre">partial_cmp</span></code> 函数，假设两个 Stride 永远不会相等。</p></li>
 </ul>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">core</span>::<span class="n">cmp</span>::<span class="n">Ordering</span><span class="p">;</span><span class="w"></span>
 

@@ -340,7 +340,8 @@
 <p>借助这三个重要系统调用，我们可以开发功能更强大的应用。下面是两个案例： <strong>用户初始程序-init</strong> 和 <strong>shell程序-user_shell</strong> 。</p>
 <div class="section" id="initproc">
 <h3>用户初始程序-initproc<a class="headerlink" href="#initproc" title="永久链接至标题">¶</a></h3>
-<p>在内核初始化完毕后创建的第一个进程，是 <strong>用户初始进程</strong> (Initial Process) ，它将通过 <code class="docutils literal notranslate"><span class="pre">fork+exec</span></code> 创建 <code class="docutils literal notranslate"><span class="pre">user_shell</span></code> 子进程，并将被用于回收僵尸进程。</p>
+<p>在内核初始化完毕后创建的第一个进程，是 <strong>用户初始进程</strong> (Initial Process) ，它将通过
+<code class="docutils literal notranslate"><span class="pre">fork+exec</span></code> 创建 <code class="docutils literal notranslate"><span class="pre">user_shell</span></code> 子进程，并将被用于回收僵尸进程。</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// user/src/bin/ch5b_initproc.rs</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="cp">#![no_std]</span><span class="w"></span>
@@ -475,12 +476,16 @@
 <span class="linenos">67</span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>可以看到，在以第 25 行开头的主循环中，每次都是调用 <code class="docutils literal notranslate"><span class="pre">getchar</span></code> 获取一个用户输入的字符，并根据它相应进行一些动作。第 23 行声明的字符串 <code class="docutils literal notranslate"><span class="pre">line</span></code> 则维护着用户当前输入的命令内容，它也在不断发生变化。</p>
+<p>可以看到，在以第 25 行开头的主循环中，每次都是调用 <code class="docutils literal notranslate"><span class="pre">getchar</span></code> 获取一个用户输入的字符，
+并根据它相应进行一些动作。第 23 行声明的字符串 <code class="docutils literal notranslate"><span class="pre">line</span></code> 则维护着用户当前输入的命令内容，它也在不断发生变化。</p>
 <ul>
-<li><p>如果用户输入回车键（第 28 行），那么user_shell 会 fork 出一个子进程（第 34 行开始）并试图通过 <code class="docutils literal notranslate"><span class="pre">exec</span></code> 系统调用执行一个应用，应用的名字在字符串 <code class="docutils literal notranslate"><span class="pre">line</span></code> 中给出。如果 exec 的返回值为 -1 ，说明在应用管理器中找不到对应名字的应用，此时子进程就直接打印错误信息并退出；否则子进程将开始执行目标应用。</p>
+<li><p>如果用户输入回车键（第 28 行），那么user_shell 会 fork 出一个子进程（第 34 行开始）并试图通过
+<code class="docutils literal notranslate"><span class="pre">exec</span></code> 系统调用执行一个应用，应用的名字在字符串 <code class="docutils literal notranslate"><span class="pre">line</span></code> 中给出。如果 exec 的返回值为 -1 ，
+说明在应用管理器中找不到对应名字的应用，此时子进程就直接打印错误信息并退出；否则子进程将开始执行目标应用。</p>
 <p>fork 之后的 user_shell 进程自己的逻辑可以在第 41 行找到。它在等待 fork 出来的子进程结束并回收掉它的资源，还会顺带收集子进程的退出状态并打印出来。</p>
 </li>
-<li><p>如果用户输入退格键（第 53 行），首先我们需要将屏幕上当前行的最后一个字符用空格替换掉，这可以通过输入一个特殊的退格字节 <code class="docutils literal notranslate"><span class="pre">BS</span></code> 来实现。其次，user_shell 进程内维护的 <code class="docutils literal notranslate"><span class="pre">line</span></code> 也需要弹出最后一个字符。</p></li>
+<li><p>如果用户输入退格键（第 53 行），首先我们需要将屏幕上当前行的最后一个字符用空格替换掉，
+这可以通过输入一个特殊的退格字节 <code class="docutils literal notranslate"><span class="pre">BS</span></code> 来实现。其次，user_shell 进程内维护的 <code class="docutils literal notranslate"><span class="pre">line</span></code> 也需要弹出最后一个字符。</p></li>
 <li><p>如果用户输入了一个其他字符（第 61 行），就接将它打印在屏幕上，并加入到 <code class="docutils literal notranslate"><span class="pre">line</span></code> 中。</p></li>
 <li><p>按键 <code class="docutils literal notranslate"><span class="pre">Ctrl+A</span></code> 再输入 <code class="docutils literal notranslate"><span class="pre">X</span></code> 来退出qemu模拟器。</p></li>
 </ul>

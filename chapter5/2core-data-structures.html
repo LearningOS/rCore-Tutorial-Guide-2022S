@@ -298,7 +298,8 @@
 </div>
 <div class="section" id="id3">
 <h2>基于应用名的应用链接/加载器<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
-<p>在实现 <code class="docutils literal notranslate"><span class="pre">exec</span></code> 系统调用的时候，我们需要根据应用的名字而不仅仅是一个编号来获取应用的 ELF 格式数据。因此，在链接器 <code class="docutils literal notranslate"><span class="pre">os/build.rs</span></code> 中，我们按顺序保存链接进来的每个应用的名字：</p>
+<p>在实现 <code class="docutils literal notranslate"><span class="pre">exec</span></code> 系统调用的时候，我们需要根据应用的名字而不仅仅是一个编号来获取应用的 ELF 格式数据。
+因此，在链接器 <code class="docutils literal notranslate"><span class="pre">os/build.rs</span></code> 中，我们按顺序保存链接进来的每个应用的名字：</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>    // os/build.rs
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span>    for i in 0..apps.len() {
@@ -318,7 +319,8 @@
 <span class="linenos">17</span>    }
 </pre></div>
 </div>
-<p>第 8~13 行，各个应用的名字通过 <code class="docutils literal notranslate"><span class="pre">.string</span></code> 伪指令放到数据段中，注意链接器会自动在每个字符串的结尾加入分隔符 <code class="docutils literal notranslate"><span class="pre">\0</span></code> ，它们的位置由全局符号 <code class="docutils literal notranslate"><span class="pre">_app_names</span></code> 指出。</p>
+<p>第 8~13 行，各个应用的名字通过 <code class="docutils literal notranslate"><span class="pre">.string</span></code> 伪指令放到数据段中，注意链接器会自动在每个字符串的结尾加入分隔符
+<code class="docutils literal notranslate"><span class="pre">\0</span></code> ，它们的位置由全局符号 <code class="docutils literal notranslate"><span class="pre">_app_names</span></code> 指出。</p>
 <p>而在加载器 <code class="docutils literal notranslate"><span class="pre">loader.rs</span></code> 中，我们用一个全局可见的 <em>只读</em> 向量 <code class="docutils literal notranslate"><span class="pre">APP_NAMES</span></code> 来按照顺序将所有应用的名字保存在内存中：</p>
 <div class="highlight-Rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/loader.rs</span>
 
@@ -345,7 +347,8 @@
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>使用 <code class="docutils literal notranslate"><span class="pre">get_app_data_by_name</span></code> 可以按照应用的名字来查找获得应用的 ELF 数据，而 <code class="docutils literal notranslate"><span class="pre">list_apps</span></code> 在内核初始化时被调用，它可以打印出所有可用应用的名字。</p>
+<p>使用 <code class="docutils literal notranslate"><span class="pre">get_app_data_by_name</span></code> 可以按照应用的名字来查找获得应用的 ELF 数据，而 <code class="docutils literal notranslate"><span class="pre">list_apps</span></code>
+在内核初始化时被调用，它可以打印出所有可用应用的名字。</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/loader.rs</span>
 
 <span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">get_app_data_by_name</span><span class="p">(</span><span class="n">name</span>: <span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Option</span><span class="o">&lt;&amp;'</span><span class="nb">static</span><span class="w"> </span><span class="p">[</span><span class="kt">u8</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -369,13 +372,15 @@
 <h2>进程标识符和内核栈<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
 <div class="section" id="id5">
 <h3>进程标识符<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h3>
-<p>同一时间存在的所有进程都有一个自己的进程标识符，它们是互不相同的整数。这里将其抽象为一个 <code class="docutils literal notranslate"><span class="pre">PidHandle</span></code> 类型，当它的生命周期结束后，对应的整数会被编译器自动回收：</p>
+<p>同一时间存在的所有进程都有一个自己的进程标识符，它们是互不相同的整数。这里将其抽象为一个 <code class="docutils literal notranslate"><span class="pre">PidHandle</span></code>
+类型，当它的生命周期结束后，对应的整数会被编译器自动回收：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/task/pid.rs</span>
 
 <span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">PidHandle</span><span class="p">(</span><span class="k">pub</span><span class="w"> </span><span class="kt">usize</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
-<p>类似之前的物理页帧分配器 <code class="docutils literal notranslate"><span class="pre">FrameAllocator</span></code> ，我们实现一个同样使用简单栈式分配策略的进程标识符分配器 <code class="docutils literal notranslate"><span class="pre">PidAllocator</span></code> ，并将其全局实例化为 <code class="docutils literal notranslate"><span class="pre">PID_ALLOCATOR</span></code> ：</p>
+<p>类似之前的物理页帧分配器 <code class="docutils literal notranslate"><span class="pre">FrameAllocator</span></code> ，我们实现一个同样使用简单栈式分配策略的进程标识符分配器
+<code class="docutils literal notranslate"><span class="pre">PidAllocator</span></code> ，并将其全局实例化为 <code class="docutils literal notranslate"><span class="pre">PID_ALLOCATOR</span></code> ：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/task/pid.rs</span>
 
 <span class="k">struct</span> <span class="nc">PidAllocator</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -414,7 +419,8 @@
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">PidAllocator::alloc</span></code> 将会分配出去一个将 <code class="docutils literal notranslate"><span class="pre">usize</span></code> 包装之后的 <code class="docutils literal notranslate"><span class="pre">PidHandle</span></code> 。我们将其包装为一个全局分配进程标识符的接口 <code class="docutils literal notranslate"><span class="pre">pid_alloc</span></code>：</p>
+<p><code class="docutils literal notranslate"><span class="pre">PidAllocator::alloc</span></code> 将会分配出去一个将 <code class="docutils literal notranslate"><span class="pre">usize</span></code> 包装之后的 <code class="docutils literal notranslate"><span class="pre">PidHandle</span></code> 。
+我们将其包装为一个全局分配进程标识符的接口 <code class="docutils literal notranslate"><span class="pre">pid_alloc</span></code>：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/task/pid.rs</span>
 
 <span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">pid_alloc</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nc">PidHandle</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -483,10 +489,14 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>第 11 行， <code class="docutils literal notranslate"><span class="pre">new</span></code> 方法可以从一个 <code class="docutils literal notranslate"><span class="pre">PidHandle</span></code> ，也就是一个已分配的进程标识符中对应生成一个内核栈 <code class="docutils literal notranslate"><span class="pre">KernelStack</span></code> 。它调用了第 4 行声明的 <code class="docutils literal notranslate"><span class="pre">kernel_stack_position</span></code> 函数来根据进程标识符计算内核栈在内核地址空间中的位置，随即在第 14 行将一个逻辑段插入内核地址空间 <code class="docutils literal notranslate"><span class="pre">KERNEL_SPACE</span></code> 中。</p></li>
-<li><p>第 25 行的 <code class="docutils literal notranslate"><span class="pre">push_on_top</span></code> 方法可以将一个类型为 <code class="docutils literal notranslate"><span class="pre">T</span></code> 的变量压入内核栈顶并返回其裸指针，这也是一个泛型函数。它在实现的时候用到了第 32 行的 <code class="docutils literal notranslate"><span class="pre">get_top</span></code> 方法来获取当前内核栈顶在内核地址空间中的地址。</p></li>
+<li><p>第 11 行， <code class="docutils literal notranslate"><span class="pre">new</span></code> 方法可以从一个 <code class="docutils literal notranslate"><span class="pre">PidHandle</span></code> ，也就是一个已分配的进程标识符中对应生成一个内核栈 <code class="docutils literal notranslate"><span class="pre">KernelStack</span></code> 。
+它调用了第 4 行声明的 <code class="docutils literal notranslate"><span class="pre">kernel_stack_position</span></code> 函数来根据进程标识符计算内核栈在内核地址空间中的位置，
+随即在第 14 行将一个逻辑段插入内核地址空间 <code class="docutils literal notranslate"><span class="pre">KERNEL_SPACE</span></code> 中。</p></li>
+<li><p>第 25 行的 <code class="docutils literal notranslate"><span class="pre">push_on_top</span></code> 方法可以将一个类型为 <code class="docutils literal notranslate"><span class="pre">T</span></code> 的变量压入内核栈顶并返回其裸指针，
+这也是一个泛型函数。它在实现的时候用到了第 32 行的 <code class="docutils literal notranslate"><span class="pre">get_top</span></code> 方法来获取当前内核栈顶在内核地址空间中的地址。</p></li>
 </ul>
-<p>内核栈 <code class="docutils literal notranslate"><span class="pre">KernelStack</span></code> 用到了 RAII 的思想，具体来说，实际保存它的物理页帧的生命周期被绑定到它下面，当 <code class="docutils literal notranslate"><span class="pre">KernelStack</span></code> 生命周期结束后，这些物理页帧也将会被编译器自动回收：</p>
+<p>内核栈 <code class="docutils literal notranslate"><span class="pre">KernelStack</span></code> 用到了 RAII 的思想，具体来说，实际保存它的物理页帧的生命周期被绑定到它下面，当
+<code class="docutils literal notranslate"><span class="pre">KernelStack</span></code> 生命周期结束后，这些物理页帧也将会被编译器自动回收：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/task/pid.rs</span>
 
 <span class="k">impl</span><span class="w"> </span><span class="nb">Drop</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">KernelStack</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -500,12 +510,14 @@
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>为 <code class="docutils literal notranslate"><span class="pre">KernelStack</span></code> 实现 <code class="docutils literal notranslate"><span class="pre">Drop</span></code> Trait，一旦它的生命周期结束，就将内核地址空间中对应的逻辑段删除，为此在 <code class="docutils literal notranslate"><span class="pre">MemorySet</span></code> 中新增了一个名为 <code class="docutils literal notranslate"><span class="pre">remove_area_with_start_vpn</span></code> 的方法，感兴趣的读者可以查阅。</p>
+<p>为 <code class="docutils literal notranslate"><span class="pre">KernelStack</span></code> 实现 <code class="docutils literal notranslate"><span class="pre">Drop</span></code> Trait，一旦它的生命周期结束，就将内核地址空间中对应的逻辑段删除，为此在 <code class="docutils literal notranslate"><span class="pre">MemorySet</span></code>
+中新增了一个名为 <code class="docutils literal notranslate"><span class="pre">remove_area_with_start_vpn</span></code> 的方法，感兴趣的读者可以查阅。</p>
 </div>
 </div>
 <div class="section" id="id7">
 <h2>进程控制块<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
-<p>在内核中，每个进程的执行状态、资源控制等元数据均保存在一个被称为 <strong>进程控制块</strong> (PCB, Process Control Block) 的结构中，它是内核对进程进行管理的单位。在内核看来，它就等价于一个进程。</p>
+<p>在内核中，每个进程的执行状态、资源控制等元数据均保存在一个被称为 <strong>进程控制块</strong> (PCB, Process Control Block)
+的结构中，它是内核对进程进行管理的单位。在内核看来，它就等价于一个进程。</p>
 <p>承接前面的章节，我们仅需对任务控制块 <code class="docutils literal notranslate"><span class="pre">TaskControlBlock</span></code> 进行若干改动，让它直接承担进程控制块的功能：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// os/src/task/task.rs</span>
 <span class="linenos"> 2</span>
@@ -532,7 +544,8 @@
 <p>任务控制块中包含两部分：</p>
 <ul class="simple">
 <li><p>在初始化之后就不再变化的作为一个字段直接放在任务控制块中。这里将进程标识符 <code class="docutils literal notranslate"><span class="pre">PidHandle</span></code> 和内核栈 <code class="docutils literal notranslate"><span class="pre">KernelStack</span></code> 放在其中；</p></li>
-<li><p>在运行过程中可能发生变化的则放在 <code class="docutils literal notranslate"><span class="pre">TaskControlBlockInner</span></code> 中，将它再包裹上一层 <code class="docutils literal notranslate"><span class="pre">UPSafeCell&lt;T&gt;</span></code> 放在任务控制块中。在此使用 <code class="docutils literal notranslate"><span class="pre">UPSafeCell&lt;T&gt;</span></code> 可以提供互斥从而避免数据竞争。</p></li>
+<li><p>在运行过程中可能发生变化的则放在 <code class="docutils literal notranslate"><span class="pre">TaskControlBlockInner</span></code> 中，将它再包裹上一层 <code class="docutils literal notranslate"><span class="pre">UPSafeCell&lt;T&gt;</span></code> 放在任务控制块中。
+在此使用 <code class="docutils literal notranslate"><span class="pre">UPSafeCell&lt;T&gt;</span></code> 可以提供互斥从而避免数据竞争。</p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">TaskControlBlockInner</span></code> 中包含下面这些内容：</p>
 <ul class="simple">
@@ -541,9 +554,11 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">task_cx</span></code> 保存任务上下文，用于任务切换。</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">task_status</span></code> 维护当前进程的执行状态。</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">memory_set</span></code> 表示应用地址空间。</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">parent</span></code> 指向当前进程的父进程（如果存在的话）。注意我们使用 <code class="docutils literal notranslate"><span class="pre">Weak</span></code> 而非 <code class="docutils literal notranslate"><span class="pre">Arc</span></code> 来包裹另一个任务控制块，因此这个智能指针将不会影响父进程的引用计数。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent</span></code> 指向当前进程的父进程（如果存在的话）。注意我们使用 <code class="docutils literal notranslate"><span class="pre">Weak</span></code> 而非 <code class="docutils literal notranslate"><span class="pre">Arc</span></code>
+来包裹另一个任务控制块，因此这个智能指针将不会影响父进程的引用计数。</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">children</span></code> 则将当前进程的所有子进程的任务控制块以 <code class="docutils literal notranslate"><span class="pre">Arc</span></code> 智能指针的形式保存在一个向量中，这样才能够更方便的找到它们。</p></li>
-<li><p>当进程调用 exit 系统调用主动退出或者执行出错由内核终止的时候，它的退出码 <code class="docutils literal notranslate"><span class="pre">exit_code</span></code> 会被内核保存在它的任务控制块中，并等待它的父进程通过 waitpid 回收它的资源的同时也收集它的 PID 以及退出码。</p></li>
+<li><p>当进程调用 exit 系统调用主动退出或者执行出错由内核终止的时候，它的退出码 <code class="docutils literal notranslate"><span class="pre">exit_code</span></code>
+会被内核保存在它的任务控制块中，并等待它的父进程通过 waitpid 回收它的资源的同时也收集它的 PID 以及退出码。</p></li>
 </ul>
 <p>注意我们在维护父子进程关系的时候大量用到了智能指针 <code class="docutils literal notranslate"><span class="pre">Arc/Weak</span></code> ，当且仅当它的引用计数变为 0 的时候，进程控制块以及被绑定到它上面的各类资源才会被回收。</p>
 <p><code class="docutils literal notranslate"><span class="pre">TaskControlBlockInner</span></code> 提供的方法主要是对于它内部字段的快捷访问：</p>
@@ -592,7 +607,9 @@
 </div>
 <div class="section" id="id8">
 <h2>任务管理器<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h2>
-<p>在前面的章节中，任务管理器 <code class="docutils literal notranslate"><span class="pre">TaskManager</span></code> 不仅负责管理所有的任务，还维护着 CPU 当前在执行哪个任务。由于这种设计不够灵活，我们需要将任务管理器对于 CPU 的监控职能拆分到处理器管理结构 <code class="docutils literal notranslate"><span class="pre">Processor</span></code> 中去，任务管理器自身仅负责管理所有任务。在这里，任务指的就是进程。</p>
+<p>在前面的章节中，任务管理器 <code class="docutils literal notranslate"><span class="pre">TaskManager</span></code> 不仅负责管理所有的任务，还维护着 CPU 当前在执行哪个任务。
+由于这种设计不够灵活，我们需要将任务管理器对于 CPU 的监控职能拆分到处理器管理结构 <code class="docutils literal notranslate"><span class="pre">Processor</span></code> 中去，
+任务管理器自身仅负责管理所有任务。在这里，任务指的就是进程。</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// os/src/task/manager.rs</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">TaskManager</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -628,8 +645,11 @@
 <span class="linenos">33</span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">TaskManager</span></code> 将所有的任务控制块用引用计数 <code class="docutils literal notranslate"><span class="pre">Arc</span></code> 智能指针包裹后放在一个双端队列 <code class="docutils literal notranslate"><span class="pre">VecDeque</span></code> 中。使用智能指针的原因在于，任务控制块经常需要被放入/取出，如果直接移动任务控制块自身将会带来大量的数据拷贝开销，而对于智能指针进行移动则没有多少开销。其次，允许任务控制块的共享引用在某些情况下能够让我们的实现更加方便。</p>
-<p><code class="docutils literal notranslate"><span class="pre">TaskManager</span></code> 提供 <code class="docutils literal notranslate"><span class="pre">add/fetch</span></code> 两个操作，前者表示将一个任务加入队尾，后者则表示从队头中取出一个任务来执行。从调度算法来看，这里用到的就是最简单的 RR 算法。全局实例 <code class="docutils literal notranslate"><span class="pre">TASK_MANAGER</span></code> 则提供给内核的其他子模块 <code class="docutils literal notranslate"><span class="pre">add_task/fetch_task</span></code> 两个函数。</p>
+<p><code class="docutils literal notranslate"><span class="pre">TaskManager</span></code> 将所有的任务控制块用引用计数 <code class="docutils literal notranslate"><span class="pre">Arc</span></code> 智能指针包裹后放在一个双端队列 <code class="docutils literal notranslate"><span class="pre">VecDeque</span></code> 中。
+使用智能指针的原因在于，任务控制块经常需要被放入/取出，如果直接移动任务控制块自身将会带来大量的数据拷贝开销，
+而对于智能指针进行移动则没有多少开销。其次，允许任务控制块的共享引用在某些情况下能够让我们的实现更加方便。</p>
+<p><code class="docutils literal notranslate"><span class="pre">TaskManager</span></code> 提供 <code class="docutils literal notranslate"><span class="pre">add/fetch</span></code> 两个操作，前者表示将一个任务加入队尾，后者则表示从队头中取出一个任务来执行。
+从调度算法来看，这里用到的就是最简单的 RR 算法。全局实例 <code class="docutils literal notranslate"><span class="pre">TASK_MANAGER</span></code> 则提供给内核的其他子模块 <code class="docutils literal notranslate"><span class="pre">add_task/fetch_task</span></code> 两个函数。</p>
 </div>
 <div class="section" id="id9">
 <h2>处理器管理结构<a class="headerlink" href="#id9" title="永久链接至标题">¶</a></h2>
@@ -698,7 +718,8 @@
 </div>
 <div class="section" id="idle">
 <h3>任务调度的 idle 控制流<a class="headerlink" href="#idle" title="永久链接至标题">¶</a></h3>
-<p>每个 <code class="docutils literal notranslate"><span class="pre">Processor</span></code> 都有一个 idle 控制流，它们运行在每个核各自的启动栈上，功能是尝试从任务管理器中选出一个任务来在当前核上执行。在内核初始化完毕之后，核通过调用 <code class="docutils literal notranslate"><span class="pre">run_tasks</span></code> 函数来进入 idle 控制流：</p>
+<p>每个 <code class="docutils literal notranslate"><span class="pre">Processor</span></code> 都有一个 idle 控制流，它们运行在每个核各自的启动栈上，功能是尝试从任务管理器中选出一个任务来在当前核上执行。
+在内核初始化完毕之后，核通过调用 <code class="docutils literal notranslate"><span class="pre">run_tasks</span></code> 函数来进入 idle 控制流：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// os/src/task/processor.rs</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">impl</span><span class="w"> </span><span class="n">Processor</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -729,7 +750,8 @@
 <span class="linenos">28</span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>调度功能的主体在 <code class="docutils literal notranslate"><span class="pre">run_tasks</span></code> 中实现。它循环调用 <code class="docutils literal notranslate"><span class="pre">fetch_task</span></code> 直到顺利从任务管理器中取出一个任务，然后获得 <code class="docutils literal notranslate"><span class="pre">__switch</span></code> 两个参数进行任务切换。注意在整个过程中要严格控制临界区。</p>
+<p>调度功能的主体在 <code class="docutils literal notranslate"><span class="pre">run_tasks</span></code> 中实现。它循环调用 <code class="docutils literal notranslate"><span class="pre">fetch_task</span></code> 直到顺利从任务管理器中取出一个任务，然后获得
+<code class="docutils literal notranslate"><span class="pre">__switch</span></code> 两个参数进行任务切换。注意在整个过程中要严格控制临界区。</p>
 <p>当一个应用交出 CPU 使用权时，进入内核后它会调用 <code class="docutils literal notranslate"><span class="pre">schedule</span></code> 函数来切换到 idle 控制流并开启新一轮的任务调度。</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/task/processor.rs</span>
 
