@@ -25,6 +25,7 @@
    $ git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
    $ cd rCore-Tutorial-Code-2022S
    $ git checkout ch5
+   $ git clone https://github.com/LearningOS/rCore-Tutorial-Test-2022S.git user
 
 在 qemu 模拟器上运行本章代码：
 
@@ -56,39 +57,41 @@
    [rustsbi] enter supervisor 0x80200000
    [kernel] Hello, world!
    /**** APPS ****
-   exit
-   fantastic_text
-   forktest
-   forktest2
-   forktest_simple
-   forktree
-   hello_world
-   initproc
-   matrix
-   sleep
-   sleep_simple
-   stack_overflow
-   user_shell
-   usertests
-   yield
+   ch2b_bad_address
+   ch2b_bad_instructions
+   ch2b_bad_register
+   ch2b_hello_world
+   ch2b_power_3
+   ch2b_power_5
+   ch2b_power_7
+   ch3b_sleep
+   ch3b_sleep1
+   ch3b_yield0
+   ch3b_yield1
+   ch3b_yield2
+   ch5b_exit
+   ch5b_forktest
+   ch5b_forktest2
+   ch5b_forktest_simple
+   ch5b_forktree
+   ch5b_initproc
+   ch5b_usershell
    **************/
    Rust user shell
    >>
 
-其中 ``usertests`` 打包了很多应用，只要执行它就能够自动执行一系列应用。以 ``exit`` 为例执行应用：
+可以通过输入ch5b开头的应用来测试ch5实现的fork等功能:
 
 .. code-block::
 
-   >> exit
-   I am the parent. Forking the child...
-   I am parent, fork a child pid 3
-   I am the parent, waiting now..
-   I am the child.
-   waitpid 3 ok.
-   exit pass.
-   Shell: Process 2 exited with code 0
-   >>
+   >> ch5b_forktest_simple
 
+   sys_wait without child process test passed!
+   parent start, pid = 2!
+   ready waiting on parent process!
+   hello child process!
+   child process pid = 3, exit code = 100
+   Shell: Process 2 exited with code 0
 
 本章代码树
 --------------------------------------
