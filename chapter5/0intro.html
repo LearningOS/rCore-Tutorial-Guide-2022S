@@ -302,6 +302,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
 <span class="gp">$ </span><span class="nb">cd</span> rCore-Tutorial-Code-2022S
 <span class="gp">$ </span>git checkout ch5
+<span class="gp">$ </span>git clone https://github.com/LearningOS/rCore-Tutorial-Test-2022S.git user
 </pre></div>
 </div>
 <p>在 qemu 模拟器上运行本章代码：</p>
@@ -329,36 +330,39 @@
 [rustsbi] enter supervisor 0x80200000
 [kernel] Hello, world!
 /**** APPS ****
-exit
-fantastic_text
-forktest
-forktest2
-forktest_simple
-forktree
-hello_world
-initproc
-matrix
-sleep
-sleep_simple
-stack_overflow
-user_shell
-usertests
-yield
+ch2b_bad_address
+ch2b_bad_instructions
+ch2b_bad_register
+ch2b_hello_world
+ch2b_power_3
+ch2b_power_5
+ch2b_power_7
+ch3b_sleep
+ch3b_sleep1
+ch3b_yield0
+ch3b_yield1
+ch3b_yield2
+ch5b_exit
+ch5b_forktest
+ch5b_forktest2
+ch5b_forktest_simple
+ch5b_forktree
+ch5b_initproc
+ch5b_usershell
 **************/
 Rust user shell
 &gt;&gt;
 </pre></div>
 </div>
-<p>其中 <code class="docutils literal notranslate"><span class="pre">usertests</span></code> 打包了很多应用，只要执行它就能够自动执行一系列应用。以 <code class="docutils literal notranslate"><span class="pre">exit</span></code> 为例执行应用：</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">exit</span>
-<span class="n">I</span> <span class="n">am</span> <span class="n">the</span> <span class="n">parent</span><span class="o">.</span> <span class="n">Forking</span> <span class="n">the</span> <span class="n">child</span><span class="o">...</span>
-<span class="n">I</span> <span class="n">am</span> <span class="n">parent</span><span class="p">,</span> <span class="n">fork</span> <span class="n">a</span> <span class="n">child</span> <span class="n">pid</span> <span class="mi">3</span>
-<span class="n">I</span> <span class="n">am</span> <span class="n">the</span> <span class="n">parent</span><span class="p">,</span> <span class="n">waiting</span> <span class="n">now</span><span class="o">..</span>
-<span class="n">I</span> <span class="n">am</span> <span class="n">the</span> <span class="n">child</span><span class="o">.</span>
-<span class="n">waitpid</span> <span class="mi">3</span> <span class="n">ok</span><span class="o">.</span>
-<span class="n">exit</span> <span class="k">pass</span><span class="o">.</span>
-<span class="n">Shell</span><span class="p">:</span> <span class="n">Process</span> <span class="mi">2</span> <span class="n">exited</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">0</span>
-<span class="o">&gt;&gt;</span>
+<p>可以通过输入ch5b开头的应用来测试ch5实现的fork等功能:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt; ch5b_forktest_simple
+
+sys_wait without child process test passed!
+parent start, pid = 2!
+ready waiting on parent process!
+hello child process!
+child process pid = 3, exit code = 100
+Shell: Process 2 exited with code 0
 </pre></div>
 </div>
 </div>
