@@ -1,10 +1,10 @@
-第六章：进程间通信
+第七章：进程间通信
 ==============================================
 
 .. toctree::
    :maxdepth: 4
 
    0intro
-   1file-descriptor
-   2pipe
+   1pipe
+   2cmdargs-and-redirection
    3exercise

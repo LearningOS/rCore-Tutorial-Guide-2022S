@@ -8,7 +8,7 @@
 
 .. code-block:: rust
 
-    // os/drivers/block/mod.rs
+    // os/src/drivers/block/mod.rs
 
     type BlockDeviceImpl = virtio_blk::VirtIOBlock;
 
@@ -28,7 +28,7 @@
 
     FS_IMG := ../user/target/$(TARGET)/$(MODE)/fs.img
 
-    run-inner: build
+    run: build
         @qemu-system-riscv64 \
             -machine virt \
             -nographic \
@@ -48,7 +48,6 @@
 
     // os/src/config.rs
 
-    #[cfg(feature = "board_qemu")]
     pub const MMIO: &[(usize, usize)] = &[
         (0x10001000, 0x1000),
     ];
@@ -267,32 +266,32 @@
 
 .. code-block:: rust
     :linenos:
-    :emphasize-lines: 15-24
+    :emphasize-lines: 17-25
 
     // os/src/syscall/process.rs
 
     pub fn sys_exec(path: *const u8, mut args: *const usize) -> isize {
-        let token = current_user_token();
-        let path = translated_str(token, path);
-        let mut args_vec: Vec<String> = Vec::new();
-        loop {
-            let arg_str_ptr = *translated_ref(token, args);
-            if arg_str_ptr == 0 {
-                break;
-            }
-            args_vec.push(translated_str(token, arg_str_ptr as *const u8));
-            unsafe { args = args.add(1); }
+    let token = current_user_token();
+    let path = translated_str(token, path);
+    let mut args_vec: Vec<String> = Vec::new();
+    loop {
+        let arg_str_ptr = *translated_ref(token, args);
+        if arg_str_ptr == 0 {
+            break;
         }
-        if let Some(app_inode) = open_file(path.as_str(), OpenFlags::RDONLY) {
-            let all_data = app_inode.read_all();
-            let task = current_task().unwrap();
-            let argc = args_vec.len();
-            task.exec(all_data.as_slice(), args_vec);
-            // return argc because cx.x[10] will be covered with it later
-            argc as isize
-        } else {
-            -1
+        args_vec.push(translated_str(token, arg_str_ptr as *const u8));
+        unsafe {
+            args = args.add(1);
         }
+    }
+    if let Some(app_inode) = open_file(path.as_str(), OpenFlags::RDONLY) {
+        let all_data = app_inode.read_all();
+        let task = current_task().unwrap();
+        let argc = args_vec.len();
+        task.exec(all_data.as_slice(), args_vec);
+        argc as isize
+    } else {
+        -1
     }
 
 注意上面代码片段中的高亮部分。当执行获取应用的 ELF 数据的操作时，首先调用 ``open_file`` 函数，以只读的方式在内核中打开应用文件并获取它对应的 ``OSInode`` 。接下来可以通过 ``OSInode::read_all`` 将该文件的数据全部读到一个向量 ``all_data`` 中：
@@ -307,7 +306,7 @@
 
     lazy_static! {
         pub static ref INITPROC: Arc<TaskControlBlock> = Arc::new({
-            let inode = open_file("initproc", OpenFlags::RDONLY).unwrap();
+            let inode = open_file("ch6b_initproc", OpenFlags::RDONLY).unwrap();
             let v = inode.read_all();
             TaskControlBlock::new(v.as_slice())
         });

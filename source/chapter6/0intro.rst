@@ -6,10 +6,6 @@
 
 本章我们将实现一个简单的文件系统 -- easyfs，能够对 **持久存储设备** (Persistent Storage) I/O 资源进行管理；将设计两种文件：常规文件和目录文件，它们均以文件系统所维护的 **磁盘文件** 形式被组织并保存在持久存储设备上。
 
-我们还将扩展 ``exec`` 系统调用，使之能传递运行参数，并进一步改进 shell 程序，使其支持重定向符号 ``>`` 和 ``<`` 。
-
-本章的篇幅与第四章接近。
-
 实践体验
 -----------------------------------------
 
@@ -19,7 +15,7 @@
 
    $ git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
    $ cd rCore-Tutorial-Code-2022S
-   $ git checkout ch7
+   $ git checkout ch6
 
 在 qemu 模拟器上运行本章代码：
 
@@ -28,39 +24,21 @@
    $ cd os
    $ make run
 
-内核初始化完成之后就会进入shell程序，在这里我们运行一下本章的测例 ``filetest_simple`` ：
+内核初始化完成之后就会进入shell程序，在这里我们运行一下本章的测例 ``ch6b_filetest_simple`` ：
 
 .. code-block::
 
-    >> filetest_simple
+    >> ch6b_filetest_simple
     file_test passed!
     Shell: Process 2 exited with code 0
     >>
 
-它会将 ``Hello, world!`` 输出到另一个文件 ``filea`` ，并读取里面的内容确认输出正确。我们也可以通过命令行工具 ``cat`` 来查看 ``filea`` 中的内容：
+它会将 ``Hello, world!`` 输出到另一个文件 ``filea`` ，并读取里面的内容确认输出正确。我们也可以通过命令行工具 ``ch6b_cat`` 来查看 ``filea`` 中的内容：
 
 .. code-block::
 
-   >> cat filea
+   >> ch6b_cat
    Hello, world!
-   Shell: Process 2 exited with code 0
-   >>
-
-此外，在本章我们为shell程序支持了输入/输出重定向功能，可以将一个应用的输出保存到一个指定的文件。例如，下面的命令可以将 ``yield`` 应用的输出保存在文件 ``fileb`` 当中，并在应用执行完毕之后确认它的输出：
-
-.. code-block::
-
-   >> yield > fileb
-   Shell: Process 2 exited with code 0
-   >> cat fileb
-   Hello, I am process 2.
-   Back in process 2, iteration 0.
-   Back in process 2, iteration 1.
-   Back in process 2, iteration 2.
-   Back in process 2, iteration 3.
-   Back in process 2, iteration 4.
-   yield pass.
-
    Shell: Process 2 exited with code 0
    >>
 
@@ -85,23 +63,22 @@
    │   └── src
    │       └── main.rs
    ├── os
-       ├── build.rs
+       ├── build.rs(修改：不再需要将用户态程序链接到内核中）
        ├── Cargo.toml(修改：新增 Qemu 的块设备驱动依赖 crate)
        ├── Makefile(修改：新增文件系统的构建流程)
        └── src
            ├── config.rs(修改：新增访问块设备所需的一些 MMIO 配置)
            ├── ...
-           ├── drivers(修改：新增 Qemu 平台的块设备驱动)
+           ├── drivers(新增：Qemu 平台的块设备驱动)
            │   ├── block
            │   │   ├── mod.rs(将不同平台上的块设备全局实例化为 BLOCK_DEVICE 提供给其他模块使用)
            │   │   └── virtio_blk.rs(Qemu 平台的 virtio-blk 块设备)
            │   └── mod.rs
-           ├── fs(修改：在文件系统中新增常规文件的支持)
+           ├── fs(新增：对文件系统及文件抽象)
            │   ├── inode.rs(新增：将 easy-fs 提供的 Inode 抽象封装为内核看到的 OSInode
            │   │            并实现 fs 子模块的 File Trait)
            │   ├── mod.rs
-           │   ├── pipe.rs
-           │   └── stdio.rs
+           │   └── stdio.rs(新增：将标准输入输出也抽象为文件)
            ├── loader.rs(移除：应用加载器 loader 子模块，本章开始从文件系统中加载应用)
            ├── mm
            │   ├── address.rs
@@ -109,31 +86,31 @@
            │   ├── heap_allocator.rs
            │   ├── memory_set.rs(修改：在创建地址空间的时候插入 MMIO 虚拟页面)
            │   ├── mod.rs
-           │   └── page_table.rs
+           │   └── page_table.rs(新增：应用地址空间的缓冲区抽象 UserBuffer 及其迭代器实现)
            ├── syscall
-           │   ├── fs.rs(修改：新增 sys_open/sys_dup)
+           │   ├── fs.rs(修改：新增 sys_open，修改sys_read、sys_write)
            │   ├── mod.rs
-           │   └── process.rs(修改：sys_exec 改为从文件系统中加载 ELF，并支持命令行参数)
+           │   └── process.rs(修改：sys_exec 改为从文件系统中加载 ELF)
            ├── task
                ├── context.rs
                ├── manager.rs
-               ├── mod.rs(修改初始进程 INITPROC 的初始化)
+               ├── mod.rs(修改：初始进程 INITPROC 的初始化)
                ├── pid.rs
                ├── processor.rs
                ├── switch.rs
                ├── switch.S
-               └── task.rs
+               └── task.rs(修改：在任务控制块中加入文件描述符表的相关机制)
 
    cloc easy-fs os
    -------------------------------------------------------------------------------
    Language                     files          blank        comment           code
    -------------------------------------------------------------------------------
-   Rust                            42            277            208           3433
-   Assembly                         4             23             26            256
-   make                             1             12              4             45
-   TOML                             2              4              2             22
+   Rust                            41            306            418           3349
+   Assembly                         4             53             26            526
+   make                             1             13              4             48
+   TOML                             2              4              2             23
    -------------------------------------------------------------------------------
-   SUM:                            49            316            240           3756
+   SUM:                            48            376            450           3946
    -------------------------------------------------------------------------------
 
 .. 本章代码导读
