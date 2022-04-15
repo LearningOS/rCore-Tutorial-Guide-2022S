@@ -62,7 +62,7 @@ BigStride 表示一个预先定义的大常数，则该调度方案为每个进�
 .. attention::
 
     为了让大家能在本编程作业中使用 ``Vec`` 等数据结构，我们利用第三方库 ``buddy_system_allocator``
-    为大家实现了堆内存分配器，相关代码位于 ``heap_alloc`` 模块。
+    为大家实现了堆内存分配器，相关代码位于 ``mm/heap_allocator`` 模块。
 
     背景知识： `Rust 中的动态内存分配 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter4/1rust-dynamic-allocation.html>`_
 
