@@ -336,6 +336,13 @@ BigStride 表示一个预先定义的大常数，则该调度方案为每个进�
 <span class="k">fn</span> <span class="nf">sys_set_priority</span><span class="p">(</span><span class="n">prio</span>: <span class="kt">isize</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">isize</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
+<p>实现 tips:</p>
+<ul class="simple">
+<li><p>你可以在TCB加入新的字段来支持优先级等。</p></li>
+<li><p>为了减少整数除的误差，BIG_STRIDE 一般需要很大，但为了不至于发生反转现象（详见问答作业），或许选择一个适中的数即可，当然能进行溢出处理就更好了。</p></li>
+<li><p>stride 算法要找到 stride 最小的进程，使用优先级队列是效率不错的办法，但是我们的实验测例很简单，所以效率完全不是问题。事实上，很推荐使用暴力扫一遍的办法找最小值。</p></li>
+<li><p>注意设置进程的初始优先级。</p></li>
+</ul>
 <div class="admonition attention">
 <p class="admonition-title">注意</p>
 <p>为了让大家能在本编程作业中使用 <code class="docutils literal notranslate"><span class="pre">Vec</span></code> 等数据结构，我们利用第三方库 <code class="docutils literal notranslate"><span class="pre">buddy_system_allocator</span></code>
