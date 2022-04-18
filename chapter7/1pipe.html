@@ -2,7 +2,7 @@
 <html class="no-js" lang="zh_CN">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="chapter6练习" href="3exercise.html" /><link rel="prev" title="基于文件的标准输入/输出" href="1file-descriptor.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="命令行参数与标准 I/O 重定向" href="2cmdargs-and-redirection.html" /><link rel="prev" title="引言" href="0intro.html" />
 
     <meta name="generator" content="sphinx-4.1.2, furo 2021.08.31"/>
         <title>管道 - rCore-Tutorial-Guide-2022S 文档</title>
@@ -215,21 +215,21 @@
 <li class="toctree-l2"><a class="reference internal" href="../chapter5/4exercise.html">chapter5练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter6/index.html">第七章：文件系统与I/O重定向</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter6/index.html">第六章：文件系统与I/O重定向</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../chapter6/0intro.html">引言</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter6/1file-descriptor.html">文件与文件描述符</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../chapter6/1fs-interface.html">文件系统接口</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../chapter6/2fs-implementation-1.html">简易文件系统 easy-fs (上)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../chapter6/2fs-implementation-2.html">简易文件系统 easy-fs (下)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../chapter6/3using-easy-fs-in-kernel.html">在内核中使用 easy-fs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter6/4cmdargs-and-redirection.html">命令行参数与标准 I/O 重定向</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter6/5exercise.html">chapter7练习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter6/4exercise.html">chapter6练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第六章：进程间通信</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第七章：进程间通信</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="0intro.html">引言</a></li>
-<li class="toctree-l2"><a class="reference internal" href="1file-descriptor.html">基于文件的标准输入/输出</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">管道</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3exercise.html">chapter6练习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2cmdargs-and-redirection.html">命令行参数与标准 I/O 重定向</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3exercise.html">chapter7练习</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../chapter8/index.html">第八章：并发</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -311,8 +311,8 @@
 </pre></div>
 </div>
 <p>它会在用户库中被包装为 <code class="docutils literal notranslate"><span class="pre">close</span></code> 函数。</p>
-<p>我们从测例 <code class="docutils literal notranslate"><span class="pre">pipetest</span></code> 中理解管道的使用方法：</p>
-<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// user/src/bin/pipetest.rs</span>
+<p>我们从测例 <code class="docutils literal notranslate"><span class="pre">ch7b_pipetest</span></code> 中理解管道的使用方法：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// user/src/bin/ch7b_pipetest.rs</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="cp">#![no_std]</span><span class="w"></span>
 <span class="linenos"> 4</span><span class="cp">#![no_main]</span><span class="w"></span>
@@ -362,7 +362,7 @@
 </div>
 <p>在父进程中，我们通过 <code class="docutils literal notranslate"><span class="pre">pipe</span></code> 打开一个管道文件数组，其中 <code class="docutils literal notranslate"><span class="pre">pipe_fd[0]</span></code> 保存了管道读端的文件描述符，而 <code class="docutils literal notranslate"><span class="pre">pipe_fd[1]</span></code> 保存了管道写端的文件描述符。在 <code class="docutils literal notranslate"><span class="pre">fork</span></code> 之后，子进程会完全继承父进程的文件描述符表，于是子进程也可以通过同样的文件描述符来访问同一个管道的读端和写端。之前提到过管道是单向的，在这个测例中我们希望管道中的数据从父进程流向子进程，也即父进程仅通过管道的写端写入数据，而子进程仅通过管道的读端读取数据。</p>
 <p>因此，在第 25 和第 34 行，分别第一时间在子进程中关闭管道的写端和在父进程中关闭管道的读端。父进程在第 35 行将字符串 <code class="docutils literal notranslate"><span class="pre">STR</span></code> 写入管道的写端，随后在第 37 行关闭管道的写端；子进程在第 27 行从管道的读端读取字符串，并在第 29 行关闭。</p>
-<p>如果想在父子进程之间实现双向通信，我们就必须创建两个管道。有兴趣的读者可以参考测例 <code class="docutils literal notranslate"><span class="pre">pipe_large_test</span></code> 。</p>
+<p>如果想在父子进程之间实现双向通信，我们就必须创建两个管道。有兴趣的读者可以参考测例 <code class="docutils literal notranslate"><span class="pre">ch7b_pipe_large_test</span></code> 。</p>
 </div>
 <div class="section" id="sys-close">
 <h2>通过 sys_close 关闭文件<a class="headerlink" href="#sys-close" title="永久链接至标题">¶</a></h2>
@@ -608,23 +608,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="3exercise.html">
+          <a class="next-page" href="2cmdargs-and-redirection.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">chapter6练习</div>
+                <div class="title">命令行参数与标准 I/O 重定向</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="1file-descriptor.html">
+          <a class="prev-page" href="0intro.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">基于文件的标准输入/输出</div>
+                <div class="title">引言</div>
                 
               </div>
             </a>
@@ -638,7 +638,7 @@
               <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
               <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
             |
-            <a class="muted-link" href="../_sources/chapter7/2pipe.rst.txt"
+            <a class="muted-link" href="../_sources/chapter7/1pipe.rst.txt"
                rel="nofollow">
               显示源代码
             </a>

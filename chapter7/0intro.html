@@ -2,7 +2,7 @@
 <html class="no-js" lang="zh_CN">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="基于文件的标准输入/输出" href="1file-descriptor.html" /><link rel="prev" title="第六章：进程间通信" href="index.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="管道" href="1pipe.html" /><link rel="prev" title="第七章：进程间通信" href="index.html" />
 
     <meta name="generator" content="sphinx-4.1.2, furo 2021.08.31"/>
         <title>引言 - rCore-Tutorial-Guide-2022S 文档</title>
@@ -215,21 +215,21 @@
 <li class="toctree-l2"><a class="reference internal" href="../chapter5/4exercise.html">chapter5练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter6/index.html">第七章：文件系统与I/O重定向</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter6/index.html">第六章：文件系统与I/O重定向</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../chapter6/0intro.html">引言</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter6/1file-descriptor.html">文件与文件描述符</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../chapter6/1fs-interface.html">文件系统接口</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../chapter6/2fs-implementation-1.html">简易文件系统 easy-fs (上)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../chapter6/2fs-implementation-2.html">简易文件系统 easy-fs (下)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../chapter6/3using-easy-fs-in-kernel.html">在内核中使用 easy-fs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter6/4cmdargs-and-redirection.html">命令行参数与标准 I/O 重定向</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter6/5exercise.html">chapter7练习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter6/4exercise.html">chapter6练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第六章：进程间通信</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第七章：进程间通信</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">引言</a></li>
-<li class="toctree-l2"><a class="reference internal" href="1file-descriptor.html">基于文件的标准输入/输出</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2pipe.html">管道</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3exercise.html">chapter6练习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1pipe.html">管道</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2cmdargs-and-redirection.html">命令行参数与标准 I/O 重定向</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3exercise.html">chapter7练习</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../chapter8/index.html">第八章：并发</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -287,14 +287,15 @@
 <h1>引言<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
 <div class="section" id="id2">
 <h2>本章导读<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
-<p>本章将基于文件描述符改造标准输入/标准输出的实现方式，然后实现父子进程之间的通信机制——管道。</p>
+<p>本章将基于文件描述符实现父子进程之间的通信机制——管道。
+我们还将扩展 <code class="docutils literal notranslate"><span class="pre">exec</span></code> 系统调用，使之能传递运行参数，并进一步改进 shell 程序，使其支持重定向符号 <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> 和 <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> 。</p>
 </div>
 <div class="section" id="id3">
 <h2>实践体验<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
 <p>获取本章代码：</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
 <span class="gp">$ </span><span class="nb">cd</span> rCore-Tutorial-Code-2022S
-<span class="gp">$ </span>git checkout ch6
+<span class="gp">$ </span>git checkout ch7
 </pre></div>
 </div>
 <p>在 qemu 模拟器上运行本章代码：</p>
@@ -302,13 +303,30 @@
 <span class="gp">$ </span>make run
 </pre></div>
 </div>
-<p>进入shell程序后，可以运行管道机制的简单测例 <code class="docutils literal notranslate"><span class="pre">pipetest</span></code>， <code class="docutils literal notranslate"><span class="pre">pipetest</span></code> 需要保证父进程通过管道传输给子进程的字符串不会发生变化。</p>
+<p>进入shell程序后，可以运行管道机制的简单测例 <code class="docutils literal notranslate"><span class="pre">ch7b_pipetest</span></code>， <code class="docutils literal notranslate"><span class="pre">ch7b_pipetest</span></code> 需要保证父进程通过管道传输给子进程的字符串不会发生变化。</p>
 <p>测例输出大致如下：</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt; pipetest
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt; ch7b_pipetest
 Read OK, child process exited!
 pipetest passed!
 Shell: Process 2 exited with code 0
 &gt;&gt;
+</pre></div>
+</div>
+<p>同样的，也可以运行较为复杂的测例 <code class="docutils literal notranslate"><span class="pre">ch7b_pipe_large_test</span></code>，体验通过两个管道实现双向通信。</p>
+<p>此外，在本章我们为shell程序支持了输入/输出重定向功能，可以将一个应用的输出保存到一个指定的文件。例如，下面的命令可以将 <code class="docutils literal notranslate"><span class="pre">ch7b_yield</span></code> 应用的输出保存在文件 <code class="docutils literal notranslate"><span class="pre">fileb</span></code> 当中，并在应用执行完毕之后确认它的输出：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">ch7b_yield</span> <span class="o">&gt;</span> <span class="n">fileb</span>
+<span class="n">Shell</span><span class="p">:</span> <span class="n">Process</span> <span class="mi">2</span> <span class="n">exited</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">0</span>
+<span class="o">&gt;&gt;</span> <span class="n">ch7b_cat</span> <span class="n">fileb</span>
+<span class="n">Hello</span><span class="p">,</span> <span class="n">I</span> <span class="n">am</span> <span class="n">process</span> <span class="mf">2.</span>
+<span class="n">Back</span> <span class="ow">in</span> <span class="n">process</span> <span class="mi">2</span><span class="p">,</span> <span class="n">iteration</span> <span class="mf">0.</span>
+<span class="n">Back</span> <span class="ow">in</span> <span class="n">process</span> <span class="mi">2</span><span class="p">,</span> <span class="n">iteration</span> <span class="mf">1.</span>
+<span class="n">Back</span> <span class="ow">in</span> <span class="n">process</span> <span class="mi">2</span><span class="p">,</span> <span class="n">iteration</span> <span class="mf">2.</span>
+<span class="n">Back</span> <span class="ow">in</span> <span class="n">process</span> <span class="mi">2</span><span class="p">,</span> <span class="n">iteration</span> <span class="mf">3.</span>
+<span class="n">Back</span> <span class="ow">in</span> <span class="n">process</span> <span class="mi">2</span><span class="p">,</span> <span class="n">iteration</span> <span class="mf">4.</span>
+<span class="k">yield</span> <span class="k">pass</span><span class="o">.</span>
+
+<span class="n">Shell</span><span class="p">:</span> <span class="n">Process</span> <span class="mi">2</span> <span class="n">exited</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">0</span>
+<span class="o">&gt;&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -317,21 +335,22 @@ Shell: Process 2 exited with code 0
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> ── os
     └── src
         ├── ...
-        ├── fs(新增：文件系统子模块 fs)
-        │   ├── mod.rs(包含已经打开且可以被进程读写的文件的抽象 File Trait)
-        │   ├── pipe.rs(实现了 File Trait 的第一个分支——可用来进程间通信的管道)
-        │   └── stdio.rs(实现了 File Trait 的第二个分支——标准输入/输出)
+        ├── fs
+        │   ├── inode.rs
+        │   ├── mod.rs
+        │   ├── pipe.rs(新增：实现了 File Trait 的第三个实现——可用来进程间通信的管道)
+        │   └── stdio.rs
         ├── mm
         │   ├── address.rs
         │   ├── frame_allocator.rs
         │   ├── heap_allocator.rs
         │   ├── memory_set.rs
         │   ├── mod.rs
-        │   └── page_table.rs(新增：应用地址空间的缓冲区抽象 UserBuffer 及其迭代器实现)
+        │   └── page_table.rs
         ├── syscall
-        │   ├── fs.rs(修改：调整 sys_read/write 的实现，新增 sys_close/pipe)
-        │   ├── mod.rs(修改：调整 syscall 分发)
-        │   └── process.rs
+        │   ├── fs.rs(修改：添加了sys_pipe和sys_dup)
+        │   ├── mod.rs
+        │   └── process.rs(修改：sys_exec添加了对参数的支持)
         ├── task
             ├── context.rs
             ├── manager.rs
@@ -340,18 +359,18 @@ Shell: Process 2 exited with code 0
             ├── processor.rs
             ├── switch.rs
             ├── switch.S
-            └── task.rs(修改：在任务控制块中加入文件描述符表相关机制)
+            └── task.rs(修改：在exec中将参数压入用户栈中)
 
-cloc os
+cloc easy-fs os
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
-Rust                            32            200            138           2338
-Assembly                         4             23             26            256
-make                             1             11              4             36
-TOML                             1              2              1             12
+Rust                            42            317            434           3574
+Assembly                         4             53             26            526
+make                             1             13              4             48
+TOML                             2              4              2             23
 -------------------------------------------------------------------------------
-SUM:                            38            236            169           2642
+SUM:                            49            387            466           4171
 -------------------------------------------------------------------------------
 </pre></div>
 </div>
@@ -362,12 +381,12 @@ SUM:                            38            236            169           2642
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="1file-descriptor.html">
+          <a class="next-page" href="1pipe.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">基于文件的标准输入/输出</div>
+                <div class="title">管道</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -378,7 +397,7 @@ SUM:                            38            236            169           2642
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">第六章：进程间通信</div>
+                <div class="title">第七章：进程间通信</div>
                 
               </div>
             </a>

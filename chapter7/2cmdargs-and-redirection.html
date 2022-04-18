@@ -2,7 +2,7 @@
 <html class="no-js" lang="zh_CN">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="chapter7练习" href="5exercise.html" /><link rel="prev" title="在内核中使用 easy-fs" href="3using-easy-fs-in-kernel.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="chapter7练习" href="3exercise.html" /><link rel="prev" title="管道" href="1pipe.html" />
 
     <meta name="generator" content="sphinx-4.1.2, furo 2021.08.31"/>
         <title>命令行参数与标准 I/O 重定向 - rCore-Tutorial-Guide-2022S 文档</title>
@@ -215,21 +215,21 @@
 <li class="toctree-l2"><a class="reference internal" href="../chapter5/4exercise.html">chapter5练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第七章：文件系统与I/O重定向</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0intro.html">引言</a></li>
-<li class="toctree-l2"><a class="reference internal" href="1fs-interface.html">文件系统接口</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2fs-implementation-1.html">简易文件系统 easy-fs (上)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2fs-implementation-2.html">简易文件系统 easy-fs (下)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3using-easy-fs-in-kernel.html">在内核中使用 easy-fs</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">命令行参数与标准 I/O 重定向</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5exercise.html">chapter7练习</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter6/index.html">第六章：文件系统与I/O重定向</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter6/0intro.html">引言</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter6/1file-descriptor.html">文件与文件描述符</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter6/1fs-interface.html">文件系统接口</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter6/2fs-implementation-1.html">简易文件系统 easy-fs (上)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter6/2fs-implementation-2.html">简易文件系统 easy-fs (下)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter6/3using-easy-fs-in-kernel.html">在内核中使用 easy-fs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter6/4exercise.html">chapter6练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter7/index.html">第六章：进程间通信</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../chapter7/0intro.html">引言</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter7/1file-descriptor.html">基于文件的标准输入/输出</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter7/2pipe.html">管道</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter7/3exercise.html">chapter6练习</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第七章：进程间通信</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0intro.html">引言</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1pipe.html">管道</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">命令行参数与标准 I/O 重定向</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3exercise.html">chapter7练习</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../chapter8/index.html">第八章：并发</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -308,7 +308,7 @@
 <div class="section" id="shell">
 <h3>shell程序的命令行参数分割<a class="headerlink" href="#shell" title="永久链接至标题">¶</a></h3>
 <p>回忆一下，在shell程序 <code class="docutils literal notranslate"><span class="pre">user_shell</span></code> 中，一旦接收到一个回车，我们就会将当前行的内容 <code class="docutils literal notranslate"><span class="pre">line</span></code> 作为一个名字并试图去执行同名的应用。但是现在 <code class="docutils literal notranslate"><span class="pre">line</span></code> 还可能包含一些命令行参数，只有最开头的一个才是要执行的应用名。因此我们要做的第一件事情就是将 <code class="docutils literal notranslate"><span class="pre">line</span></code> 用空格分割：</p>
-<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// user/src/bin/user_shell.rs</span>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// user/src/bin/ch6b_user_shell.rs</span>
 
 <span class="kd">let</span><span class="w"> </span><span class="n">args</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">line</span><span class="p">.</span><span class="n">as_str</span><span class="p">().</span><span class="n">split</span><span class="p">(</span><span class="sc">' '</span><span class="p">).</span><span class="n">collect</span><span class="p">();</span><span class="w"></span>
 <span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">args_copy</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">args</span><span class="w"></span>
@@ -328,7 +328,7 @@
 </pre></div>
 </div>
 <p>经过分割， <code class="docutils literal notranslate"><span class="pre">args</span></code> 中的 <code class="docutils literal notranslate"><span class="pre">&amp;str</span></code> 都是 <code class="docutils literal notranslate"><span class="pre">line</span></code> 中的一段子区间，它们的结尾并没有包含 <code class="docutils literal notranslate"><span class="pre">\0</span></code> ，因为 <code class="docutils literal notranslate"><span class="pre">line</span></code> 是我们输入得到的，中间本来就没有 <code class="docutils literal notranslate"><span class="pre">\0</span></code> 。由于在向内核传入字符串的时候，我们只能传入字符串的起始地址，因此我们必须保证其结尾为 <code class="docutils literal notranslate"><span class="pre">\0</span></code> 。从而我们用 <code class="docutils literal notranslate"><span class="pre">args_copy</span></code> 将 <code class="docutils literal notranslate"><span class="pre">args</span></code> 中的字符串拷贝一份到堆上并在末尾手动加入 <code class="docutils literal notranslate"><span class="pre">\0</span></code> 。这样就可以安心的将 <code class="docutils literal notranslate"><span class="pre">args_copy</span></code> 中的字符串传入内核了。我们用 <code class="docutils literal notranslate"><span class="pre">args_addr</span></code> 来收集这些字符串的起始地址：</p>
-<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// user/src/bin/user_shell.rs</span>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// user/src/bin/ch6b_user_shell.rs</span>
 
 <span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">args_addr</span>: <span class="nb">Vec</span><span class="o">&lt;*</span><span class="k">const</span><span class="w"> </span><span class="kt">u8</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">args_copy</span><span class="w"></span>
 <span class="p">.</span><span class="n">iter</span><span class="p">()</span><span class="w"></span>
@@ -468,7 +468,7 @@
 </pre></div>
 </div>
 <p>可以看到，在入口 <code class="docutils literal notranslate"><span class="pre">_start</span></code> 中我们就接收到了命令行参数个数 <code class="docutils literal notranslate"><span class="pre">argc</span></code> 和字符串数组的起始地址 <code class="docutils literal notranslate"><span class="pre">argv</span></code> 。但是这个起始地址不太好用，我们希望能够将其转化为编写应用的时候看到的 <code class="docutils literal notranslate"><span class="pre">&amp;[&amp;str]</span></code> 的形式。转化的主体在第 10~23 行，就是分别取出 <code class="docutils literal notranslate"><span class="pre">argc</span></code> 个字符串的起始地址（基于字符串数组的 base 地址 <code class="docutils literal notranslate"><span class="pre">argv</span></code> ），从它向后找到第一个 <code class="docutils literal notranslate"><span class="pre">\0</span></code> 就可以得到一个完整的 <code class="docutils literal notranslate"><span class="pre">&amp;str</span></code> 格式的命令行参数字符串并加入到向量 <code class="docutils literal notranslate"><span class="pre">v</span></code> 中。最后通过 <code class="docutils literal notranslate"><span class="pre">v.as_slice</span></code> 就得到了我们在 <code class="docutils literal notranslate"><span class="pre">main</span></code> 主函数中看到的 <code class="docutils literal notranslate"><span class="pre">&amp;[&amp;str]</span></code> 。</p>
-<p>有了命令行参数支持，我们就可以编写命令行工具 <code class="docutils literal notranslate"><span class="pre">cat</span></code> 来输出指定文件的内容了。读者可以自行参阅其实现。</p>
+<p>有了命令行参数支持，我们就可以编写命令行工具 <code class="docutils literal notranslate"><span class="pre">ch6b_cat</span></code> 来输出指定文件的内容了。读者可以自行参阅其实现。</p>
 </div>
 </div>
 <div class="section" id="id3">
@@ -506,7 +506,7 @@
 </div>
 <p>在 <code class="docutils literal notranslate"><span class="pre">sys_dup</span></code> 函数中，首先检查传入 <code class="docutils literal notranslate"><span class="pre">fd</span></code> 的合法性。然后在文件描述符表中分配一个新的文件描述符，并保存 <code class="docutils literal notranslate"><span class="pre">fd</span></code> 指向的已打开文件的一份拷贝即可。</p>
 <p>在shell程序 <code class="docutils literal notranslate"><span class="pre">user_shell</span></code> 分割命令行参数的时候，我们要检查是否存在通过 <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> 或 <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> 进行输入输出重定向的情况，如果存在的话则需要将它们从命令行参数中移除，并记录匹配到的输入文件名或输出文件名到字符串 <code class="docutils literal notranslate"><span class="pre">input</span></code> 或 <code class="docutils literal notranslate"><span class="pre">output</span></code> 中。注意，为了实现方便，我们这里假设输入shell程序的命令一定合法：即 <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> 或 <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> 最多只会出现一次，且后面总是会有一个参数作为重定向到的文件。</p>
-<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// user/src/bin/user_shell.rs</span>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// user/src/bin/ch6b_user_shell.rs</span>
 
 <span class="c1">// redirect input</span>
 <span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span>::<span class="n">new</span><span class="p">();</span><span class="w"></span>
@@ -586,7 +586,7 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="5exercise.html">
+          <a class="next-page" href="3exercise.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
@@ -595,14 +595,14 @@
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="3using-easy-fs-in-kernel.html">
+          <a class="prev-page" href="1pipe.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">在内核中使用 easy-fs</div>
+                <div class="title">管道</div>
                 
               </div>
             </a>
@@ -616,7 +616,7 @@
               <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
               <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
             |
-            <a class="muted-link" href="../_sources/chapter6/4cmdargs-and-redirection.rst.txt"
+            <a class="muted-link" href="../_sources/chapter7/2cmdargs-and-redirection.rst.txt"
                rel="nofollow">
               显示源代码
             </a>

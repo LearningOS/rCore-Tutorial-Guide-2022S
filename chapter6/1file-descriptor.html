@@ -2,10 +2,10 @@
 <html class="no-js" lang="zh_CN">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="管道" href="2pipe.html" /><link rel="prev" title="引言" href="0intro.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="文件系统接口" href="1fs-interface.html" /><link rel="prev" title="引言" href="0intro.html" />
 
     <meta name="generator" content="sphinx-4.1.2, furo 2021.08.31"/>
-        <title>基于文件的标准输入/输出 - rCore-Tutorial-Guide-2022S 文档</title>
+        <title>文件与文件描述符 - rCore-Tutorial-Guide-2022S 文档</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=c7c65a82b42f6b978e58466c1e9ef2509836d916" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
@@ -215,21 +215,21 @@
 <li class="toctree-l2"><a class="reference internal" href="../chapter5/4exercise.html">chapter5练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter6/index.html">第七章：文件系统与I/O重定向</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../chapter6/0intro.html">引言</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter6/1fs-interface.html">文件系统接口</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter6/2fs-implementation-1.html">简易文件系统 easy-fs (上)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter6/2fs-implementation-2.html">简易文件系统 easy-fs (下)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter6/3using-easy-fs-in-kernel.html">在内核中使用 easy-fs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter6/4cmdargs-and-redirection.html">命令行参数与标准 I/O 重定向</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter6/5exercise.html">chapter7练习</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第六章：文件系统与I/O重定向</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="0intro.html">引言</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">文件与文件描述符</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1fs-interface.html">文件系统接口</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2fs-implementation-1.html">简易文件系统 easy-fs (上)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2fs-implementation-2.html">简易文件系统 easy-fs (下)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3using-easy-fs-in-kernel.html">在内核中使用 easy-fs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4exercise.html">chapter6练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第六章：进程间通信</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="0intro.html">引言</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">基于文件的标准输入/输出</a></li>
-<li class="toctree-l2"><a class="reference internal" href="2pipe.html">管道</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3exercise.html">chapter6练习</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter7/index.html">第七章：进程间通信</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter7/0intro.html">引言</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter7/1pipe.html">管道</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter7/2cmdargs-and-redirection.html">命令行参数与标准 I/O 重定向</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter7/3exercise.html">chapter7练习</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../chapter8/index.html">第八章：并发</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -284,13 +284,15 @@
           </label>
         </div>
         <div class="section" id="id1">
-<h1>基于文件的标准输入/输出<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<h1>文件与文件描述符<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
 <div class="section" id="id2">
 <h2>文件简介<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
 <p>文件可代表很多种不同类型的I/O 资源，但是在进程看来，所有文件的访问都可以通过一个简洁统一的抽象接口 <code class="docutils literal notranslate"><span class="pre">File</span></code> 进行：</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// os/src/fs/mod.rs</span>
 
 <span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">File</span><span class="w"> </span>: <span class="nb">Send</span> <span class="o">+</span><span class="w"> </span><span class="nb">Sync</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">readable</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">fn</span> <span class="nf">writable</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="k">fn</span> <span class="nf">read</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span>: <span class="nc">UserBuffer</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">usize</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="k">fn</span> <span class="nf">write</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span>: <span class="nc">UserBuffer</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">usize</span><span class="p">;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
@@ -337,39 +339,43 @@
 <span class="linenos"> 5</span><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">Stdout</span><span class="p">;</span><span class="w"></span>
 <span class="linenos"> 6</span>
 <span class="linenos"> 7</span><span class="k">impl</span><span class="w"> </span><span class="n">File</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Stdin</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="linenos"> 8</span><span class="w">    </span><span class="k">fn</span> <span class="nf">read</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">user_buf</span>: <span class="nc">UserBuffer</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">usize</span> <span class="p">{</span><span class="w"></span>
-<span class="linenos"> 9</span><span class="w">        </span><span class="fm">assert_eq!</span><span class="p">(</span><span class="n">user_buf</span><span class="p">.</span><span class="n">len</span><span class="p">(),</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
-<span class="linenos">10</span><span class="w">        </span><span class="c1">// busy loop</span>
-<span class="linenos">11</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">c</span>: <span class="kt">usize</span><span class="p">;</span><span class="w"></span>
-<span class="linenos">12</span><span class="w">        </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="linenos">13</span><span class="w">            </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">console_getchar</span><span class="p">();</span><span class="w"></span>
-<span class="linenos">14</span><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="linenos">15</span><span class="w">                </span><span class="n">suspend_current_and_run_next</span><span class="p">();</span><span class="w"></span>
-<span class="linenos">16</span><span class="w">                </span><span class="k">continue</span><span class="p">;</span><span class="w"></span>
-<span class="linenos">17</span><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="linenos">18</span><span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
-<span class="linenos">19</span><span class="w">            </span><span class="p">}</span><span class="w"></span>
-<span class="linenos">20</span><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="linenos">21</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">ch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">u8</span><span class="p">;</span><span class="w"></span>
-<span class="linenos">22</span><span class="w">        </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">user_buf</span><span class="p">.</span><span class="n">buffers</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">as_mut_ptr</span><span class="p">().</span><span class="n">write_volatile</span><span class="p">(</span><span class="n">ch</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<span class="linenos">23</span><span class="w">        </span><span class="mi">1</span><span class="w"></span>
-<span class="linenos">24</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="linenos">25</span><span class="w">    </span><span class="k">fn</span> <span class="nf">write</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">_user_buf</span>: <span class="nc">UserBuffer</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">usize</span> <span class="p">{</span><span class="w"></span>
-<span class="linenos">26</span><span class="w">        </span><span class="fm">panic!</span><span class="p">(</span><span class="s">"Cannot write to stdin!"</span><span class="p">);</span><span class="w"></span>
-<span class="linenos">27</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="linenos">28</span><span class="p">}</span><span class="w"></span>
-<span class="linenos">29</span>
-<span class="linenos">30</span><span class="k">impl</span><span class="w"> </span><span class="n">File</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Stdout</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="linenos">31</span><span class="w">    </span><span class="k">fn</span> <span class="nf">read</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">_user_buf</span>: <span class="nc">UserBuffer</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">usize</span><span class="p">{</span><span class="w"></span>
-<span class="linenos">32</span><span class="w">        </span><span class="fm">panic!</span><span class="p">(</span><span class="s">"Cannot read from stdout!"</span><span class="p">);</span><span class="w"></span>
-<span class="linenos">33</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="linenos">34</span><span class="w">    </span><span class="k">fn</span> <span class="nf">write</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">user_buf</span>: <span class="nc">UserBuffer</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">usize</span> <span class="p">{</span><span class="w"></span>
-<span class="linenos">35</span><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="n">buffer</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">user_buf</span><span class="p">.</span><span class="n">buffers</span><span class="p">.</span><span class="n">iter</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="linenos">36</span><span class="w">            </span><span class="fm">print!</span><span class="p">(</span><span class="s">"{}"</span><span class="p">,</span><span class="w"> </span><span class="n">core</span>::<span class="kt">str</span>::<span class="n">from_utf8</span><span class="p">(</span><span class="o">*</span><span class="n">buffer</span><span class="p">).</span><span class="n">unwrap</span><span class="p">());</span><span class="w"></span>
-<span class="linenos">37</span><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="linenos">38</span><span class="w">        </span><span class="n">user_buf</span><span class="p">.</span><span class="n">len</span><span class="p">()</span><span class="w"></span>
-<span class="linenos">39</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="linenos">40</span><span class="p">}</span><span class="w"></span>
+<span class="linenos"> 8</span><span class="w">    </span><span class="k">fn</span> <span class="nf">readable</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span> <span class="p">{</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="linenos"> 9</span><span class="w">    </span><span class="k">fn</span> <span class="nf">writable</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span> <span class="p">{</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">10</span><span class="w">    </span><span class="k">fn</span> <span class="nf">read</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">user_buf</span>: <span class="nc">UserBuffer</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">usize</span> <span class="p">{</span><span class="w"></span>
+<span class="linenos">11</span><span class="w">        </span><span class="fm">assert_eq!</span><span class="p">(</span><span class="n">user_buf</span><span class="p">.</span><span class="n">len</span><span class="p">(),</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="linenos">12</span><span class="w">        </span><span class="c1">// busy loop</span>
+<span class="linenos">13</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">c</span>: <span class="kt">usize</span><span class="p">;</span><span class="w"></span>
+<span class="linenos">14</span><span class="w">        </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos">15</span><span class="w">            </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">console_getchar</span><span class="p">();</span><span class="w"></span>
+<span class="linenos">16</span><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos">17</span><span class="w">                </span><span class="n">suspend_current_and_run_next</span><span class="p">();</span><span class="w"></span>
+<span class="linenos">18</span><span class="w">                </span><span class="k">continue</span><span class="p">;</span><span class="w"></span>
+<span class="linenos">19</span><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos">20</span><span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="linenos">21</span><span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">22</span><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">23</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">ch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">u8</span><span class="p">;</span><span class="w"></span>
+<span class="linenos">24</span><span class="w">        </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">user_buf</span><span class="p">.</span><span class="n">buffers</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">as_mut_ptr</span><span class="p">().</span><span class="n">write_volatile</span><span class="p">(</span><span class="n">ch</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">25</span><span class="w">        </span><span class="mi">1</span><span class="w"></span>
+<span class="linenos">26</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">27</span><span class="w">    </span><span class="k">fn</span> <span class="nf">write</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">_user_buf</span>: <span class="nc">UserBuffer</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">usize</span> <span class="p">{</span><span class="w"></span>
+<span class="linenos">28</span><span class="w">        </span><span class="fm">panic!</span><span class="p">(</span><span class="s">"Cannot write to stdin!"</span><span class="p">);</span><span class="w"></span>
+<span class="linenos">29</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">30</span><span class="p">}</span><span class="w"></span>
+<span class="linenos">31</span>
+<span class="linenos">32</span><span class="k">impl</span><span class="w"> </span><span class="n">File</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Stdout</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos">33</span><span class="w">    </span><span class="k">fn</span> <span class="nf">readable</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span> <span class="p">{</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">34</span><span class="w">    </span><span class="k">fn</span> <span class="nf">writable</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span> <span class="p">{</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">35</span><span class="w">    </span><span class="k">fn</span> <span class="nf">read</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">_user_buf</span>: <span class="nc">UserBuffer</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">usize</span><span class="p">{</span><span class="w"></span>
+<span class="linenos">36</span><span class="w">        </span><span class="fm">panic!</span><span class="p">(</span><span class="s">"Cannot read from stdout!"</span><span class="p">);</span><span class="w"></span>
+<span class="linenos">37</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">38</span><span class="w">    </span><span class="k">fn</span> <span class="nf">write</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">user_buf</span>: <span class="nc">UserBuffer</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">usize</span> <span class="p">{</span><span class="w"></span>
+<span class="linenos">39</span><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="n">buffer</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">user_buf</span><span class="p">.</span><span class="n">buffers</span><span class="p">.</span><span class="n">iter</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos">40</span><span class="w">            </span><span class="fm">print!</span><span class="p">(</span><span class="s">"{}"</span><span class="p">,</span><span class="w"> </span><span class="n">core</span>::<span class="kt">str</span>::<span class="n">from_utf8</span><span class="p">(</span><span class="o">*</span><span class="n">buffer</span><span class="p">).</span><span class="n">unwrap</span><span class="p">());</span><span class="w"></span>
+<span class="linenos">41</span><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">42</span><span class="w">        </span><span class="n">user_buf</span><span class="p">.</span><span class="n">len</span><span class="p">()</span><span class="w"></span>
+<span class="linenos">43</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">44</span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>可以看到，标准输入文件 <code class="docutils literal notranslate"><span class="pre">Stdin</span></code> 是只读文件，只允许进程通过 <code class="docutils literal notranslate"><span class="pre">read</span></code> 从里面读入，目前每次仅支持读入一个字符，其实现与之前的 <code class="docutils literal notranslate"><span class="pre">sys_read</span></code> 基本相同，只是需要通过 <code class="docutils literal notranslate"><span class="pre">UserBuffer</span></code> 来获取具体将字节写入的位置。相反，标准输出文件 <code class="docutils literal notranslate"><span class="pre">Stdout</span></code> 是只写文件，只允许进程通过 <code class="docutils literal notranslate"><span class="pre">write</span></code> 写入到里面，实现方法是遍历每个切片，将其转化为字符串通过 <code class="docutils literal notranslate"><span class="pre">print!</span></code> 宏来输出。</p>
@@ -498,12 +504,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="2pipe.html">
+          <a class="next-page" href="1fs-interface.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">管道</div>
+                <div class="title">文件系统接口</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -528,7 +534,7 @@
               <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
               <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
             |
-            <a class="muted-link" href="../_sources/chapter7/1file-descriptor.rst.txt"
+            <a class="muted-link" href="../_sources/chapter6/1file-descriptor.rst.txt"
                rel="nofollow">
               显示源代码
             </a>
@@ -548,7 +554,7 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">基于文件的标准输入/输出</a><ul>
+<li><a class="reference internal" href="#">文件与文件描述符</a><ul>
 <li><a class="reference internal" href="#id2">文件简介</a></li>
 <li><a class="reference internal" href="#id3">标准输入和标准输出</a></li>
 <li><a class="reference internal" href="#id4">文件描述符与文件描述符表</a></li>

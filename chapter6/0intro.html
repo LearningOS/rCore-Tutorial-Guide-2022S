@@ -2,7 +2,7 @@
 <html class="no-js" lang="zh_CN">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="文件系统接口" href="1fs-interface.html" /><link rel="prev" title="第七章：文件系统与I/O重定向" href="index.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="文件与文件描述符" href="1file-descriptor.html" /><link rel="prev" title="第六章：文件系统与I/O重定向" href="index.html" />
 
     <meta name="generator" content="sphinx-4.1.2, furo 2021.08.31"/>
         <title>引言 - rCore-Tutorial-Guide-2022S 文档</title>
@@ -215,21 +215,21 @@
 <li class="toctree-l2"><a class="reference internal" href="../chapter5/4exercise.html">chapter5练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第七章：文件系统与I/O重定向</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第六章：文件系统与I/O重定向</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">引言</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1file-descriptor.html">文件与文件描述符</a></li>
 <li class="toctree-l2"><a class="reference internal" href="1fs-interface.html">文件系统接口</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2fs-implementation-1.html">简易文件系统 easy-fs (上)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2fs-implementation-2.html">简易文件系统 easy-fs (下)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="3using-easy-fs-in-kernel.html">在内核中使用 easy-fs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4cmdargs-and-redirection.html">命令行参数与标准 I/O 重定向</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5exercise.html">chapter7练习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4exercise.html">chapter6练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter7/index.html">第六章：进程间通信</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter7/index.html">第七章：进程间通信</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../chapter7/0intro.html">引言</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter7/1file-descriptor.html">基于文件的标准输入/输出</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter7/2pipe.html">管道</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter7/3exercise.html">chapter6练习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter7/1pipe.html">管道</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter7/2cmdargs-and-redirection.html">命令行参数与标准 I/O 重定向</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter7/3exercise.html">chapter7练习</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../chapter8/index.html">第八章：并发</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -288,15 +288,13 @@
 <div class="section" id="id2">
 <h2>本章导读<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
 <p>本章我们将实现一个简单的文件系统 – easyfs，能够对 <strong>持久存储设备</strong> (Persistent Storage) I/O 资源进行管理；将设计两种文件：常规文件和目录文件，它们均以文件系统所维护的 <strong>磁盘文件</strong> 形式被组织并保存在持久存储设备上。</p>
-<p>我们还将扩展 <code class="docutils literal notranslate"><span class="pre">exec</span></code> 系统调用，使之能传递运行参数，并进一步改进 shell 程序，使其支持重定向符号 <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> 和 <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> 。</p>
-<p>本章的篇幅与第四章接近。</p>
 </div>
 <div class="section" id="id3">
 <h2>实践体验<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
 <p>获取本章代码：</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
 <span class="gp">$ </span><span class="nb">cd</span> rCore-Tutorial-Code-2022S
-<span class="gp">$ </span>git checkout ch7
+<span class="gp">$ </span>git checkout ch6
 </pre></div>
 </div>
 <p>在 qemu 模拟器上运行本章代码：</p>
@@ -304,34 +302,18 @@
 <span class="gp">$ </span>make run
 </pre></div>
 </div>
-<p>内核初始化完成之后就会进入shell程序，在这里我们运行一下本章的测例 <code class="docutils literal notranslate"><span class="pre">filetest_simple</span></code> ：</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt; filetest_simple
+<p>内核初始化完成之后就会进入shell程序，在这里我们运行一下本章的测例 <code class="docutils literal notranslate"><span class="pre">ch6b_filetest_simple</span></code> ：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt; ch6b_filetest_simple
 file_test passed!
 Shell: Process 2 exited with code 0
 &gt;&gt;
 </pre></div>
 </div>
-<p>它会将 <code class="docutils literal notranslate"><span class="pre">Hello,</span> <span class="pre">world!</span></code> 输出到另一个文件 <code class="docutils literal notranslate"><span class="pre">filea</span></code> ，并读取里面的内容确认输出正确。我们也可以通过命令行工具 <code class="docutils literal notranslate"><span class="pre">cat</span></code> 来查看 <code class="docutils literal notranslate"><span class="pre">filea</span></code> 中的内容：</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt; cat filea
+<p>它会将 <code class="docutils literal notranslate"><span class="pre">Hello,</span> <span class="pre">world!</span></code> 输出到另一个文件 <code class="docutils literal notranslate"><span class="pre">filea</span></code> ，并读取里面的内容确认输出正确。我们也可以通过命令行工具 <code class="docutils literal notranslate"><span class="pre">ch6b_cat</span></code> 来查看 <code class="docutils literal notranslate"><span class="pre">filea</span></code> 中的内容：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt; ch6b_cat
 Hello, world!
 Shell: Process 2 exited with code 0
 &gt;&gt;
-</pre></div>
-</div>
-<p>此外，在本章我们为shell程序支持了输入/输出重定向功能，可以将一个应用的输出保存到一个指定的文件。例如，下面的命令可以将 <code class="docutils literal notranslate"><span class="pre">yield</span></code> 应用的输出保存在文件 <code class="docutils literal notranslate"><span class="pre">fileb</span></code> 当中，并在应用执行完毕之后确认它的输出：</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="k">yield</span> <span class="o">&gt;</span> <span class="n">fileb</span>
-<span class="n">Shell</span><span class="p">:</span> <span class="n">Process</span> <span class="mi">2</span> <span class="n">exited</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">0</span>
-<span class="o">&gt;&gt;</span> <span class="n">cat</span> <span class="n">fileb</span>
-<span class="n">Hello</span><span class="p">,</span> <span class="n">I</span> <span class="n">am</span> <span class="n">process</span> <span class="mf">2.</span>
-<span class="n">Back</span> <span class="ow">in</span> <span class="n">process</span> <span class="mi">2</span><span class="p">,</span> <span class="n">iteration</span> <span class="mf">0.</span>
-<span class="n">Back</span> <span class="ow">in</span> <span class="n">process</span> <span class="mi">2</span><span class="p">,</span> <span class="n">iteration</span> <span class="mf">1.</span>
-<span class="n">Back</span> <span class="ow">in</span> <span class="n">process</span> <span class="mi">2</span><span class="p">,</span> <span class="n">iteration</span> <span class="mf">2.</span>
-<span class="n">Back</span> <span class="ow">in</span> <span class="n">process</span> <span class="mi">2</span><span class="p">,</span> <span class="n">iteration</span> <span class="mf">3.</span>
-<span class="n">Back</span> <span class="ow">in</span> <span class="n">process</span> <span class="mi">2</span><span class="p">,</span> <span class="n">iteration</span> <span class="mf">4.</span>
-<span class="k">yield</span> <span class="k">pass</span><span class="o">.</span>
-
-<span class="n">Shell</span><span class="p">:</span> <span class="n">Process</span> <span class="mi">2</span> <span class="n">exited</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">0</span>
-<span class="o">&gt;&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -352,56 +334,55 @@ Shell: Process 2 exited with code 0
 <span class="linenos">13</span>│   └── src
 <span class="linenos">14</span>│       └── main.rs
 <span class="linenos">15</span>├── os
-<span class="linenos">16</span>    ├── build.rs
+<span class="linenos">16</span>    ├── build.rs(修改：不再需要将用户态程序链接到内核中）
 <span class="linenos">17</span>    ├── Cargo.toml(修改：新增 Qemu 的块设备驱动依赖 crate)
 <span class="linenos">18</span>    ├── Makefile(修改：新增文件系统的构建流程)
 <span class="linenos">19</span>    └── src
 <span class="linenos">20</span>        ├── config.rs(修改：新增访问块设备所需的一些 MMIO 配置)
 <span class="linenos">21</span>        ├── ...
-<span class="linenos">22</span>        ├── drivers(修改：新增 Qemu 平台的块设备驱动)
+<span class="linenos">22</span>        ├── drivers(新增：Qemu 平台的块设备驱动)
 <span class="linenos">23</span>        │   ├── block
 <span class="linenos">24</span>        │   │   ├── mod.rs(将不同平台上的块设备全局实例化为 BLOCK_DEVICE 提供给其他模块使用)
 <span class="linenos">25</span>        │   │   └── virtio_blk.rs(Qemu 平台的 virtio-blk 块设备)
 <span class="linenos">26</span>        │   └── mod.rs
-<span class="linenos">27</span>        ├── fs(修改：在文件系统中新增常规文件的支持)
+<span class="linenos">27</span>        ├── fs(新增：对文件系统及文件抽象)
 <span class="linenos">28</span>        │   ├── inode.rs(新增：将 easy-fs 提供的 Inode 抽象封装为内核看到的 OSInode
 <span class="linenos">29</span>        │   │            并实现 fs 子模块的 File Trait)
 <span class="linenos">30</span>        │   ├── mod.rs
-<span class="linenos">31</span>        │   ├── pipe.rs
-<span class="linenos">32</span>        │   └── stdio.rs
-<span class="linenos">33</span>        ├── loader.rs(移除：应用加载器 loader 子模块，本章开始从文件系统中加载应用)
-<span class="linenos">34</span>        ├── mm
-<span class="linenos">35</span>        │   ├── address.rs
-<span class="linenos">36</span>        │   ├── frame_allocator.rs
-<span class="linenos">37</span>        │   ├── heap_allocator.rs
-<span class="linenos">38</span>        │   ├── memory_set.rs(修改：在创建地址空间的时候插入 MMIO 虚拟页面)
-<span class="linenos">39</span>        │   ├── mod.rs
-<span class="linenos">40</span>        │   └── page_table.rs
-<span class="linenos">41</span>        ├── syscall
-<span class="linenos">42</span>        │   ├── fs.rs(修改：新增 sys_open/sys_dup)
-<span class="linenos">43</span>        │   ├── mod.rs
-<span class="linenos">44</span>        │   └── process.rs(修改：sys_exec 改为从文件系统中加载 ELF，并支持命令行参数)
-<span class="linenos">45</span>        ├── task
-<span class="linenos">46</span>            ├── context.rs
-<span class="linenos">47</span>            ├── manager.rs
-<span class="linenos">48</span>            ├── mod.rs(修改初始进程 INITPROC 的初始化)
-<span class="linenos">49</span>            ├── pid.rs
-<span class="linenos">50</span>            ├── processor.rs
-<span class="linenos">51</span>            ├── switch.rs
-<span class="linenos">52</span>            ├── switch.S
-<span class="linenos">53</span>            └── task.rs
-<span class="linenos">54</span>
-<span class="linenos">55</span>cloc easy-fs os
-<span class="linenos">56</span>-------------------------------------------------------------------------------
-<span class="linenos">57</span>Language                     files          blank        comment           code
-<span class="linenos">58</span>-------------------------------------------------------------------------------
-<span class="linenos">59</span>Rust                            42            277            208           3433
-<span class="linenos">60</span>Assembly                         4             23             26            256
-<span class="linenos">61</span>make                             1             12              4             45
-<span class="linenos">62</span>TOML                             2              4              2             22
-<span class="linenos">63</span>-------------------------------------------------------------------------------
-<span class="linenos">64</span>SUM:                            49            316            240           3756
-<span class="linenos">65</span>-------------------------------------------------------------------------------
+<span class="linenos">31</span>        │   └── stdio.rs(新增：将标准输入输出也抽象为文件)
+<span class="linenos">32</span>        ├── loader.rs(移除：应用加载器 loader 子模块，本章开始从文件系统中加载应用)
+<span class="linenos">33</span>        ├── mm
+<span class="linenos">34</span>        │   ├── address.rs
+<span class="linenos">35</span>        │   ├── frame_allocator.rs
+<span class="linenos">36</span>        │   ├── heap_allocator.rs
+<span class="linenos">37</span>        │   ├── memory_set.rs(修改：在创建地址空间的时候插入 MMIO 虚拟页面)
+<span class="linenos">38</span>        │   ├── mod.rs
+<span class="linenos">39</span>        │   └── page_table.rs(新增：应用地址空间的缓冲区抽象 UserBuffer 及其迭代器实现)
+<span class="linenos">40</span>        ├── syscall
+<span class="linenos">41</span>        │   ├── fs.rs(修改：新增 sys_open，修改sys_read、sys_write)
+<span class="linenos">42</span>        │   ├── mod.rs
+<span class="linenos">43</span>        │   └── process.rs(修改：sys_exec 改为从文件系统中加载 ELF)
+<span class="linenos">44</span>        ├── task
+<span class="linenos">45</span>            ├── context.rs
+<span class="linenos">46</span>            ├── manager.rs
+<span class="linenos">47</span>            ├── mod.rs(修改：初始进程 INITPROC 的初始化)
+<span class="linenos">48</span>            ├── pid.rs
+<span class="linenos">49</span>            ├── processor.rs
+<span class="linenos">50</span>            ├── switch.rs
+<span class="linenos">51</span>            ├── switch.S
+<span class="linenos">52</span>            └── task.rs(修改：在任务控制块中加入文件描述符表的相关机制)
+<span class="linenos">53</span>
+<span class="linenos">54</span>cloc easy-fs os
+<span class="linenos">55</span>-------------------------------------------------------------------------------
+<span class="linenos">56</span>Language                     files          blank        comment           code
+<span class="linenos">57</span>-------------------------------------------------------------------------------
+<span class="linenos">58</span>Rust                            41            306            418           3349
+<span class="linenos">59</span>Assembly                         4             53             26            526
+<span class="linenos">60</span>make                             1             13              4             48
+<span class="linenos">61</span>TOML                             2              4              2             23
+<span class="linenos">62</span>-------------------------------------------------------------------------------
+<span class="linenos">63</span>SUM:                            48            376            450           3946
+<span class="linenos">64</span>-------------------------------------------------------------------------------
 </pre></div>
 </div>
 </div>
@@ -411,12 +392,12 @@ Shell: Process 2 exited with code 0
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="1fs-interface.html">
+          <a class="next-page" href="1file-descriptor.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">文件系统接口</div>
+                <div class="title">文件与文件描述符</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -427,7 +408,7 @@ Shell: Process 2 exited with code 0
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">第七章：文件系统与I/O重定向</div>
+                <div class="title">第六章：文件系统与I/O重定向</div>
                 
               </div>
             </a>

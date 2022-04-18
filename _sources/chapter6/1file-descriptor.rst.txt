@@ -1,4 +1,4 @@
-基于文件的标准输入/输出
+文件与文件描述符
 ===========================================
 
 文件简介
@@ -11,9 +11,12 @@
     // os/src/fs/mod.rs
 
     pub trait File : Send + Sync {
+        fn readable(&self) -> bool;
+        fn writable(&self) -> bool;
         fn read(&self, buf: UserBuffer) -> usize;
         fn write(&self, buf: UserBuffer) -> usize;
     }
+
 
 这个接口在内存和I/O资源之间建立了数据交换的通道。其中 ``UserBuffer`` 是我们在 ``mm`` 子模块中定义的应用地址空间中的一段缓冲区，我们可以将它看成一个 ``&[u8]`` 切片。
 
@@ -65,6 +68,8 @@
     pub struct Stdout;
 
     impl File for Stdin {
+        fn readable(&self) -> bool { true }
+        fn writable(&self) -> bool { false }
         fn read(&self, mut user_buf: UserBuffer) -> usize {
             assert_eq!(user_buf.len(), 1);
             // busy loop
@@ -88,6 +93,8 @@
     }
 
     impl File for Stdout {
+        fn readable(&self) -> bool { false }
+        fn writable(&self) -> bool { true }
         fn read(&self, _user_buf: UserBuffer) -> usize{
             panic!("Cannot read from stdout!");
         }

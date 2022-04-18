@@ -4,7 +4,8 @@
 本章导读
 -----------------------------------------
 
-本章将基于文件描述符改造标准输入/标准输出的实现方式，然后实现父子进程之间的通信机制——管道。
+本章将基于文件描述符实现父子进程之间的通信机制——管道。
+我们还将扩展 ``exec`` 系统调用，使之能传递运行参数，并进一步改进 shell 程序，使其支持重定向符号 ``>`` 和 ``<`` 。
 
 实践体验
 -----------------------------------------
@@ -15,7 +16,7 @@
 
    $ git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
    $ cd rCore-Tutorial-Code-2022S
-   $ git checkout ch6
+   $ git checkout ch7
 
 在 qemu 模拟器上运行本章代码：
 
@@ -24,19 +25,37 @@
    $ cd os
    $ make run
 
-进入shell程序后，可以运行管道机制的简单测例 ``pipetest``， ``pipetest`` 需要保证父进程通过管道传输给子进程的字符串不会发生变化。
+进入shell程序后，可以运行管道机制的简单测例 ``ch7b_pipetest``， ``ch7b_pipetest`` 需要保证父进程通过管道传输给子进程的字符串不会发生变化。
 
 测例输出大致如下：
 
 .. code-block::
 
-   >> pipetest
+   >> ch7b_pipetest
    Read OK, child process exited!
    pipetest passed!
    Shell: Process 2 exited with code 0
    >>
 
+同样的，也可以运行较为复杂的测例 ``ch7b_pipe_large_test``，体验通过两个管道实现双向通信。
 
+此外，在本章我们为shell程序支持了输入/输出重定向功能，可以将一个应用的输出保存到一个指定的文件。例如，下面的命令可以将 ``ch7b_yield`` 应用的输出保存在文件 ``fileb`` 当中，并在应用执行完毕之后确认它的输出：
+
+.. code-block::
+
+   >> ch7b_yield > fileb
+   Shell: Process 2 exited with code 0
+   >> ch7b_cat fileb
+   Hello, I am process 2.
+   Back in process 2, iteration 0.
+   Back in process 2, iteration 1.
+   Back in process 2, iteration 2.
+   Back in process 2, iteration 3.
+   Back in process 2, iteration 4.
+   yield pass.
+
+   Shell: Process 2 exited with code 0
+   >>
 
 本章代码树
 -----------------------------------------
@@ -46,21 +65,22 @@
     ── os
        └── src
            ├── ...
-           ├── fs(新增：文件系统子模块 fs)
-           │   ├── mod.rs(包含已经打开且可以被进程读写的文件的抽象 File Trait)
-           │   ├── pipe.rs(实现了 File Trait 的第一个分支——可用来进程间通信的管道)
-           │   └── stdio.rs(实现了 File Trait 的第二个分支——标准输入/输出)
+           ├── fs
+           │   ├── inode.rs
+           │   ├── mod.rs
+           │   ├── pipe.rs(新增：实现了 File Trait 的第三个实现——可用来进程间通信的管道)
+           │   └── stdio.rs
            ├── mm
            │   ├── address.rs
            │   ├── frame_allocator.rs
            │   ├── heap_allocator.rs
            │   ├── memory_set.rs
            │   ├── mod.rs
-           │   └── page_table.rs(新增：应用地址空间的缓冲区抽象 UserBuffer 及其迭代器实现)
+           │   └── page_table.rs
            ├── syscall
-           │   ├── fs.rs(修改：调整 sys_read/write 的实现，新增 sys_close/pipe)
-           │   ├── mod.rs(修改：调整 syscall 分发)
-           │   └── process.rs
+           │   ├── fs.rs(修改：添加了sys_pipe和sys_dup)
+           │   ├── mod.rs
+           │   └── process.rs(修改：sys_exec添加了对参数的支持)
            ├── task
                ├── context.rs
                ├── manager.rs
@@ -69,18 +89,18 @@
                ├── processor.rs
                ├── switch.rs
                ├── switch.S
-               └── task.rs(修改：在任务控制块中加入文件描述符表相关机制)
+               └── task.rs(修改：在exec中将参数压入用户栈中)
 
-   cloc os
+   cloc easy-fs os
    -------------------------------------------------------------------------------
    Language                     files          blank        comment           code
    -------------------------------------------------------------------------------
-   Rust                            32            200            138           2338
-   Assembly                         4             23             26            256
-   make                             1             11              4             36
-   TOML                             1              2              1             12
+   Rust                            42            317            434           3574
+   Assembly                         4             53             26            526
+   make                             1             13              4             48
+   TOML                             2              4              2             23
    -------------------------------------------------------------------------------
-   SUM:                            38            236            169           2642
+   SUM:                            49            387            466           4171
    -------------------------------------------------------------------------------
 
 
