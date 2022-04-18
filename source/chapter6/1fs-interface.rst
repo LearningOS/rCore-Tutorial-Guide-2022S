@@ -62,12 +62,12 @@
 
 在打开一个文件之后，我们就可以用之前的 ``sys_read/sys_write`` 两个系统调用来对它进行读写了。本教程只实现文件的顺序读写，而不考虑随机读写。
  
-以本章的测试用例 ``filetest_simple`` 来介绍文件系统接口的使用方法：
+以本章的测试用例 ``ch6b_filetest_simple`` 来介绍文件系统接口的使用方法：
 
 .. code-block:: rust
     :linenos:
 
-    // user/src/bin/filetest_simple.rs
+    // user/src/bin/ch6b_filetest_simple.rs
 
     #![no_std]
     #![no_main]
