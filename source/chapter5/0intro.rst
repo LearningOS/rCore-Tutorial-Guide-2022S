@@ -30,6 +30,8 @@
 
 请仿照ch4的做法将代码在本地更新并push到自己的实验仓库中。
 
+注意：user仓库有对ch5的测例更新，请重新clone或者使用git pull等获取。
+
 在 qemu 模拟器上运行本章代码：
 
 .. code-block:: console
