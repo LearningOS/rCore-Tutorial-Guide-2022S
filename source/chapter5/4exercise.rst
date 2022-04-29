@@ -69,7 +69,7 @@ BigStride 表示一个预先定义的大常数，则该调度方案为每个进�
 
     为了让大家能在本编程作业中使用 ``Vec`` 等数据结构，我们利用第三方库 ``buddy_system_allocator``
     为大家实现了堆内存分配器，相关代码位于 ``mm/heap_allocator`` 模块。
-
+    
     背景知识： `Rust 中的动态内存分配 <https://rcore-os.github.io/rCore-Tutorial-Book-v3/chapter4/1rust-dynamic-allocation.html>`_
 
 实验要求
@@ -112,15 +112,15 @@ stride 算法深入
    .. code-block:: rust
 
      use core::cmp::Ordering;
-
+    
      struct Stride(u64);
-
+    
      impl PartialOrd for Stride {
          fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
              // ...
          }
      }
-
+    
      impl PartialEq for Stride {
          fn eq(&self, other: &Self) -> bool {
              false
@@ -133,5 +133,5 @@ stride 算法深入
 ------------------------------------------------------------
 
 - 简单总结你实现的功能（200字以内，不要贴代码）。
-- 完成问答题，看清楚选做。
+- 完成问答题。
 - (optional) 你对本次实验设计及难度/工作量的看法，以及有哪些需要改进的地方，欢迎畅所欲言。
