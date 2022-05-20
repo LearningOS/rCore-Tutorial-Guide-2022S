@@ -2,7 +2,7 @@
 <html class="no-js" lang="zh_CN">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="实现 SV39 多级页表机制（上）" href="3sv39-implementation-1.html" /><link rel="prev" title="第四章：地址空间" href="index.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="内核态的线程管理" href="1thread-kernel.html" /><link rel="prev" title="第八章：并发" href="index.html" />
 
     <meta name="generator" content="sphinx-4.1.2, furo 2021.08.31"/>
         <title>引言 - rCore-Tutorial-Guide-2022S 文档</title>
@@ -198,13 +198,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../chapter3/5exercise.html">chapter3练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第四章：地址空间</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">引言</a></li>
-<li class="toctree-l2"><a class="reference internal" href="3sv39-implementation-1.html">实现 SV39 多级页表机制（上）</a></li>
-<li class="toctree-l2"><a class="reference internal" href="4sv39-implementation-2.html">实现 SV39 多级页表机制（下）</a></li>
-<li class="toctree-l2"><a class="reference internal" href="5kernel-app-spaces.html">内核与应用的地址空间</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6multitasking-based-on-as.html">基于地址空间的分时多任务</a></li>
-<li class="toctree-l2"><a class="reference internal" href="7exercise.html">chapter4练习</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter4/index.html">第四章：地址空间</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter4/0intro.html">引言</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter4/3sv39-implementation-1.html">实现 SV39 多级页表机制（上）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter4/4sv39-implementation-2.html">实现 SV39 多级页表机制（下）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter4/5kernel-app-spaces.html">内核与应用的地址空间</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter4/6multitasking-based-on-as.html">基于地址空间的分时多任务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter4/7exercise.html">chapter4练习</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../chapter5/index.html">第五章：进程及进程管理</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -232,12 +232,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../chapter7/3exercise.html">chapter7练习</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../chapter8/index.html">第八章：并发</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../chapter8/0intro.html">引言</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../chapter8/1thread-kernel.html">内核态的线程管理</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">第八章：并发</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">引言</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="1thread-kernel.html">内核态的线程管理</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../chapter8/6exercise.html">chapter8练习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6exercise.html">chapter8练习</a></li>
 </ul>
 </li>
 </ul>
@@ -291,91 +291,193 @@
 <h1>引言<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
 <div class="section" id="id2">
 <h2>本章导读<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
-<p>本章中内核将实现虚拟内存机制，这注定是一趟艰难的旅程。</p>
+<p>到本章开始之前，我们好像已经完成了组成应用程序执行环境的操作系统的三个重要抽象：进程、地址空间和文件，
+让应用程序开发、运行和存储数据越来越方便和灵活。有了进程以后，可以让操作系统从宏观层面实现多个应用的并发执行，
+而并发是通过操作系统基于处理器的时间片不断地切换进程来达到的。到目前为止的并发，仅仅是进程间的并发，
+对于一个进程内部还没有并发性的体现。而这就是线程（Thread）出现的起因：提高一个进程内的并发性。</p>
+<p>有了进程以后，为什么还会出现线程呢？考虑如下情况，对于很多应用（以单一进程的形式运行）而言，
+逻辑上存在多个可并行执行的任务，如果其中一个任务被阻塞，将会引起不依赖该任务的其他任务也被阻塞。
+举个具体的例子，我们平常用编辑器来编辑文本内容的时候，都会有一个定时自动保存的功能，
+这个功能的作用是在系统或应用本身出现故障的情况前，已有的文档内容会被提前保存。
+假设编辑器自动保存时由于磁盘性能导致写入较慢，导致整个进程被操作系统挂起，这就会影响到用户编辑文档的人机交互体验：
+即软件的及时响应能力不足，用户只有等到磁盘写入完成后，操作系统重新调度该进程运行后，用户才可编辑。
+如果我们把一个进程内的多个可并行执行任务通过一种更细粒度的方式让操作系统进行调度，
+那么就可以通过处理器时间片切换实现这种细粒度的并发执行。这种细粒度的调度对象就是线程。</p>
+<div class="section" id="term-thread-define">
+<span id="id3"></span><h3>线程定义<a class="headerlink" href="#term-thread-define" title="永久链接至标题">¶</a></h3>
+<p>简单地说，线程是进程的组成部分，进程可包含1 – n个线程，属于同一个进程的线程共享进程的资源，
+比如地址空间、打开的文件等。基本的线程由线程ID、执行状态、当前指令指针 (PC)、寄存器集合和栈组成。
+线程是可以被操作系统或用户态调度器独立调度（Scheduling）和分派（Dispatch）的基本单位。</p>
+<p>在本章之前，进程是程序的基本执行实体，是程序关于某数据集合上的一次运行活动，是系统进行资源（处理器、
+地址空间和文件等）分配和调度的基本单位。在有了线程后，对进程的定义也要调整了，进程是线程的资源容器，
+线程成为了程序的基本执行实体。</p>
 </div>
-<div class="section" id="id3">
-<h2>实践体验<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
-<p>本章应用运行起来效果与上一章基本一致。</p>
+<div class="section" id="id4">
+<h3>同步互斥<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
+<p>在上面提到了同步互斥和数据一致性，它们的含义是什么呢？当多个线程共享同一进程的地址空间时，
+每个线程都可以访问属于这个进程的数据（全局变量）。如果每个线程使用到的变量都是其他线程不会读取或者修改的话，
+那么就不存在一致性问题。如果变量是只读的，多个线程读取该变量也不会有一致性问题。但是，当一个线程修改变量时，
+其他线程在读取这个变量时，可能会看到一个不一致的值，这就是数据不一致性的问题。</p>
+<div class="admonition note">
+<p class="admonition-title">注解</p>
+<p><strong>并发相关术语</strong></p>
+<ul class="simple">
+<li><p>共享资源（shared resource）：不同的线程/进程都能访问的变量或数据结构。</p></li>
+<li><p>临界区（critical section）：访问共享资源的一段代码。</p></li>
+<li><p>竞态条件（race condition）：多个线程/进程都进入临界区时，都试图更新共享的数据结构，导致产生了不期望的结果。</p></li>
+<li><p>不确定性（indeterminate）： 多个线程/进程在执行过程中出现了竞态条件，导致执行结果取决于哪些线程在何时运行，
+即执行结果不确定，而开发者期望得到的是确定的结果。</p></li>
+<li><p>互斥（mutual exclusion）：一种操作原语，能保证只有一个线程进入临界区，从而避免出现竞态，并产生确定的执行结果。</p></li>
+<li><p>原子性（atomic）：一系列操作要么全部完成，要么一个都没执行，不会看到中间状态。在数据库领域，
+具有原子性的一系列操作称为事务（transaction）。</p></li>
+<li><p>同步（synchronization）：多个并发执行的进程/线程在一些关键点上需要互相等待，这种相互制约的等待称为进程/线程同步。</p></li>
+<li><p>死锁（dead lock）：一个线程/进程集合里面的每个线程/进程都在等待只能由这个集合中的其他一个线程/进程
+（包括他自身）才能引发的事件，这种情况就是死锁。</p></li>
+<li><p>饥饿（hungry）：指一个可运行的线程/进程尽管能继续执行，但由于操作系统的调度而被无限期地忽视，导致不能执行的情况。</p></li>
+</ul>
+</div>
+<p>在后续的章节中，会大量使用上述术语，如果现在还不够理解，没关系，随着后续的一步一步的分析和实验，
+相信大家能够掌握上述术语的实际含义。</p>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>实践体验<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
 <p>获取本章代码：</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
 <span class="gp">$ </span><span class="nb">cd</span> rCore-Tutorial-Code-2022S
-<span class="gp">$ </span>git checkout ch4
+<span class="gp">$ </span>git checkout ch8
 <span class="gp">$ </span>git clone https://github.com/LearningOS/rCore-Tutorial-Test-2022S.git user
 </pre></div>
 </div>
-<p>或许你之前已经克隆过了仓库，只希望从远程仓库更新，而非再克隆一次：</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> rCore-Tutorial-Code-2022S
-<span class="gp"># </span>你可以将 upstream 改为你喜欢的名字
-<span class="gp">$ </span>git remote add upstream https://github.com/LearningOS/rCore-Tutorial-Code-2022S.git
-<span class="gp"># </span>更新仓库信息
-<span class="gp">$ </span>git fetch upstream
-<span class="gp"># </span>查看已添加的远程仓库；应该能看到已有一个 origin 和新添加的 upstream 仓库
-<span class="gp">$ </span>git remote -v
-<span class="gp"># </span>根据需求选择以下一种操作即可
-<span class="gp"># </span>在本地新建一个与远程仓库对应的分支：
-<span class="gp">$ </span>git checkout -b ch4 upstream/ch4
-<span class="gp"># </span>本地已有分支，从远程仓库更新：
-<span class="gp">$ </span>git checkout ch4
-<span class="gp">$ </span>git merge upstream/ch4
-<span class="gp"># </span>将更新推送到自己的远程仓库
-<span class="gp">$ </span>git push origin ch4
-</pre></div>
-</div>
+<p>记得更新测例仓库的代码。</p>
 <p>在 qemu 模拟器上运行本章代码：</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> os
 <span class="gp">$ </span>make run
 </pre></div>
 </div>
+<p>内核初始化完成之后就会进入 shell 程序，我们可以体会一下线程的创建和执行过程。在这里我们运行一下本章的测例 <code class="docutils literal notranslate"><span class="pre">ch8b_threads</span></code> ：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">ch8b_threads</span>
+<span class="n">aaa</span><span class="o">....</span><span class="n">bbb</span><span class="o">...</span><span class="n">ccc</span><span class="o">...</span>
+<span class="n">thread</span><span class="c1">#1 exited with code 1</span>
+<span class="n">thread</span><span class="c1">#2 exited with code 2</span>
+<span class="n">thread</span><span class="c1">#3 exited with code 3</span>
+<span class="n">main</span> <span class="n">thread</span> <span class="n">exited</span><span class="o">.</span>
+<span class="n">Shell</span><span class="p">:</span> <span class="n">Process</span> <span class="mi">2</span> <span class="n">exited</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">0</span>
+<span class="o">&gt;&gt;</span>
+</pre></div>
 </div>
-<div class="section" id="id4">
-<h2>本章代码树<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>├── os
-<span class="linenos"> 2</span>│   ├── ...
-<span class="linenos"> 3</span>│   └── src
-<span class="linenos"> 4</span>│       ├── ...
-<span class="linenos"> 5</span>│       ├── config.rs(修改：新增一些内存管理的相关配置)
-<span class="linenos"> 6</span>│       ├── linker.ld(修改：将跳板页引入内存布局)
-<span class="linenos"> 7</span>│       ├── loader.rs(修改：仅保留获取应用数量和数据的功能)
-<span class="linenos"> 8</span>│       ├── main.rs(修改)
-<span class="linenos"> 9</span>│       ├── mm(新增：内存管理的 mm 子模块)
-<span class="linenos">10</span>│       │   ├── address.rs(物理/虚拟 地址/页号的 Rust 抽象)
-<span class="linenos">11</span>│       │   ├── frame_allocator.rs(物理页帧分配器)
-<span class="linenos">12</span>│       │   ├── heap_allocator.rs(内核动态内存分配器)
-<span class="linenos">13</span>│       │   ├── memory_set.rs(引入地址空间 MemorySet 及逻辑段 MemoryArea 等)
-<span class="linenos">14</span>│       │   ├── mod.rs(定义了 mm 模块初始化方法 init)
-<span class="linenos">15</span>│       │   └── page_table.rs(多级页表抽象 PageTable 以及其他内容)
-<span class="linenos">16</span>│       ├── syscall
-<span class="linenos">17</span>│       │   ├── fs.rs(修改：基于地址空间的 sys_write 实现)
-<span class="linenos">18</span>│       │   ├── mod.rs
-<span class="linenos">19</span>│       │   └── process.rs
-<span class="linenos">20</span>│       ├── task
-<span class="linenos">21</span>│       │   ├── context.rs(修改：构造一个跳转到不同位置的初始任务上下文)
-<span class="linenos">22</span>│       │   ├── mod.rs(修改，详见文档)
-<span class="linenos">23</span>│       │   ├── switch.rs
-<span class="linenos">24</span>│       │   ├── switch.S
-<span class="linenos">25</span>│       │   └── task.rs(修改，详见文档)
-<span class="linenos">26</span>│       └── trap
-<span class="linenos">27</span>│           ├── context.rs(修改：在 Trap 上下文中加入了更多内容)
-<span class="linenos">28</span>│           ├── mod.rs(修改：基于地址空间修改了 Trap 机制，详见文档)
-<span class="linenos">29</span>│           └── trap.S(修改：基于地址空间修改了 Trap 上下文保存与恢复汇编代码)
-<span class="linenos">30</span>└── user
-<span class="linenos">31</span>    ├── build.py(编译时不再使用)
-<span class="linenos">32</span>    ├── ...
-<span class="linenos">33</span>    └── src
-<span class="linenos">34</span>        ├── linker.ld(修改：将所有应用放在各自地址空间中固定的位置)
-<span class="linenos">35</span>        └── ...
-<span class="linenos">36</span>
-<span class="linenos">37</span> cloc os
-<span class="linenos">38</span> -------------------------------------------------------------------------------
-<span class="linenos">39</span> Language                     files          blank        comment           code
-<span class="linenos">40</span> -------------------------------------------------------------------------------
-<span class="linenos">41</span> Rust                            26            138             56           1526
-<span class="linenos">42</span> Assembly                         3              3             26             86
-<span class="linenos">43</span> make                             1             11              4             36
-<span class="linenos">44</span> TOML                             1              2              1             13
-<span class="linenos">45</span> -------------------------------------------------------------------------------
-<span class="linenos">46</span> SUM:                            31            154             87           1661
-<span class="linenos">47</span> -------------------------------------------------------------------------------
+<p>它会有4个线程在执行，等前3个线程执行完毕后，主线程退出，导致整个进程退出。</p>
+<p>此外，在本章的操作系统支持通过互斥来执行“哲学家就餐问题”这个应用程序：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt; ch8b_phil_din_mutex
+Here comes 5 philosophers!
+time cost = 7260
+'-' -&gt; THINKING; 'x' -&gt; EATING; ' ' -&gt; WAITING
+#0: -------                 xxxxxxxx----------       xxxx-----  xxxxxx--xxx
+#1: ---xxxxxx--      xxxxxxx----------    x---xxxxxx
+#2: -----          xx---------xx----xxxxxx------------        xxxx
+#3: -----xxxxxxxxxx------xxxxx--------    xxxxxx--   xxxxxxxxx
+#4: ------         x------          xxxxxx--    xxxxx------   xx
+#0: -------                 xxxxxxxx----------       xxxx-----  xxxxxx--xxx
+Shell: Process 2 exited with code 0
+&gt;&gt;
+</pre></div>
+</div>
+<p>我们可以看到5个代表“哲学家”的线程通过操作系统的 <strong>信号量</strong> 互斥机制在进行 “THINKING”、“EATING”、“WAITING” 的日常生活。
+没有哲学家由于拿不到筷子而饥饿，也没有两个哲学家同时拿到一个筷子。</p>
+<div class="admonition note">
+<p class="admonition-title">注解</p>
+<p><strong>哲学家就餐问题</strong></p>
+<p>计算机科学家 Dijkstra 提出并解决的哲学家就餐问题是经典的进程同步互斥问题。哲学家就餐问题描述如下：</p>
+<p>有5个哲学家共用一张圆桌，分别坐在周围的5张椅子上，在圆桌上有5个碗和5只筷子，他们的生活方式是交替地进行思考和进餐。
+平时，每个哲学家进行思考，饥饿时便试图拿起其左右最靠近他的筷子，只有在他拿到两只筷子时才能进餐。进餐完毕，放下筷子继续思考。</p>
+</div>
+</div>
+<div class="section" id="id6">
+<h2>本章代码树<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span> .
+<span class="linenos"> 2</span> ├── bootloader
+<span class="linenos"> 3</span> │   └── rustsbi-qemu.bin
+<span class="linenos"> 4</span> ├── Dockerfile
+<span class="linenos"> 5</span> ├── easy-fs
+<span class="linenos"> 6</span> │   ├── Cargo.lock
+<span class="linenos"> 7</span> │   ├── Cargo.toml
+<span class="linenos"> 8</span> │   └── src
+<span class="linenos"> 9</span> │       ├── bitmap.rs
+<span class="linenos">10</span> │       ├── block_cache.rs
+<span class="linenos">11</span> │       ├── block_dev.rs
+<span class="linenos">12</span> │       ├── efs.rs
+<span class="linenos">13</span> │       ├── layout.rs
+<span class="linenos">14</span> │       ├── lib.rs
+<span class="linenos">15</span> │       └── vfs.rs
+<span class="linenos">16</span> ├── easy-fs-fuse
+<span class="linenos">17</span> │   ├── Cargo.lock
+<span class="linenos">18</span> │   ├── Cargo.toml
+<span class="linenos">19</span> │   └── src
+<span class="linenos">20</span> │       └── main.rs
+<span class="linenos">21</span> ├── LICENSE
+<span class="linenos">22</span> ├── Makefile
+<span class="linenos">23</span> ├── os
+<span class="linenos">24</span> │   ├── build.rs
+<span class="linenos">25</span> │   ├── Cargo.lock
+<span class="linenos">26</span> │   ├── Cargo.toml
+<span class="linenos">27</span> │   ├── Makefile
+<span class="linenos">28</span> │   └── src
+<span class="linenos">29</span> │       ├── config.rs (修改：扩大了内核堆空间)
+<span class="linenos">30</span> │       ├── console.rs
+<span class="linenos">31</span> │       ├── drivers
+<span class="linenos">32</span> │       │   ├── block
+<span class="linenos">33</span> │       │   │   ├── mod.rs
+<span class="linenos">34</span> │       │   │   └── virtio_blk.rs
+<span class="linenos">35</span> │       │   └── mod.rs
+<span class="linenos">36</span> │       ├── entry.asm
+<span class="linenos">37</span> │       ├── fs
+<span class="linenos">38</span> │       │   ├── inode.rs
+<span class="linenos">39</span> │       │   ├── mod.rs
+<span class="linenos">40</span> │       │   ├── pipe.rs
+<span class="linenos">41</span> │       │   └── stdio.rs
+<span class="linenos">42</span> │       ├── lang_items.rs
+<span class="linenos">43</span> │       ├── linker.ld
+<span class="linenos">44</span> │       ├── logging.rs
+<span class="linenos">45</span> │       ├── main.rs
+<span class="linenos">46</span> │       ├── mm
+<span class="linenos">47</span> │       │   ├── address.rs
+<span class="linenos">48</span> │       │   ├── frame_allocator.rs
+<span class="linenos">49</span> │       │   ├── heap_allocator.rs
+<span class="linenos">50</span> │       │   ├── memory_set.rs (修改：去除了构建进程地址空间时分配用户栈和映射陷入上下文的逻辑)
+<span class="linenos">51</span> │       │   ├── mod.rs
+<span class="linenos">52</span> │       │   └── page_table.rs
+<span class="linenos">53</span> │       ├── sbi.rs
+<span class="linenos">54</span> │       ├── sync (新增：互斥锁、信号量和条件变量三种同步互斥机制的实现)
+<span class="linenos">55</span> │       │   ├── condvar.rs
+<span class="linenos">56</span> │       │   ├── mod.rs
+<span class="linenos">57</span> │       │   ├── mutex.rs
+<span class="linenos">58</span> │       │   ├── semaphore.rs
+<span class="linenos">59</span> │       │   └── up.rs
+<span class="linenos">60</span> │       ├── syscall
+<span class="linenos">61</span> │       │   ├── fs.rs (修改：将原先对 task 的调用改为对 process 的调用)
+<span class="linenos">62</span> │       │   ├── mod.rs
+<span class="linenos">63</span> │       │   ├── process.rs (修改：将原先对 task 的调用改为对 process 的调用)
+<span class="linenos">64</span> │       │   ├── sync.rs (新增：三种同步互斥机制相关的系统调用，以及基于定时器条件变量的 sleep 调用)
+<span class="linenos">65</span> │       │   └── thread.rs (新增：线程相关系统调用)
+<span class="linenos">66</span> │       ├── task
+<span class="linenos">67</span> │       │   ├── context.rs (修改：将任务上下文的成员变量改为 pub 类型)
+<span class="linenos">68</span> │       │   ├── id.rs (新增：由 pid.rs 修改而来，提供 pid/tid 、 kstack/ustack 的分配和回收机制)
+<span class="linenos">69</span> │       │   ├── kthread.rs (新增：完全在内核态运行的线程，仅供参考，在实验中未使用)
+<span class="linenos">70</span> │       │   ├── manager.rs
+<span class="linenos">71</span> │       │   ├── mod.rs (修改：增加阻塞线程的功能，将 exit 扩展到多线程，并在主线程退出时一并退出进程)
+<span class="linenos">72</span> │       │   ├── processor.rs (修改：增加获取当前线程的中断上下文虚拟地址及获取当前进程的功能)
+<span class="linenos">73</span> │       │   ├── process.rs (新增：将原先 Task 中的地址空间、文件等机制拆分为进程)
+<span class="linenos">74</span> │       │   ├── stackless_coroutine.rs (新增：完全在内核态运行的无栈协程，仅供参考，在实验中未使用)
+<span class="linenos">75</span> │       │   ├── switch.rs
+<span class="linenos">76</span> │       │   ├── switch.S
+<span class="linenos">77</span> │       │   └── task.rs (修改：将进程相关的功能移至 process.rs 中)
+<span class="linenos">78</span> │       ├── timer.rs (修改：增加定时器条件变量的实现)
+<span class="linenos">79</span> │       └── trap
+<span class="linenos">80</span> │           ├── context.rs
+<span class="linenos">81</span> │           ├── mod.rs (修改：使用线程对应的中断上下文地址而非固定的 TRAP_CONTEXT)
+<span class="linenos">82</span> │           └── trap.S
+<span class="linenos">83</span> ├── README.md
+<span class="linenos">84</span> └── rust-toolchain
 </pre></div>
 </div>
 </div>
@@ -385,12 +487,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="3sv39-implementation-1.html">
+          <a class="next-page" href="1thread-kernel.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">实现 SV39 多级页表机制（上）</div>
+                <div class="title">内核态的线程管理</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -401,7 +503,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">第四章：地址空间</div>
+                <div class="title">第八章：并发</div>
                 
               </div>
             </a>
@@ -415,7 +517,7 @@
               <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
               <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
             |
-            <a class="muted-link" href="../_sources/chapter4/0intro.rst.txt"
+            <a class="muted-link" href="../_sources/chapter8/0intro.rst.txt"
                rel="nofollow">
               显示源代码
             </a>
@@ -436,9 +538,13 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">引言</a><ul>
-<li><a class="reference internal" href="#id2">本章导读</a></li>
-<li><a class="reference internal" href="#id3">实践体验</a></li>
-<li><a class="reference internal" href="#id4">本章代码树</a></li>
+<li><a class="reference internal" href="#id2">本章导读</a><ul>
+<li><a class="reference internal" href="#term-thread-define">线程定义</a></li>
+<li><a class="reference internal" href="#id4">同步互斥</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id5">实践体验</a></li>
+<li><a class="reference internal" href="#id6">本章代码树</a></li>
 </ul>
 </li>
 </ul>
