@@ -124,7 +124,7 @@ waittid 等待一个线程标识符的值为tid 的线程结束。在具体实�
 .. code-block:: rust
    :linenos:
 
-   //usr/src/bin/threads.rs
+   //usr/src/bin/ch8b_threads.rs
 
    #![no_std]
    #![no_main]
@@ -437,7 +437,7 @@ waittid 等待一个线程标识符的值为tid 的线程结束。在具体实�
 .. code-block:: rust
     :linenos:
 
-    // os/src/syscall/thread.rs
+    // os/src/syscall/ch8b_thread.rs
 
     pub fn sys_waittid(tid: usize) -> i32 {
         let task = current_task().unwrap();

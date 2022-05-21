@@ -236,7 +236,9 @@
 <li class="toctree-l2"><a class="reference internal" href="0intro.html">引言</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">内核态的线程管理</a></li>
 <li class="toctree-l2"><a class="reference internal" href="2lock.html">锁机制</a></li>
-<li class="toctree-l2"><a class="reference internal" href="6exercise.html">chapter8练习</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3semaphore.html">信号量机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4condition-variable.html">条件变量机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5exercise.html">chapter8 练习</a></li>
 </ul>
 </li>
 </ul>
@@ -379,7 +381,7 @@
 <div class="section" id="threads">
 <h3>多线程应用程序 – threads<a class="headerlink" href="#threads" title="永久链接至标题">¶</a></h3>
 <p>多线程应用程序 – threads 开始执行后，先调用 <code class="docutils literal notranslate"><span class="pre">thread_create</span></code> 创建了三个线程，加上进程自带的主线程，其实一共有四个线程。每个线程在打印了1000个字符后，会执行 <code class="docutils literal notranslate"><span class="pre">exit</span></code> 退出。进程通过 <code class="docutils literal notranslate"><span class="pre">waittid</span></code> 等待这三个线程结束后，最终结束进程的执行。下面是多线程应用程序 – threads 的源代码：</p>
-<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">//usr/src/bin/threads.rs</span>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">//usr/src/bin/ch8b_threads.rs</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="cp">#![no_std]</span><span class="w"></span>
 <span class="linenos"> 4</span><span class="cp">#![no_main]</span><span class="w"></span>
@@ -660,7 +662,7 @@
 <div class="section" id="id17">
 <h4>等待线程结束<a class="headerlink" href="#id17" title="永久链接至标题">¶</a></h4>
 <p>主线程通过系统调用 <code class="docutils literal notranslate"><span class="pre">sys_waittid</span></code> 来等待其他线程的结束。具体实现如下：</p>
-<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// os/src/syscall/thread.rs</span>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">// os/src/syscall/ch8b_thread.rs</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">sys_waittid</span><span class="p">(</span><span class="n">tid</span>: <span class="kt">usize</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">i32</span> <span class="p">{</span><span class="w"></span>
 <span class="linenos"> 4</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_task</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span><span class="w"></span>

@@ -123,7 +123,7 @@
 
     >> ch8b_phil_din_mutex
     Here comes 5 philosophers!
-    time cost = 7260
+    time cost = 720
     '-' -> THINKING; 'x' -> EATING; ' ' -> WAITING
     #0: -------                 xxxxxxxx----------       xxxx-----  xxxxxx--xxx
     #1: ---xxxxxx--      xxxxxxx----------    x---xxxxxx
