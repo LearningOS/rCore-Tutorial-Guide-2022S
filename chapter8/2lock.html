@@ -667,19 +667,20 @@
 <span class="linenos">13</span><span class="k">impl</span><span class="w"> </span><span class="n">Mutex</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">MutexBlocking</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="linenos">14</span><span class="w">    </span><span class="k">fn</span> <span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="linenos">15</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">mutex_inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">exclusive_access</span><span class="p">();</span><span class="w"></span>
-<span class="linenos">16</span><span class="w">        </span><span class="fm">assert_eq!</span><span class="p">(</span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">locked</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">);</span><span class="w"></span>
-<span class="hll"><span class="linenos">17</span><span class="w">        </span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">locked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span><span class="w"></span>
-</span><span class="hll"><span class="linenos">18</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">waking_task</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">wait_queue</span><span class="p">.</span><span class="n">pop_front</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-</span><span class="hll"><span class="linenos">19</span><span class="w">            </span><span class="n">add_task</span><span class="p">(</span><span class="n">waking_task</span><span class="p">);</span><span class="w"></span>
-</span><span class="linenos">20</span><span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="linenos">21</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="linenos">22</span><span class="p">}</span><span class="w"></span>
+<span class="linenos">16</span><span class="w">        </span><span class="fm">assert!</span><span class="p">(</span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">locked</span><span class="p">);</span><span class="w"></span>
+<span class="hll"><span class="linenos">17</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">waking_task</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">wait_queue</span><span class="p">.</span><span class="n">pop_front</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+</span><span class="hll"><span class="linenos">18</span><span class="w">            </span><span class="n">add_task</span><span class="p">(</span><span class="n">waking_task</span><span class="p">);</span><span class="w"></span>
+</span><span class="linenos">19</span><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="hll"><span class="linenos">20</span><span class="w">            </span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">locked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span><span class="w"></span>
+</span><span class="linenos">21</span><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">22</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">23</span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>第 8 行，调用 ID 为 <code class="docutils literal notranslate"><span class="pre">mutex_id</span></code> 的互斥锁 <code class="docutils literal notranslate"><span class="pre">mutex</span></code> 的 <code class="docutils literal notranslate"><span class="pre">unlock</span></code> 方法，具体工作由该方法来完成的。</p></li>
-<li><p>第 17 行，释放锁。</p></li>
-<li><p>第 18-19 行，如果有等待的线程，唤醒等待最久的那个线程。</p></li>
+<li><p>第 17-18 行，如果有等待的线程，唤醒等待最久的那个线程，相当于将锁的所有权移交给该线程。</p></li>
+<li><p>第 20 行，若没有线程等待，则释放锁。</p></li>
 </ul>
 </div>
 </div>

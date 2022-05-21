@@ -346,7 +346,7 @@ mutex 系统调用的实现
 
 .. code-block:: Rust
     :linenos:
-    :emphasize-lines: 8,17-19
+    :emphasize-lines: 8,17-18,20
 
     // os/src/syscall/sync.rs
     pub fn sys_mutex_unlock(mutex_id: usize) -> isize {
@@ -363,16 +363,17 @@ mutex 系统调用的实现
     impl Mutex for MutexBlocking {
         fn unlock(&self) {
             let mut mutex_inner = self.inner.exclusive_access();
-            assert_eq!(mutex_inner.locked, true);
-            mutex_inner.locked = false;
+            assert!(mutex_inner.locked);
             if let Some(waking_task) = mutex_inner.wait_queue.pop_front() {
                 add_task(waking_task);
+            } else {
+                mutex_inner.locked = false;
             }
         }
     }
 
 - 第 8 行，调用 ID 为 ``mutex_id`` 的互斥锁 ``mutex`` 的 ``unlock`` 方法，具体工作由该方法来完成的。
-- 第 17 行，释放锁。
-- 第 18-19 行，如果有等待的线程，唤醒等待最久的那个线程。
+- 第 17-18 行，如果有等待的线程，唤醒等待最久的那个线程，相当于将锁的所有权移交给该线程。
+- 第 20 行，若没有线程等待，则释放锁。
 
 
