@@ -45,7 +45,11 @@ first 会执行并把 A 赋值为 1 后，然后线程 second 再次执行时，
 
     unsafe fn second() -> ! {
         mutex.lock();
-        while A==0 { };
+        while A==0 {
+            mutex.unlock();
+            // give other thread a chance to lock
+            mutex.lock();
+        };
         mutex.unlock();
         //继续执行相关事务
     }
