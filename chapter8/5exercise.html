@@ -295,7 +295,7 @@
 <div class="admonition warning">
 <p class="admonition-title">警告</p>
 <p>本次实验框架变动较大，且改动较为复杂，为降低同学们的工作量，本次实验不要求合并之前的实验内容，
-只需通过 ch8 开头的测例即可。</p>
+只需通过 ch8 的全部测例和其他章节的基础测例即可。</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">注解</p>
@@ -343,8 +343,7 @@ m 个元素。初始时，Work = Available ；结束向量 Finish，表示系统
 <p>出于兼容性和灵活性考虑，我们允许进程按需开启或关闭死锁检测功能。为此我们将实现一个新的系统调用：
 <code class="docutils literal notranslate"><span class="pre">sys_enable_deadlock_detect</span></code> 。</p>
 <p><strong>enable_deadlock_detect</strong>：</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p>syscall ID:  469</p></li>
 <li><p>功能：为当前进程启用或禁用死锁检测功能。</p></li>
 <li><p>C 接口： <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">enable_deadlock_detect(int</span> <span class="pre">is_enable)</span></code></p></li>
@@ -376,7 +375,6 @@ m 个元素。初始时，Work = Available ；结束向量 Finish，表示系统
 </dl>
 </li>
 </ul>
-</div></blockquote>
 </div>
 <div class="section" id="id3">
 <h3>实验要求<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
@@ -388,7 +386,41 @@ m 个元素。初始时，Work = Available ；结束向量 Finish，表示系统
 </div>
 </div>
 <div class="section" id="id4">
-<h2>报告要求<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<h2>问答作业<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<ol class="arabic simple">
+<li><p>在我们的多线程实现中，当主线程 (即 0 号线程) 退出时，视为整个进程退出，
+此时需要结束该进程管理的所有线程并回收其资源。
+- 需要回收的资源有哪些？
+- 其他线程的 TaskControlBlock 可能在哪些位置被引用，分别是否需要回收，为什么？</p></li>
+<li><p>对比以下两种 <code class="docutils literal notranslate"><span class="pre">Mutex.unlock</span></code> 的实现，二者有什么区别？这些区别可能会导致什么问题？</p></li>
+</ol>
+<div class="highlight-Rust notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">impl</span><span class="w"> </span><span class="n">Mutex</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Mutex1</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="k">fn</span> <span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos"> 3</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">mutex_inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">exclusive_access</span><span class="p">();</span><span class="w"></span>
+<span class="linenos"> 4</span><span class="w">        </span><span class="fm">assert!</span><span class="p">(</span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">locked</span><span class="p">);</span><span class="w"></span>
+<span class="linenos"> 5</span><span class="w">        </span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">locked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span><span class="w"></span>
+<span class="linenos"> 6</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">waking_task</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">wait_queue</span><span class="p">.</span><span class="n">pop_front</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos"> 7</span><span class="w">            </span><span class="n">add_task</span><span class="p">(</span><span class="n">waking_task</span><span class="p">);</span><span class="w"></span>
+<span class="linenos"> 8</span><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="linenos"> 9</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">10</span><span class="p">}</span><span class="w"></span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="k">impl</span><span class="w"> </span><span class="n">Mutex</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Mutex2</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos">13</span><span class="w">    </span><span class="k">fn</span> <span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos">14</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">mutex_inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">exclusive_access</span><span class="p">();</span><span class="w"></span>
+<span class="linenos">15</span><span class="w">        </span><span class="fm">assert!</span><span class="p">(</span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">locked</span><span class="p">);</span><span class="w"></span>
+<span class="linenos">16</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">waking_task</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">wait_queue</span><span class="p">.</span><span class="n">pop_front</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos">17</span><span class="w">            </span><span class="n">add_task</span><span class="p">(</span><span class="n">waking_task</span><span class="p">);</span><span class="w"></span>
+<span class="linenos">18</span><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos">19</span><span class="w">            </span><span class="n">mutex_inner</span><span class="p">.</span><span class="n">locked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span><span class="w"></span>
+<span class="linenos">20</span><span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">21</span><span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="linenos">22</span><span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>报告要求<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
 <ul class="simple">
 <li><p>简单总结你实现的功能（200字以内，不要贴代码）及你完成本次实验所用的时间。</p></li>
 <li><p>完成问答题。</p></li>
@@ -457,7 +489,8 @@ m 个元素。初始时，Work = Available ；结束向量 Finish，表示系统
 <li><a class="reference internal" href="#id3">实验要求</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id4">报告要求</a></li>
+<li><a class="reference internal" href="#id4">问答作业</a></li>
+<li><a class="reference internal" href="#id5">报告要求</a></li>
 </ul>
 </li>
 </ul>

@@ -7,7 +7,7 @@ chapter8 练习
 .. warning::
 
    本次实验框架变动较大，且改动较为复杂，为降低同学们的工作量，本次实验不要求合并之前的实验内容，
-   只需通过 ch8 开头的测例即可。
+   只需通过 ch8 的全部测例和其他章节的基础测例即可。
 
 .. note::
 
@@ -64,21 +64,21 @@ chapter8 练习
 
 **enable_deadlock_detect**：
 
-    * syscall ID:  469
-    * 功能：为当前进程启用或禁用死锁检测功能。
-    * C 接口： ``int enable_deadlock_detect(int is_enable)``
-    * Rust 接口： ``fn enable_deadlock_detect(is_enable: i32) -> i32``
-    * 参数：
-        * is_enable: 为 1 表示启用死锁检测， 0 表示禁用死锁检测。
-    * 说明：
-        * 开启死锁检测功能后， ``mutex_lock`` 和 ``semaphore_down`` 如果检测到死锁，
-          应拒绝相应操作并返回 -0xDEAD (十六进制值)。
-        * 简便起见可对 mutex 和 semaphore 分别进行检测，无需考虑二者 (以及 ``waittid`` 等)
-          混合使用导致的死锁。
-    * 返回值：如果出现了错误则返回 -1，否则返回 0。
-    * 可能的错误
-        * 参数不合法
-        * 死锁检测开启失败
+* syscall ID:  469
+* 功能：为当前进程启用或禁用死锁检测功能。
+* C 接口： ``int enable_deadlock_detect(int is_enable)``
+* Rust 接口： ``fn enable_deadlock_detect(is_enable: i32) -> i32``
+* 参数：
+    * is_enable: 为 1 表示启用死锁检测， 0 表示禁用死锁检测。
+* 说明：
+    * 开启死锁检测功能后， ``mutex_lock`` 和 ``semaphore_down`` 如果检测到死锁，
+      应拒绝相应操作并返回 -0xDEAD (十六进制值)。
+    * 简便起见可对 mutex 和 semaphore 分别进行检测，无需考虑二者 (以及 ``waittid`` 等)
+      混合使用导致的死锁。
+* 返回值：如果出现了错误则返回 -1，否则返回 0。
+* 可能的错误
+    * 参数不合法
+    * 死锁检测开启失败
 
 
 实验要求
@@ -87,6 +87,42 @@ chapter8 练习
 - 完成分支: ch8。
 - 实验目录要求不变。
 - 通过所有测例。
+
+问答作业
+--------------------------------------------
+
+1. 在我们的多线程实现中，当主线程 (即 0 号线程) 退出时，视为整个进程退出，
+   此时需要结束该进程管理的所有线程并回收其资源。
+   - 需要回收的资源有哪些？
+   - 其他线程的 TaskControlBlock 可能在哪些位置被引用，分别是否需要回收，为什么？
+2. 对比以下两种 ``Mutex.unlock`` 的实现，二者有什么区别？这些区别可能会导致什么问题？
+
+.. code-block:: Rust
+    :linenos:
+
+    impl Mutex for Mutex1 {
+        fn unlock(&self) {
+            let mut mutex_inner = self.inner.exclusive_access();
+            assert!(mutex_inner.locked);
+            mutex_inner.locked = false;
+            if let Some(waking_task) = mutex_inner.wait_queue.pop_front() {
+                add_task(waking_task);
+            }
+        }
+    }
+
+    impl Mutex for Mutex2 {
+        fn unlock(&self) {
+            let mut mutex_inner = self.inner.exclusive_access();
+            assert!(mutex_inner.locked);
+            if let Some(waking_task) = mutex_inner.wait_queue.pop_front() {
+                add_task(waking_task);
+            } else {
+                mutex_inner.locked = false;
+            }
+        }
+    }
+
 
 报告要求
 -------------------------------
