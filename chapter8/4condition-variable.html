@@ -325,10 +325,14 @@ first 会执行并把 A 赋值为 1 后，然后线程 second 再次执行时，
 <span class="linenos"> 8</span>
 <span class="linenos"> 9</span><span class="k">unsafe</span><span class="w"> </span><span class="k">fn</span> <span class="nf">second</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="o">!</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="linenos">10</span><span class="w">    </span><span class="n">mutex</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span><span class="w"></span>
-<span class="linenos">11</span><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="n">A</span><span class="o">==</span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
-<span class="linenos">12</span><span class="w">    </span><span class="n">mutex</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span><span class="w"></span>
-<span class="linenos">13</span><span class="w">    </span><span class="c1">//继续执行相关事务</span>
-<span class="linenos">14</span><span class="p">}</span><span class="w"></span>
+<span class="linenos">11</span><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="n">A</span><span class="o">==</span><span class="mi">0</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="linenos">12</span><span class="w">        </span><span class="n">mutex</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span><span class="w"></span>
+<span class="linenos">13</span><span class="w">        </span><span class="c1">// give other thread a chance to lock</span>
+<span class="linenos">14</span><span class="w">        </span><span class="n">mutex</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span><span class="w"></span>
+<span class="linenos">15</span><span class="w">    </span><span class="p">};</span><span class="w"></span>
+<span class="linenos">16</span><span class="w">    </span><span class="n">mutex</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span><span class="w"></span>
+<span class="linenos">17</span><span class="w">    </span><span class="c1">//继续执行相关事务</span>
+<span class="linenos">18</span><span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>这种实现能执行，但效率低下，因为线程 second 会忙等检查，浪费处理器时间。我们希望有某种方式让线程
