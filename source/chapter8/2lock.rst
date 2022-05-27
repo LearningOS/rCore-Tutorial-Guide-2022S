@@ -272,7 +272,7 @@ mutex 系统调用的实现
 
 .. code-block:: Rust
     :linenos:
-    :emphasize-lines: 14,30
+    :emphasize-lines: 14,18
 
     // os/src/syscall/sync.rs
     pub fn sys_mutex_create(blocking: bool) -> isize {
@@ -296,8 +296,8 @@ mutex 系统调用的实现
         }
     }
 
-- 第14行，如果向量中有空的元素，就在这个空元素的位置创建一个可睡眠的互斥锁；
-- 第30行，如果向量满了，就在向量中添加新的可睡眠的互斥锁；
+- 第 14 行，如果向量中有空的元素，就在这个空元素的位置创建一个可睡眠的互斥锁；
+- 第 18 行，如果向量满了，就在向量中添加新的可睡眠的互斥锁；
 
 
 有了互斥锁，接下来就是实现 ``Mutex`` trait的内核函数：对应 ``SYSCALL_MUTEX_LOCK`` 系统调用的
