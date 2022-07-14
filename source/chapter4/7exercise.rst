@@ -54,7 +54,7 @@ munmap 定义如下：
 
 tips:
 
-- 一定要注意 mmap 是的页表项，注意 riscv 页表项的格式与 port 的区别。
+- 一定要注意 mmap 的是页表项，注意 riscv 页表项的格式与 port 的区别。
 - 你增加 PTE_U 了吗？
 
 实验要求
